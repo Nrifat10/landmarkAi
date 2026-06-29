@@ -40,7 +40,7 @@ export function SectionHeading({
           )}
         >
           <span className="h-px w-8 bg-accent" />
-          <span className="text-xs font-semibold uppercase tracking-widest text-accent">
+          <span className="text-xs font-bold uppercase tracking-widest text-accent">
             {eyebrow}
           </span>
           <span className="h-px w-8 bg-accent" />
@@ -48,7 +48,7 @@ export function SectionHeading({
       )}
       <h2
         className={cn(
-          "text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight text-balance",
+          "text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight text-balance",
           light ? "text-primary-foreground" : "text-foreground"
         )}
       >

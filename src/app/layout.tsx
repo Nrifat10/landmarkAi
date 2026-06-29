@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { Toaster } from "@/components/ui/toaster";
+import { SiteHeader } from "@/components/sections/site-header";
+import { SiteFooter } from "@/components/sections/site-footer";
 import { company, siteSeo } from "@/lib/data";
 
 const geistSans = Geist({
@@ -52,7 +54,7 @@ export const metadata: Metadata = {
     type: "website",
     images: [
       {
-        url: "/icon.svg",
+        url: "/images/hero-1.jpg",
         width: 1200,
         height: 630,
         alt: `${company.name} — ${company.tagline}`,
@@ -63,21 +65,16 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: siteSeo.title,
     description: siteSeo.description,
-    images: ["/icon.svg"],
+    images: ["/images/hero-1.jpg"],
   },
   icons: {
-    icon: [
-      { url: "/icon.svg", type: "image/svg+xml" },
-    ],
+    icon: [{ url: "/icon.svg", type: "image/svg+xml" }],
   },
   manifest: "/manifest.webmanifest",
   formatDetection: {
     telephone: true,
     email: true,
     address: true,
-  },
-  verification: {
-    google: "google-site-verification-token",
   },
 };
 
@@ -87,7 +84,7 @@ const jsonLdOrganization = {
   name: company.name,
   alternateName: company.shortName,
   url: "https://www.landmarkgulf.com",
-  logo: "https://www.landmarkgulf.com/logo.svg",
+  logo: "https://www.landmarkgulf.com/icon.svg",
   description: siteSeo.description,
   foundingDate: "2017",
   founder: { "@type": "Person", name: company.ceo },
@@ -168,7 +165,11 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased bg-background text-foreground`}
       >
-        {children}
+        <div className="flex min-h-screen flex-col">
+          <SiteHeader />
+          <main className="flex-1">{children}</main>
+          <SiteFooter />
+        </div>
         <Toaster />
       </body>
     </html>
