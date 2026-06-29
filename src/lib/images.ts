@@ -1,10 +1,9 @@
 /**
- * Image registry — maps section keys to real, locally-hosted image paths.
- * All images are real photographs fetched via the ZAI image search service
- * and stored in /public/images/ for production-grade performance.
+ * Image registry — maps section keys to AI-generated, watermark-free construction images.
+ * All images are custom-generated using AI image generation and stored in
+ * /public/images/generated/ as PNG files.
  *
- * Categories are organized by construction trade/service with multiple
- * authentic work-in-progress photos per category:
+ * Categories organized by construction trade/service:
  * - workers: construction workers at active sites (team, steel, concrete, meetings)
  * - equipment: heavy machinery in action (excavators, cranes, bulldozers, forklifts)
  * - refinery: oil & gas industrial complexes (plants, flare stacks, night operations)
@@ -22,88 +21,88 @@ type ImageMap = Record<string, string[]>;
 
 const PREFIXES: ImageMap = {
   workers: [
-    "/images/workers-1.jpg",
-    "/images/workers-2.jpg",
-    "/images/workers-3.jpg",
-    "/images/workers-4.jpg",
-    "/images/workers-5.jpg",
-    "/images/workers-6.jpg",
+    "/images/generated/workers-1.png",
+    "/images/generated/workers-2.png",
+    "/images/generated/workers-3.png",
+    "/images/generated/workers-4.png",
+    "/images/generated/workers-5.png",
+    "/images/generated/workers-6.png",
   ],
   equipment: [
-    "/images/equipment-1.jpg",
-    "/images/equipment-2.jpg",
-    "/images/equipment-3.jpg",
-    "/images/equipment-4.jpg",
-    "/images/equipment-5.jpg",
-    "/images/equipment-6.jpg",
-    "/images/equipment-7.jpg",
+    "/images/generated/equipment-1.png",
+    "/images/generated/equipment-2.png",
+    "/images/generated/equipment-3.png",
+    "/images/generated/equipment-4.png",
+    "/images/generated/equipment-5.png",
+    "/images/generated/equipment-6.png",
+    "/images/generated/equipment-7.png",
   ],
   refinery: [
-    "/images/refinery-1.jpg",
-    "/images/refinery-2.jpg",
-    "/images/refinery-3.jpg",
-    "/images/refinery-4.jpg",
-    "/images/refinery-5.jpg",
-    "/images/refinery-6.jpg",
-    "/images/refinery-7.jpg",
+    "/images/generated/refinery-1.png",
+    "/images/generated/refinery-2.png",
+    "/images/generated/refinery-3.png",
+    "/images/generated/refinery-4.png",
+    "/images/generated/refinery-5.png",
+    "/images/generated/refinery-6.png",
+    "/images/generated/refinery-7.png",
   ],
   hospitality: [
-    "/images/hospitality-1.jpg",
-    "/images/hospitality-2.jpg",
-    "/images/hospitality-3.jpg",
+    "/images/generated/hospitality-1.png",
+    "/images/generated/hospitality-2.png",
+    "/images/generated/hospitality-3.png",
   ],
   fuel: [
-    "/images/fuel-1.jpg",
-    "/images/fuel-2.jpg",
-    "/images/fuel-3.jpg",
+    "/images/generated/fuel-1.png",
+    "/images/generated/fuel-2.png",
+    "/images/generated/fuel-3.png",
   ],
   welding: [
-    "/images/welding-1.jpg",
-    "/images/welding-2.jpg",
-    "/images/welding-3.jpg",
-    "/images/welding-4.jpg",
-    "/images/welding-5.jpg",
-    "/images/welding-6.jpg",
+    "/images/generated/welding-1.png",
+    "/images/generated/welding-2.png",
+    "/images/generated/welding-3.png",
+    "/images/generated/welding-4.png",
+    "/images/generated/welding-5.png",
+    "/images/generated/welding-6.png",
   ],
   transport: [
-    "/images/transport-1.jpg",
-    "/images/transport-2.jpg",
-    "/images/transport-3.jpg",
-    "/images/transport-4.jpg",
-    "/images/transport-5.jpg",
-    "/images/transport-6.jpg",
+    "/images/generated/transport-1.png",
+    "/images/generated/transport-2.png",
+    "/images/generated/transport-3.png",
+    "/images/generated/transport-4.png",
+    "/images/generated/transport-5.png",
+    "/images/generated/transport-6.png",
   ],
   saudi: [
-    "/images/saudi-1.jpg",
-    "/images/saudi-2.jpg",
-    "/images/saudi-3.jpg",
-    "/images/saudi-4.jpg",
-    "/images/saudi-5.jpg",
-    "/images/saudi-6.jpg",
+    "/images/generated/saudi-1.png",
+    "/images/generated/saudi-2.png",
+    "/images/generated/saudi-3.png",
+    "/images/generated/saudi-4.png",
+    "/images/generated/saudi-5.png",
+    "/images/generated/saudi-6.png",
   ],
   industrial: [
-    "/images/industrial-1.jpg",
-    "/images/industrial-2.jpg",
-    "/images/industrial-3.jpg",
-    "/images/industrial-4.jpg",
-    "/images/industrial-5.jpg",
-    "/images/industrial-6.jpg",
+    "/images/generated/industrial-1.png",
+    "/images/generated/industrial-2.png",
+    "/images/generated/industrial-3.png",
+    "/images/generated/industrial-4.png",
+    "/images/generated/industrial-5.png",
+    "/images/generated/industrial-6.png",
   ],
   hero: [
-    "/images/hero-1.jpg",
-    "/images/hero-2.jpg",
-    "/images/hero-3.jpg",
-    "/images/hero-4.jpg",
-    "/images/hero-5.jpg",
-    "/images/hero-6.jpg",
+    "/images/generated/hero-1.png",
+    "/images/generated/hero-2.png",
+    "/images/generated/hero-3.png",
+    "/images/generated/hero-4.png",
+    "/images/generated/hero-5.png",
+    "/images/generated/hero-6.png",
   ],
   engineers: [
-    "/images/engineers-1.jpg",
-    "/images/engineers-2.jpg",
-    "/images/engineers-3.jpg",
-    "/images/engineers-4.jpg",
-    "/images/engineers-5.jpg",
-    "/images/engineers-6.jpg",
+    "/images/generated/engineers-1.png",
+    "/images/generated/engineers-2.png",
+    "/images/generated/engineers-3.png",
+    "/images/generated/engineers-4.png",
+    "/images/generated/engineers-5.png",
+    "/images/generated/engineers-6.png",
   ],
 };
 
@@ -126,7 +125,7 @@ export function getServiceImages(serviceId: string): string[] {
 }
 
 /** Hero background image */
-export const heroImage = "/images/hero-4.jpg";
+export const heroImage = "/images/generated/hero-1.png";
 
 /** Get the first image of a category (or fallback) */
 export function getImage(category: string, index = 0): string {
