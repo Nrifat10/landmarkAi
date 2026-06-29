@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
-import { Menu, X, ChevronDown } from "lucide-react";
+import { Menu, X, ChevronDown, Download } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { navLinks, serviceNavLinks, company } from "@/lib/data";
@@ -168,14 +168,27 @@ export function SiteHeader() {
 
           {/* CTA + Mobile Toggle */}
           <div className="flex items-center gap-2">
+            {/* Download Profile PDF */}
+            <a
+              href="/landmark-company-profile.pdf"
+              download="Landmark-Inter-Gulf-Company-Profile.pdf"
+              className={cn(
+                "hidden md:inline-flex items-center gap-1.5 rounded-md px-3 py-2 text-sm font-semibold transition-colors",
+                isTransparent
+                  ? "text-primary-foreground border border-primary-foreground/30 hover:bg-primary-foreground/10 hover:border-accent"
+                  : "text-foreground border border-border hover:bg-accent/10 hover:border-accent hover:text-accent"
+              )}
+            >
+              <Download className="h-4 w-4" />
+              <span className="hidden lg:inline">Profile</span>
+              <span className="lg:hidden">PDF</span>
+            </a>
             <Button
               asChild
               size="sm"
               className={cn(
                 "hidden md:inline-flex font-bold shadow-sm transition-colors",
-                isTransparent
-                  ? "bg-accent text-accent-foreground hover:bg-accent/90"
-                  : "bg-accent text-accent-foreground hover:bg-accent/90"
+                "bg-accent text-accent-foreground hover:bg-accent/90"
               )}
             >
               <Link href="/contact">
@@ -250,6 +263,16 @@ export function SiteHeader() {
                   );
                 })}
               </div>
+
+              <a
+                href="/landmark-company-profile.pdf"
+                download="Landmark-Inter-Gulf-Company-Profile.pdf"
+                onClick={() => setOpen(false)}
+                className="mt-2 inline-flex items-center justify-center gap-2 rounded-md border border-border px-4 py-2.5 text-sm font-semibold text-foreground hover:bg-accent/10 hover:border-accent hover:text-accent transition-colors"
+              >
+                <Download className="h-4 w-4" />
+                Download Company Profile
+              </a>
 
               <Button
                 asChild

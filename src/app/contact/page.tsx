@@ -9,6 +9,7 @@ import {
   Send,
   CheckCircle2,
   Clock,
+  Download,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -113,6 +114,14 @@ export default function ContactPage() {
                     <Clock className="h-4 w-4 text-accent" />
                     <span>Saturday – Thursday · 8:00 AM – 6:00 PM</span>
                   </div>
+                  <a
+                    href="/landmark-company-profile.pdf"
+                    download="Landmark-Inter-Gulf-Company-Profile.pdf"
+                    className="mt-3 inline-flex items-center gap-2 rounded-md bg-accent text-accent-foreground hover:bg-accent/90 px-4 py-2 text-sm font-bold transition-colors"
+                  >
+                    <Download className="h-4 w-4" />
+                    Download Company Profile
+                  </a>
                 </div>
               </div>
 

@@ -4,6 +4,7 @@ import "./globals.css";
 import { Toaster } from "@/components/ui/toaster";
 import { SiteHeader } from "@/components/sections/site-header";
 import { SiteFooter } from "@/components/sections/site-footer";
+import { ScrollUtilities } from "@/components/sections/scroll-utilities";
 import { company, siteSeo } from "@/lib/data";
 
 const geistSans = Geist({
@@ -68,9 +69,14 @@ export const metadata: Metadata = {
     images: ["/images/hero-1.jpg"],
   },
   icons: {
-    icon: [{ url: "/icon.svg", type: "image/svg+xml" }],
+    icon: [
+      { url: "/favicon.ico", sizes: "any" },
+      { url: "/favicon-32x32.png", sizes: "32x32", type: "image/png" },
+      { url: "/favicon-16x16.png", sizes: "16x16", type: "image/png" },
+    ],
+    apple: [{ url: "/apple-touch-icon.png", sizes: "180x180" }],
   },
-  manifest: "/manifest.webmanifest",
+  manifest: "/site.webmanifest",
   formatDetection: {
     telephone: false,
     email: true,
@@ -168,6 +174,7 @@ export default function RootLayout({
           <main className="flex-1">{children}</main>
           <SiteFooter />
         </div>
+        <ScrollUtilities />
         <Toaster />
       </body>
     </html>

@@ -15,6 +15,7 @@ import {
   CheckCircle2,
   Star,
   Quote,
+  Download,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -615,6 +616,14 @@ export function HomeCTA() {
                   <ArrowRight className="h-4 w-4 ml-2" />
                 </Link>
               </Button>
+              <a
+                href="/landmark-company-profile.pdf"
+                download="Landmark-Inter-Gulf-Company-Profile.pdf"
+                className="inline-flex items-center gap-2 rounded-md border border-accent/40 px-6 py-3 text-sm font-bold text-primary-foreground hover:bg-accent/10 hover:border-accent transition-colors"
+              >
+                <Download className="h-4 w-4" />
+                Download Profile
+              </a>
             </div>
           </motion.div>
 
