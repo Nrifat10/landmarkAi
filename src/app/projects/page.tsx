@@ -8,21 +8,22 @@ import { Card, CardContent } from "@/components/ui/card";
 import { PageHero } from "@/components/sections/page-hero";
 import { SectionHeading } from "@/components/sections/section-heading";
 import { projects, heroStats } from "@/lib/data";
-import { siteImages } from "@/lib/images";
+import { siteImages, getImageRotating } from "@/lib/images";
 
-const projectImages = [
-  siteImages.refinery[0],
-  siteImages.refinery[1],
-  siteImages.refinery[2],
-  siteImages.refinery[3],
-  siteImages.equipment[0],
-  siteImages.equipment[1],
-  siteImages.equipment[2],
-  siteImages.equipment[3],
-  siteImages.workers[0],
-  siteImages.workers[1],
-  siteImages.workers[2],
-];
+// Map project type → image category for better visual matching
+const projectTypeImageCategory: Record<string, string> = {
+  "Oil & Gas": "refinery",
+  "Infrastructure": "equipment",
+  "Industrial": "industrial",
+  "Manufacturing": "industrial",
+};
+
+function getProjectImage(projectType: string, index: number): string {
+  const category = projectTypeImageCategory[projectType] ?? "refinery";
+  // Use a mix of the matched category + workers for variety
+  const useWorkers = index % 3 === 2;
+  return getImageRotating(useWorkers ? "workers" : category, index);
+}
 
 export default function ProjectsPage() {
   const totalDeployed = projects.reduce(
@@ -44,7 +45,7 @@ export default function ProjectsPage() {
         title="Trusted by leading contractors across the Kingdom"
         description="Since 2017, we have deployed thousands of skilled professionals to flagship oil & gas, infrastructure and industrial projects — partnering with global EPC contractors and local leaders alike."
         breadcrumbs={[{ label: "Projects" }]}
-        image={siteImages.refinery[0]}
+        image={siteImages.refinery[6]}
       />
 
       {/* Summary stats */}
@@ -88,7 +89,7 @@ export default function ProjectsPage() {
           <div className="mt-14 grid md:grid-cols-2 gap-6">
             {projects.map((p, i) => {
               const total = p.roles.reduce((sum, r) => sum + r.qty, 0);
-              const img = projectImages[i % projectImages.length];
+              const img = getProjectImage(p.type, i);
               return (
                 <motion.div
                   key={`${p.client}-${p.project}-${i}`}

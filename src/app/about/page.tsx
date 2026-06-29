@@ -48,7 +48,7 @@ export default function AboutPage() {
         title="Building Saudi Arabia's industrial future, one project at a time"
         description="Since 2017, we have been a trusted integrated services partner — delivering manpower, equipment, industrial trading, petro services and hospitality across the Kingdom."
         breadcrumbs={[{ label: "About" }]}
-        image={siteImages.saudi[0]}
+        image={siteImages.saudi[4]}
       />
 
       {/* Who We Are */}
@@ -66,8 +66,8 @@ export default function AboutPage() {
                 <div className="aspect-[4/3] rounded-xl overflow-hidden shadow-lg ring-2 ring-accent/20">
                   { }
                   <img
-                    src={siteImages.engineers[0]}
-                    alt="Team of engineers in hard hats reviewing blueprints"
+                    src={siteImages.engineers[3]}
+                    alt="Construction site manager with safety helmet reviewing drawings"
                     className="w-full h-full object-cover"
                   />
                 </div>
@@ -75,16 +75,16 @@ export default function AboutPage() {
                   <div className="aspect-square rounded-xl overflow-hidden shadow-lg ring-2 ring-accent/20">
                     { }
                     <img
-                      src={siteImages.workers[1]}
-                      alt="Skilled construction workers"
+                      src={siteImages.workers[4]}
+                      alt="Construction crew pouring concrete at building site"
                       className="w-full h-full object-cover"
                     />
                   </div>
                   <div className="aspect-square rounded-xl overflow-hidden shadow-lg ring-2 ring-accent/20">
                     { }
                     <img
-                      src={siteImages.refinery[1]}
-                      alt="Industrial refinery complex"
+                      src={siteImages.refinery[5]}
+                      alt="Petrochemical plant flare stack"
                       className="w-full h-full object-cover"
                     />
                   </div>

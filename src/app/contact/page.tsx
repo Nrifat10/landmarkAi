@@ -66,7 +66,7 @@ export default function ContactPage() {
         title="Contact Landmark Inter Gulf LLC"
         description="We value the trust of our clients and partners and remain dedicated to delivering superior services with passion and integrity. Tell us about your project — our team will respond within one business day."
         breadcrumbs={[{ label: "Contact" }]}
-        image={siteImages.engineers[0]}
+        image={siteImages.engineers[4]}
       />
 
       <section className="relative py-20 md:py-28 bg-background">
@@ -134,7 +134,7 @@ export default function ContactPage() {
                 <div className="aspect-[16/10] relative bg-secondary">
                   { }
                   <img
-                    src={siteImages.saudi[1]}
+                    src={siteImages.saudi[5]}
                     alt="Saudi Arabia - our service area"
                     className="w-full h-full object-cover"
                   />

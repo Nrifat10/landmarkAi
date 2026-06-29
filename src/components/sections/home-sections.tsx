@@ -238,16 +238,16 @@ export function HomeAbout() {
                 <div className="aspect-[4/5] rounded-xl overflow-hidden shadow-lg ring-2 ring-accent/20">
                   { }
                   <img
-                    src={siteImages.workers[0]}
-                    alt="Skilled construction workers in hard hats"
+                    src={siteImages.workers[3]}
+                    alt="Construction workers building steel structure at height"
                     className="w-full h-full object-cover hover:scale-105 transition-transform duration-700"
                   />
                 </div>
                 <div className="aspect-square rounded-xl overflow-hidden shadow-lg ring-2 ring-accent/20">
                   { }
                   <img
-                    src={siteImages.welding[0]}
-                    alt="Industrial welder at work"
+                    src={siteImages.welding[4]}
+                    alt="Industrial welder working on pipeline construction"
                     className="w-full h-full object-cover hover:scale-105 transition-transform duration-700"
                   />
                 </div>
@@ -256,16 +256,16 @@ export function HomeAbout() {
                 <div className="aspect-square rounded-xl overflow-hidden shadow-lg ring-2 ring-accent/20">
                   { }
                   <img
-                    src={siteImages.equipment[0]}
-                    alt="Heavy construction equipment"
+                    src={siteImages.equipment[5]}
+                    alt="Tower crane lifting steel beams at construction"
                     className="w-full h-full object-cover hover:scale-105 transition-transform duration-700"
                   />
                 </div>
                 <div className="aspect-[4/5] rounded-xl overflow-hidden shadow-lg ring-2 ring-accent/20">
                   { }
                   <img
-                    src={siteImages.refinery[0]}
-                    alt="Oil and gas refinery complex"
+                    src={siteImages.refinery[4]}
+                    alt="Oil refinery plant at night with lights"
                     className="w-full h-full object-cover hover:scale-105 transition-transform duration-700"
                   />
                 </div>
@@ -470,7 +470,7 @@ export function HomeStats() {
 
 export function HomeFeaturedProjects() {
   const featured = projects.slice(0, 3);
-  const projectImages = [siteImages.refinery[0], siteImages.equipment[0], siteImages.workers[0]];
+  const projectImages = [siteImages.refinery[5], siteImages.equipment[6], siteImages.workers[4]];
 
   return (
     <section className="relative py-20 md:py-28 bg-background">
@@ -579,7 +579,7 @@ export function HomeCTA() {
       <div className="absolute inset-0 z-0">
         { }
         <img
-          src={siteImages.saudi[0] || siteImages.hero[0]}
+          src={siteImages.saudi[3] || siteImages.hero[3]}
           alt="Saudi Arabia construction development"
           className="w-full h-full object-cover"
         />
