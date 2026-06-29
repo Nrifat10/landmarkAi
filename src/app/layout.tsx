@@ -72,7 +72,7 @@ export const metadata: Metadata = {
   },
   manifest: "/manifest.webmanifest",
   formatDetection: {
-    telephone: true,
+    telephone: false,
     email: true,
     address: true,
   },
@@ -89,7 +89,6 @@ const jsonLdOrganization = {
   foundingDate: "2017",
   founder: { "@type": "Person", name: company.ceo },
   email: company.email,
-  telephone: company.phone,
   address: {
     "@type": "PostalAddress",
     addressCountry: "SA",
@@ -124,7 +123,6 @@ const jsonLdLocalBusiness = {
   name: company.name,
   description: siteSeo.description,
   url: "https://www.landmarkgulf.com",
-  telephone: company.phone,
   email: company.email,
   priceRange: "$$",
   address: {

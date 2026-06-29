@@ -6,7 +6,6 @@ import { motion, useInView, useMotionValue, animate } from "framer-motion";
 import {
   ArrowRight,
   ShieldCheck,
-  Phone,
   HardHat,
   Truck,
   Fuel,
@@ -144,7 +143,6 @@ export function HomeHero() {
                 className="border-accent/40 bg-transparent text-primary-foreground hover:bg-accent/10 hover:text-accent hover:border-accent"
               >
                 <Link href="/contact">
-                  <Phone className="h-4 w-4 mr-2" />
                   Talk to an Expert
                 </Link>
               </Button>
@@ -616,12 +614,6 @@ export function HomeCTA() {
                   Get a Free Quote
                   <ArrowRight className="h-4 w-4 ml-2" />
                 </Link>
-              </Button>
-              <Button asChild size="lg" variant="outline" className="border-accent/40 text-primary-foreground hover:bg-accent/10 hover:text-accent hover:border-accent">
-                <a href={company.phoneHref}>
-                  <Phone className="h-4 w-4 mr-2" />
-                  {company.phone}
-                </a>
               </Button>
             </div>
           </motion.div>

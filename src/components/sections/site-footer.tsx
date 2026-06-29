@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { Building2, Phone, Mail, Globe, MapPin, ArrowUp, MessageCircle } from "lucide-react";
+import { Building2, Mail, Globe, MapPin, ArrowUp } from "lucide-react";
 import { company, services, navLinks } from "@/lib/data";
 
 export function SiteFooter() {
@@ -84,15 +84,6 @@ export function SiteFooter() {
             <ul className="mt-4 space-y-3">
               <li>
                 <a
-                  href={company.phoneHref}
-                  className="flex items-start gap-2.5 text-sm text-primary-foreground/75 hover:text-accent transition-colors"
-                >
-                  <Phone className="h-4 w-4 mt-0.5 text-accent shrink-0" />
-                  <span>{company.phone}</span>
-                </a>
-              </li>
-              <li>
-                <a
                   href={`mailto:${company.email}`}
                   className="flex items-start gap-2.5 text-sm text-primary-foreground/75 hover:text-accent transition-colors"
                 >
@@ -114,17 +105,6 @@ export function SiteFooter() {
                   <MapPin className="h-4 w-4 mt-0.5 text-accent shrink-0" />
                   <span>{company.country}</span>
                 </span>
-              </li>
-              <li>
-                <a
-                  href={company.whatsappHref}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="mt-2 inline-flex items-center gap-2 rounded-md bg-accent text-accent-foreground hover:bg-accent/90 px-3 py-1.5 text-xs font-bold transition-colors"
-                >
-                  <MessageCircle className="h-3.5 w-3.5" />
-                  WhatsApp Us
-                </a>
               </li>
             </ul>
           </div>

@@ -5,7 +5,6 @@ import Link from "next/link";
 import {
   CheckCircle2,
   ArrowRight,
-  Phone,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { PageHero } from "@/components/sections/page-hero";
@@ -225,12 +224,6 @@ export function ServiceDetailClient({ service, children }: ServiceDetailClientPr
                   Get a Free Quote
                   <ArrowRight className="h-4 w-4 ml-2" />
                 </Link>
-              </Button>
-              <Button asChild size="lg" variant="outline" className="border-accent/40 text-primary-foreground hover:bg-accent/10 hover:text-accent hover:border-accent">
-                <a href={company.phoneHref}>
-                  <Phone className="h-4 w-4 mr-2" />
-                  Call Now
-                </a>
               </Button>
             </div>
           </div>

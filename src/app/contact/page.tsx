@@ -3,11 +3,9 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
 import {
-  Phone,
   Mail,
   Globe,
   MapPin,
-  MessageCircle,
   Send,
   CheckCircle2,
   Clock,
@@ -34,7 +32,6 @@ export default function ContactPage() {
     const payload = {
       name: formData.get("name"),
       email: formData.get("email"),
-      phone: formData.get("phone"),
       company: formData.get("company"),
       service: formData.get("service"),
       message: formData.get("message"),
@@ -53,7 +50,6 @@ export default function ContactPage() {
   };
 
   const contactItems = [
-    { icon: Phone, label: "Mobile", value: company.phone, href: company.phoneHref },
     { icon: Globe, label: "Website", value: company.website, href: company.websiteUrl },
     { icon: Mail, label: "Email", value: company.email, href: `mailto:${company.email}` },
     { icon: MapPin, label: "Location", value: company.country, href: "#" },
@@ -117,15 +113,6 @@ export default function ContactPage() {
                     <Clock className="h-4 w-4 text-accent" />
                     <span>Saturday – Thursday · 8:00 AM – 6:00 PM</span>
                   </div>
-                  <a
-                    href={company.whatsappHref}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="mt-3 inline-flex items-center gap-2 rounded-md bg-accent text-accent-foreground hover:bg-accent/90 px-4 py-2 text-sm font-bold transition-colors"
-                  >
-                    <MessageCircle className="h-4 w-4" />
-                    Chat on WhatsApp
-                  </a>
                 </div>
               </div>
 
@@ -200,16 +187,6 @@ export default function ContactPage() {
 
                 <div className="grid sm:grid-cols-2 gap-4">
                   <div className="space-y-2">
-                    <Label htmlFor="phone">Phone Number</Label>
-                    <Input
-                      id="phone"
-                      name="phone"
-                      type="tel"
-                      placeholder="+966 5X XXX XXXX"
-                      autoComplete="tel"
-                    />
-                  </div>
-                  <div className="space-y-2">
                     <Label htmlFor="company">Company / Project</Label>
                     <Input
                       id="company"
@@ -218,26 +195,25 @@ export default function ContactPage() {
                       autoComplete="organization"
                     />
                   </div>
-                </div>
-
-                <div className="space-y-2">
-                  <Label htmlFor="service">Service of Interest</Label>
-                  <select
-                    id="service"
-                    name="service"
-                    defaultValue=""
-                    className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
-                  >
-                    <option value="" disabled>
-                      Select a service
-                    </option>
-                    {services.map((s) => (
-                      <option key={s.id} value={s.title}>
-                        {s.title}
+                  <div className="space-y-2">
+                    <Label htmlFor="service">Service of Interest</Label>
+                    <select
+                      id="service"
+                      name="service"
+                      defaultValue=""
+                      className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+                    >
+                      <option value="" disabled>
+                        Select a service
                       </option>
-                    ))}
-                    <option value="Other">Other / General Enquiry</option>
-                  </select>
+                      {services.map((s) => (
+                        <option key={s.id} value={s.title}>
+                          {s.title}
+                        </option>
+                      ))}
+                      <option value="Other">Other / General Enquiry</option>
+                    </select>
+                  </div>
                 </div>
 
                 <div className="space-y-2">

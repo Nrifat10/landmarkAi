@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
-import { Menu, X, Phone, Building2, ChevronDown } from "lucide-react";
+import { Menu, X, Building2, ChevronDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { navLinks, serviceNavLinks, company } from "@/lib/data";
@@ -176,7 +176,6 @@ export function SiteHeader() {
               className="hidden md:inline-flex bg-accent text-accent-foreground hover:bg-accent/90 font-bold shadow-sm"
             >
               <Link href="/contact">
-                <Phone className="h-4 w-4 mr-1.5" />
                 Get a Quote
               </Link>
             </Button>
@@ -247,16 +246,6 @@ export function SiteHeader() {
               <Button
                 asChild
                 className="mt-3 bg-accent text-accent-foreground hover:bg-accent/90"
-              >
-                <a href={company.phoneHref} onClick={() => setOpen(false)}>
-                  <Phone className="h-4 w-4 mr-2" />
-                  Call {company.phone}
-                </a>
-              </Button>
-              <Button
-                asChild
-                variant="outline"
-                className="mt-2 border-primary/30"
               >
                 <Link href="/contact" onClick={() => setOpen(false)}>
                   Get a Quote
