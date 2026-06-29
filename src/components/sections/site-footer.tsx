@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { Building2, Mail, Globe, MapPin, ArrowUp } from "lucide-react";
+import { Mail, Globe, MapPin, ArrowUp } from "lucide-react";
 import { company, services, navLinks } from "@/lib/data";
 
 export function SiteFooter() {
@@ -16,16 +16,13 @@ export function SiteFooter() {
         <div className="grid gap-10 lg:grid-cols-12">
           {/* Brand */}
           <div className="lg:col-span-4">
-            <Link href="/" className="flex items-center gap-2.5" aria-label={company.name}>
-              <span className="flex h-10 w-10 items-center justify-center rounded-md bg-accent text-accent-foreground font-bold">
-                <Building2 className="h-5 w-5" />
-              </span>
-              <span className="flex flex-col leading-tight">
-                <span className="text-base font-extrabold tracking-tight">LANDMARK</span>
-                <span className="text-xs font-semibold uppercase tracking-widest text-accent">
-                  Inter Gulf LLC
-                </span>
-              </span>
+            <Link href="/" className="inline-block" aria-label={company.name}>
+              { }
+              <img
+                src="/landmark-logo.png"
+                alt={`${company.name} logo`}
+                className="h-14 w-auto object-contain"
+              />
             </Link>
             <p className="mt-4 text-sm text-primary-foreground/70 leading-relaxed max-w-sm">
               {company.tagline} — a Saudi-based integrated services company delivering manpower,

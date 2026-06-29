@@ -68,18 +68,17 @@ export function SiteHeader() {
 
       <div className="container mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="flex h-16 md:h-20 items-center justify-between">
-          {/* Logo — Landmark main logo image */}
+          {/* Logo — Landmark main logo (400x100, switches between dark/light based on header state) */}
           <Link
             href="/"
-            className="flex items-center gap-2 group"
+            className="flex items-center group shrink-0"
             aria-label={`${company.name} home`}
           >
-            {/* Use dark logo on transparent header (over dark hero), light logo on white header */}
             { }
             <img
               src={isTransparent ? "/landmark-logo.png" : "/landmark-logo-light.png"}
               alt={`${company.name} logo`}
-              className="h-10 md:h-12 w-auto object-contain"
+              className="h-9 md:h-11 w-auto object-contain"
             />
           </Link>
 
