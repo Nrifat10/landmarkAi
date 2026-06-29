@@ -1,0 +1,273 @@
+"use client";
+
+import { useState } from "react";
+import { motion } from "framer-motion";
+import {
+  Phone,
+  Mail,
+  Globe,
+  MapPin,
+  MessageCircle,
+  Send,
+  CheckCircle2,
+  Clock,
+} from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { Label } from "@/components/ui/label";
+import { useToast } from "@/hooks/use-toast";
+import { SectionHeading } from "./section-heading";
+import { company, services } from "@/lib/data";
+
+export function Contact() {
+  const { toast } = useToast();
+  const [submitting, setSubmitting] = useState(false);
+  const [submitted, setSubmitted] = useState(false);
+
+  const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    setSubmitting(true);
+
+    const formData = new FormData(e.currentTarget);
+    const payload = {
+      name: formData.get("name"),
+      email: formData.get("email"),
+      phone: formData.get("phone"),
+      company: formData.get("company"),
+      service: formData.get("service"),
+      message: formData.get("message"),
+    };
+
+    // Simulate async submission (no backend in this single-page deploy)
+    await new Promise((res) => setTimeout(res, 900));
+
+    setSubmitting(false);
+    setSubmitted(true);
+    toast({
+      title: "Thank you for reaching out!",
+      description: `Our team will respond to ${payload.email || "your email"} within one business day.`,
+    });
+    (e.target as HTMLFormElement).reset();
+    setTimeout(() => setSubmitted(false), 5000);
+  };
+
+  const contactItems = [
+    {
+      icon: Phone,
+      label: "Mobile",
+      value: company.phone,
+      href: company.phoneHref,
+    },
+    {
+      icon: Globe,
+      label: "Website",
+      value: company.website,
+      href: company.websiteUrl,
+    },
+    {
+      icon: Mail,
+      label: "Email",
+      value: company.email,
+      href: `mailto:${company.email}`,
+    },
+    {
+      icon: MapPin,
+      label: "Location",
+      value: company.country,
+      href: "#",
+    },
+  ];
+
+  return (
+    <section id="contact" className="relative py-20 md:py-28 bg-background">
+      <div className="container mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <SectionHeading
+          eyebrow="Let's Build Success Together"
+          title="Contact Landmark Inter Gulf LLC"
+          description="We value the trust of our clients and partners and remain dedicated to delivering superior services with passion and integrity. Tell us about your project — our team will respond within one business day."
+        />
+
+        <div className="mt-14 grid lg:grid-cols-12 gap-8 lg:gap-10 items-start">
+          {/* Left: Contact info */}
+          <motion.div
+            initial={{ opacity: 0, y: 24 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: "-80px" }}
+            transition={{ duration: 0.5, ease: "easeOut" }}
+            className="lg:col-span-5 space-y-4"
+          >
+            <div className="rounded-xl bg-primary text-primary-foreground p-6 sm:p-7 shadow-lg">
+              <h3 className="text-lg font-bold text-accent">Get in touch</h3>
+              <p className="mt-1.5 text-sm text-primary-foreground/75 leading-relaxed">
+                Reach out for manpower, equipment rental, industrial trading, petro services or
+                hospitality staffing — we respond to every enquiry personally.
+              </p>
+
+              <div className="mt-6 space-y-4">
+                {contactItems.map((item) => {
+                  const Icon = item.icon;
+                  return (
+                    <a
+                      key={item.label}
+                      href={item.href}
+                      className="flex items-center gap-3 group"
+                    >
+                      <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-md bg-accent/15 text-accent group-hover:bg-accent group-hover:text-accent-foreground transition-colors">
+                        <Icon className="h-5 w-5" />
+                      </div>
+                      <div>
+                        <p className="text-[11px] uppercase tracking-wider text-primary-foreground/60">
+                          {item.label}
+                        </p>
+                        <p className="text-sm font-medium text-primary-foreground">
+                          {item.value}
+                        </p>
+                      </div>
+                    </a>
+                  );
+                })}
+              </div>
+
+              <div className="mt-6 pt-6 border-t border-primary-foreground/15">
+                <div className="flex items-center gap-2 text-sm text-primary-foreground/80">
+                  <Clock className="h-4 w-4 text-accent" />
+                  <span>Saturday – Thursday · 8:00 AM – 6:00 PM</span>
+                </div>
+                <a
+                  href={company.whatsappHref}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="mt-3 inline-flex items-center gap-2 rounded-md bg-accent text-accent-foreground hover:bg-accent/90 px-4 py-2 text-sm font-semibold transition-colors"
+                >
+                  <MessageCircle className="h-4 w-4" />
+                  Chat on WhatsApp
+                </a>
+              </div>
+            </div>
+          </motion.div>
+
+          {/* Right: Contact form */}
+          <motion.div
+            initial={{ opacity: 0, y: 24 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: "-80px" }}
+            transition={{ duration: 0.5, delay: 0.08, ease: "easeOut" }}
+            className="lg:col-span-7"
+          >
+            <form
+              onSubmit={onSubmit}
+              className="rounded-xl border border-border/70 bg-card p-6 sm:p-8 shadow-sm space-y-5"
+            >
+              <div className="grid sm:grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <Label htmlFor="name">Full Name *</Label>
+                  <Input
+                    id="name"
+                    name="name"
+                    required
+                    placeholder="Your full name"
+                    autoComplete="name"
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="email">Email Address *</Label>
+                  <Input
+                    id="email"
+                    name="email"
+                    type="email"
+                    required
+                    placeholder="you@company.com"
+                    autoComplete="email"
+                  />
+                </div>
+              </div>
+
+              <div className="grid sm:grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <Label htmlFor="phone">Phone Number</Label>
+                  <Input
+                    id="phone"
+                    name="phone"
+                    type="tel"
+                    placeholder="+966 5X XXX XXXX"
+                    autoComplete="tel"
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="company">Company / Project</Label>
+                  <Input
+                    id="company"
+                    name="company"
+                    placeholder="Your company or project name"
+                    autoComplete="organization"
+                  />
+                </div>
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="service">Service of Interest</Label>
+                <select
+                  id="service"
+                  name="service"
+                  defaultValue=""
+                  className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+                >
+                  <option value="" disabled>
+                    Select a service
+                  </option>
+                  {services.map((s) => (
+                    <option key={s.id} value={s.title}>
+                      {s.title}
+                    </option>
+                  ))}
+                  <option value="Other">Other / General Enquiry</option>
+                </select>
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="message">Project Details *</Label>
+                <Textarea
+                  id="message"
+                  name="message"
+                  required
+                  rows={5}
+                  placeholder="Tell us about your project — scope, location, timeline, number of personnel or equipment needed..."
+                />
+              </div>
+
+              <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 pt-1">
+                <Button
+                  type="submit"
+                  disabled={submitting}
+                  className="bg-accent text-accent-foreground hover:bg-accent/90"
+                >
+                  {submitting ? (
+                    <>
+                      <span className="h-4 w-4 mr-2 animate-spin rounded-full border-2 border-current border-t-transparent" />
+                      Sending...
+                    </>
+                  ) : (
+                    <>
+                      <Send className="h-4 w-4 mr-2" />
+                      Send Enquiry
+                    </>
+                  )}
+                </Button>
+                {submitted && (
+                  <span className="inline-flex items-center text-sm font-medium text-green-600 dark:text-green-400">
+                    <CheckCircle2 className="h-4 w-4 mr-1.5" />
+                    Message sent — we&apos;ll be in touch shortly.
+                  </span>
+                )}
+                <p className="text-xs text-muted-foreground sm:ml-auto">
+                  By submitting, you agree to be contacted about your enquiry.
+                </p>
+              </div>
+            </form>
+          </motion.div>
+        </div>
+      </div>
+    </section>
+  );
+}
