@@ -550,6 +550,40 @@ export const siteSeo = {
   ],
 };
 
+/**
+ * Client logos — extracted from the uploaded CLIENTTS LOGO.zip
+ * These are the real brand logos of companies Landmark Inter Gulf
+ * has worked with or is associated with.
+ * Files are stored in /public/images/clients/ as 1.jpg through 25.jpg.
+ */
+export const clientLogos = [
+  { src: "/images/clients/1.jpg", name: "Saudi Aramco" },
+  { src: "/images/clients/2.jpg", name: "SABIC" },
+  { src: "/images/clients/3.jpg", name: "Saline Water Conversion Corporation" },
+  { src: "/images/clients/4.jpg", name: "Client 4" },
+  { src: "/images/clients/5.jpg", name: "Client 5" },
+  { src: "/images/clients/6.jpg", name: "Client 6" },
+  { src: "/images/clients/7.jpg", name: "Client 7" },
+  { src: "/images/clients/8.jpg", name: "Client 8" },
+  { src: "/images/clients/9.jpg", name: "AMAALA" },
+  { src: "/images/clients/10.jpg", name: "Client 10" },
+  { src: "/images/clients/11.jpg", name: "Client 11" },
+  { src: "/images/clients/12.jpg", name: "Client 12" },
+  { src: "/images/clients/13.jpg", name: "Samsung" },
+  { src: "/images/clients/14.jpg", name: "Client 14" },
+  { src: "/images/clients/15.jpg", name: "Client 15" },
+  { src: "/images/clients/16.jpg", name: "Client 16" },
+  { src: "/images/clients/17.jpg", name: "Client 17" },
+  { src: "/images/clients/18.jpg", name: "Client 18" },
+  { src: "/images/clients/19.jpg", name: "Client 19" },
+  { src: "/images/clients/20.jpg", name: "Client 20" },
+  { src: "/images/clients/21.jpg", name: "Client 21" },
+  { src: "/images/clients/22.jpg", name: "Client 22" },
+  { src: "/images/clients/23.jpg", name: "Client 23" },
+  { src: "/images/clients/24.jpg", name: "Client 24" },
+  { src: "/images/clients/25.jpg", name: "Client 25" },
+];
+
 /** Helper: get a service by slug */
 export function getService(slug: string) {
   return services.find((s) => s.slug === slug);

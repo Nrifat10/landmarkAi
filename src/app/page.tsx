@@ -6,6 +6,7 @@ import {
   HomeFeaturedProjects,
   HomeCTA,
 } from "@/components/sections/home-sections";
+import { ClientLogos } from "@/components/sections/client-logos";
 
 export default function Home() {
   return (
@@ -14,6 +15,7 @@ export default function Home() {
       <HomeAbout />
       <HomeServices />
       <HomeStats />
+      <ClientLogos />
       <HomeFeaturedProjects />
       <HomeCTA />
     </>
