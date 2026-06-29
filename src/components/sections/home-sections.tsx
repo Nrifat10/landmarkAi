@@ -2,7 +2,8 @@
 
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
-import { motion, useInView, useMotionValue, animate } from "framer-motion";
+import { motion, useInView, useMotionValue, animate, AnimatePresence } from "framer-motion";
+import { cn } from "@/lib/utils";
 import {
   ArrowRight,
   ShieldCheck,
@@ -21,7 +22,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { heroStats, company, services, projects } from "@/lib/data";
 import { iconMap } from "@/lib/icons";
-import { siteImages, heroImage, getServiceImages } from "@/lib/images";
+import { siteImages, getServiceImages } from "@/lib/images";
 
 function AnimatedCounter({
   value,
@@ -56,20 +57,86 @@ function AnimatedCounter({
 }
 
 export function HomeHero() {
+  // Hero slides — each with a unique background image and message
+  const slides = [
+    {
+      image: siteImages.hero[0],
+      badge: "Saudi Arabia · Est. 2017",
+      titleTop: "Reliable Workforce.",
+      titleAccent: "Stronger Businesses.",
+      description:
+        "Landmark Inter Gulf LLC is a Saudi-based integrated services company providing Manpower Supply, Equipment Rental, Industrial Trading, Petro Services and Hospitality Services — delivering world-class quality, safety and reliability to projects across the Kingdom.",
+    },
+    {
+      image: siteImages.workers[0],
+      badge: "Manpower Supply · 5,000+ Deployed",
+      titleTop: "Skilled Manpower.",
+      titleAccent: "Certified & Reliable.",
+      description:
+        "From Aramco-approved safety officers to TUV-certified riggers and 6G welders — we deploy vetted, trained and certified manpower across construction, oil & gas, petrochemical and industrial projects throughout Saudi Arabia.",
+    },
+    {
+      image: siteImages.equipment[1],
+      badge: "Equipment Rental · 100+ Fleet",
+      titleTop: "Modern Equipment.",
+      titleAccent: "Ready When You Are.",
+      description:
+        "Excavators, cranes, bulldozers, forklifts, generators and heavy transport — our well-maintained rental fleet covers earthmoving, lifting, access, power support and transport with flexible rental plans and 24/7 technical support.",
+    },
+    {
+      image: siteImages.refinery[1],
+      badge: "Petro Services · 16+ Projects",
+      titleTop: "Powering Energy.",
+      titleAccent: "Projects Across KSA.",
+      description:
+        "Specialized manpower and operational support for oil & gas, petrochemical and energy projects. We've deployed 4,500+ professionals to flagship projects including Jafurah, Marjan, Jubail and Yanbu for SINOPEC, Hyundai E&C, SEPCO Arabia and more.",
+    },
+    {
+      image: siteImages.saudi[0],
+      badge: "Vision 2030 · Building the Future",
+      titleTop: "Building Today.",
+      titleAccent: "For Tomorrow's KSA.",
+      description:
+        "We support the Kingdom's growth and contribute to the realization of Vision 2030 — delivering sustainable value, building local capability and enabling the industrial transformation of Saudi Arabia and the Gulf region.",
+    },
+  ];
+
+  const [current, setCurrent] = useState(0);
+
+  // Auto-advance slides every 6 seconds
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setCurrent((prev) => (prev + 1) % slides.length);
+    }, 6000);
+    return () => clearInterval(timer);
+  }, [slides.length]);
+
+  const goToSlide = (index: number) => setCurrent(index);
+
   return (
     <section
       id="top"
       className="relative overflow-hidden bg-primary text-primary-foreground pt-28 pb-16 md:pt-36 md:pb-24"
     >
-      {/* Background image */}
+      {/* Background images — crossfade between slides */}
       <div className="absolute inset-0 z-0">
-        { }
-        <img
-          src={heroImage}
-          alt="Construction site at golden hour with cranes and industrial equipment"
-          className="w-full h-full object-cover opacity-30"
-        />
-        <div className="absolute inset-0 bg-gradient-to-br from-primary/85 via-primary/80 to-primary/95" />
+        {slides.map((slide, i) => (
+          <motion.div
+            key={i}
+            initial={false}
+            animate={{ opacity: i === current ? 1 : 0 }}
+            transition={{ duration: 1.2, ease: "easeInOut" }}
+            className="absolute inset-0"
+          >
+            { }
+            <img
+              src={slide.image}
+              alt=""
+              className="w-full h-full object-cover"
+            />
+          </motion.div>
+        ))}
+        <div className="absolute inset-0 bg-gradient-to-br from-primary/90 via-primary/85 to-primary/95" />
       </div>
 
       <div className="absolute inset-0 bg-grid-dark opacity-30" aria-hidden="true" />
@@ -84,76 +151,56 @@ export function HomeHero() {
 
       <div className="container relative z-10 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="grid lg:grid-cols-12 gap-10 lg:gap-8 items-center">
-          {/* Left: copy */}
-          <div className="lg:col-span-7">
-            <motion.div
-              initial={{ opacity: 0, y: 24 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, ease: "easeOut" }}
-              className="inline-flex items-center gap-2 rounded-full bg-accent/20 border border-accent/40 px-4 py-1.5 text-xs sm:text-sm font-bold text-accent"
-            >
-              <ShieldCheck className="h-3.5 w-3.5" />
-              <span>Saudi Arabia · Est. 2017</span>
-              <span className="hidden sm:inline mx-1 opacity-50">·</span>
-              <span className="hidden sm:inline">Vision 2030 Partner</span>
-            </motion.div>
-
-            <motion.h1
-              initial={{ opacity: 0, y: 24 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.08, ease: "easeOut" }}
-              className="mt-5 text-4xl sm:text-5xl lg:text-7xl font-extrabold leading-[1.02] tracking-tight text-balance text-shadow-strong"
-            >
-              Reliable Workforce.
-              <br />
-              <span className="text-accent">Stronger Businesses.</span>
-            </motion.h1>
-
-            <motion.p
-              initial={{ opacity: 0, y: 24 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.16, ease: "easeOut" }}
-              className="mt-5 max-w-xl text-base sm:text-lg text-primary-foreground/85 leading-relaxed text-pretty"
-            >
-              {company.name} is a Saudi-based integrated services company providing
-              Manpower Supply, Equipment Rental, Industrial Trading, Petro Services and
-              Hospitality Services — delivering world-class quality, safety and reliability
-              to projects across the Kingdom.
-            </motion.p>
-
-            <motion.div
-              initial={{ opacity: 0, y: 24 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.24, ease: "easeOut" }}
-              className="mt-7 flex flex-wrap gap-3"
-            >
-              <Button
-                asChild
-                size="lg"
-                className="bg-accent text-accent-foreground hover:bg-accent/90 font-bold shadow-lg"
+          {/* Left: copy — content changes per slide */}
+          <div className="lg:col-span-7 min-h-[340px] sm:min-h-[380px] lg:min-h-[420px]">
+            <AnimatePresence mode="wait">
+              <motion.div
+                key={current}
+                initial={{ opacity: 0, y: 24 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -24 }}
+                transition={{ duration: 0.5, ease: "easeOut" }}
               >
-                <Link href="/#services">
-                  Explore Our Services
-                  <ArrowRight className="h-4 w-4 ml-2" />
-                </Link>
-              </Button>
-              <a
-                href="/landmark-company-profile.pdf"
-                download="Landmark-Inter-Gulf-Company-Profile.pdf"
-                className="inline-flex items-center justify-center gap-2 rounded-md border border-accent/40 bg-transparent px-6 py-3 text-sm font-bold text-primary-foreground hover:bg-accent/10 hover:text-accent hover:border-accent transition-colors"
-              >
-                <Download className="h-4 w-4" />
-                Download Profile
-              </a>
-            </motion.div>
+                <div className="inline-flex items-center gap-2 rounded-full bg-accent/20 border border-accent/40 px-4 py-1.5 text-xs sm:text-sm font-bold text-accent">
+                  <ShieldCheck className="h-3.5 w-3.5" />
+                  <span>{slides[current].badge}</span>
+                </div>
+
+                <h1 className="mt-5 text-4xl sm:text-5xl lg:text-7xl font-extrabold leading-[1.02] tracking-tight text-balance text-shadow-strong">
+                  {slides[current].titleTop}
+                  <br />
+                  <span className="text-accent">{slides[current].titleAccent}</span>
+                </h1>
+
+                <p className="mt-5 max-w-xl text-base sm:text-lg text-primary-foreground/85 leading-relaxed text-pretty">
+                  {slides[current].description}
+                </p>
+
+                <div className="mt-7 flex flex-wrap gap-3">
+                  <Button
+                    asChild
+                    size="lg"
+                    className="bg-accent text-accent-foreground hover:bg-accent/90 font-bold shadow-lg"
+                  >
+                    <Link href="/#services">
+                      Explore Our Services
+                      <ArrowRight className="h-4 w-4 ml-2" />
+                    </Link>
+                  </Button>
+                  <a
+                    href="/landmark-company-profile.pdf"
+                    download="Landmark-Inter-Gulf-Company-Profile.pdf"
+                    className="inline-flex items-center justify-center gap-2 rounded-md border border-accent/40 bg-transparent px-6 py-3 text-sm font-bold text-primary-foreground hover:bg-accent/10 hover:text-accent hover:border-accent transition-colors"
+                  >
+                    <Download className="h-4 w-4" />
+                    Download Profile
+                  </a>
+                </div>
+              </motion.div>
+            </AnimatePresence>
 
             {/* Trust strip */}
-            <motion.div
-              initial={{ opacity: 0, y: 24 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.32, ease: "easeOut" }}
-              className="mt-8 flex flex-wrap items-center gap-x-6 gap-y-2 text-xs text-primary-foreground/70"
-            >
+            <div className="mt-8 flex flex-wrap items-center gap-x-6 gap-y-2 text-xs text-primary-foreground/70">
               <span className="inline-flex items-center gap-1.5">
                 <CheckCircle2 className="h-4 w-4 text-accent" />
                 Aramco Approved
@@ -166,10 +213,31 @@ export function HomeHero() {
                 <CheckCircle2 className="h-4 w-4 text-accent" />
                 5,000+ Professionals Deployed
               </span>
-            </motion.div>
+            </div>
+
+            {/* Slide indicators */}
+            <div className="mt-6 flex items-center gap-2">
+              {slides.map((_, i) => (
+                <button
+                  key={i}
+                  onClick={() => goToSlide(i)}
+                  className="group relative"
+                  aria-label={`Go to slide ${i + 1}`}
+                >
+                  <span
+                    className={cn(
+                      "block h-1.5 rounded-full transition-all duration-300",
+                      i === current
+                        ? "w-10 bg-accent"
+                        : "w-5 bg-primary-foreground/30 group-hover:bg-primary-foreground/50"
+                    )}
+                  />
+                </button>
+              ))}
+            </div>
           </div>
 
-          {/* Right: stats card */}
+          {/* Right: stats card (static, always visible) */}
           <motion.div
             initial={{ opacity: 0, y: 24 }}
             animate={{ opacity: 1, y: 0 }}
