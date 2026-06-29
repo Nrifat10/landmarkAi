@@ -57,29 +57,6 @@ export function ClientLogos() {
           ))}
         </motion.div>
       </div>
-
-      {/* Static grid view for mobile (non-animated fallback) */}
-      <div className="container mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 mt-10">
-        <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 gap-4">
-          {clientLogos.slice(0, 12).map((logo, i) => (
-            <motion.div
-              key={`static-${logo.src}`}
-              initial={{ opacity: 0, scale: 0.9 }}
-              whileInView={{ opacity: 1, scale: 1 }}
-              viewport={{ once: true, margin: "-40px" }}
-              transition={{ duration: 0.3, delay: (i % 6) * 0.05, ease: "easeOut" }}
-              className="relative aspect-[4/3] flex items-center justify-center rounded-lg bg-card border border-border/60 shadow-sm hover:shadow-md hover:border-accent/40 transition-all p-3 group"
-            >
-              { }
-              <img
-                src={logo.src}
-                alt={`${logo.name} logo`}
-                className="max-w-full max-h-full object-contain opacity-70 group-hover:opacity-100 transition-opacity"
-              />
-            </motion.div>
-          ))}
-        </div>
-      </div>
     </section>
   );
 }
