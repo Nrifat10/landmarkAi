@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
-import { Menu, X, Building2, ChevronDown } from "lucide-react";
+import { Menu, X, ChevronDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { navLinks, serviceNavLinks, company } from "@/lib/data";
@@ -29,7 +29,6 @@ export function SiteHeader() {
   useEffect(() => {
     if (prevPath.current !== pathname) {
       prevPath.current = pathname;
-      // Defer the state updates to a microtask to avoid cascading renders
       const id = requestAnimationFrame(() => {
         setOpen(false);
         setServicesOpen(false);
@@ -52,13 +51,16 @@ export function SiteHeader() {
     return pathname.startsWith(href);
   };
 
+  // When true, header is transparent over the dark hero — use light text
+  const isTransparent = isHome && !scrolled;
+
   return (
     <header
       className={cn(
         "fixed top-0 left-0 right-0 z-50 transition-all duration-300",
-        scrolled || !isHome
-          ? "bg-background/95 backdrop-blur-md shadow-sm border-b border-border"
-          : "bg-transparent"
+        isTransparent
+          ? "bg-transparent"
+          : "bg-background/95 backdrop-blur-md shadow-sm border-b border-border"
       )}
     >
       {/* Top hazard stripe accent */}
@@ -66,26 +68,19 @@ export function SiteHeader() {
 
       <div className="container mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="flex h-16 md:h-20 items-center justify-between">
-          {/* Logo */}
+          {/* Logo — Landmark main logo image */}
           <Link
             href="/"
-            className="flex items-center gap-2.5 group"
+            className="flex items-center gap-2 group"
             aria-label={`${company.name} home`}
           >
-            <span className="flex h-9 w-9 md:h-11 md:w-11 items-center justify-center rounded-md bg-primary text-primary-foreground font-bold shadow-md ring-2 ring-accent/40">
-              <Building2 className="h-5 w-5 md:h-6 md:w-6" />
-            </span>
-            <span className="flex flex-col leading-tight">
-              <span className={cn(
-                "text-sm md:text-base font-extrabold tracking-tight",
-                scrolled || !isHome ? "text-foreground" : "text-foreground"
-              )}>
-                LANDMARK
-              </span>
-              <span className="text-[10px] md:text-xs font-semibold uppercase tracking-widest text-accent">
-                Inter Gulf LLC
-              </span>
-            </span>
+            {/* Use dark logo on transparent header (over dark hero), light logo on white header */}
+            { }
+            <img
+              src={isTransparent ? "/landmark-logo.png" : "/landmark-logo-light.png"}
+              alt={`${company.name} logo`}
+              className="h-10 md:h-12 w-auto object-contain"
+            />
           </Link>
 
           {/* Desktop Nav */}
@@ -103,7 +98,9 @@ export function SiteHeader() {
                       type="button"
                       className={cn(
                         "flex items-center gap-1 px-3 py-2 text-sm font-semibold rounded-md transition-colors",
-                        "text-foreground hover:text-accent"
+                        isTransparent
+                          ? "text-primary-foreground hover:text-accent"
+                          : "text-foreground hover:text-accent"
                       )}
                     >
                       Services
@@ -133,7 +130,7 @@ export function SiteHeader() {
                                   <span className="flex h-8 w-8 items-center justify-center rounded-md bg-accent/15 text-accent">
                                     <Icon className="h-4 w-4" />
                                   </span>
-                                  <span className="text-sm font-medium">{s.label}</span>
+                                  <span className="text-sm font-medium text-foreground">{s.label}</span>
                                 </Link>
                               );
                             })}
@@ -152,7 +149,9 @@ export function SiteHeader() {
                     "relative px-3 py-2 text-sm font-semibold rounded-md transition-colors",
                     isActive(link.href)
                       ? "text-accent"
-                      : "text-foreground hover:text-accent"
+                      : isTransparent
+                        ? "text-primary-foreground hover:text-accent"
+                        : "text-foreground hover:text-accent"
                   )}
                 >
                   {link.label}
@@ -173,7 +172,12 @@ export function SiteHeader() {
             <Button
               asChild
               size="sm"
-              className="hidden md:inline-flex bg-accent text-accent-foreground hover:bg-accent/90 font-bold shadow-sm"
+              className={cn(
+                "hidden md:inline-flex font-bold shadow-sm transition-colors",
+                isTransparent
+                  ? "bg-accent text-accent-foreground hover:bg-accent/90"
+                  : "bg-accent text-accent-foreground hover:bg-accent/90"
+              )}
             >
               <Link href="/contact">
                 Get a Quote
@@ -181,7 +185,12 @@ export function SiteHeader() {
             </Button>
             <button
               type="button"
-              className="lg:hidden inline-flex h-10 w-10 items-center justify-center rounded-md text-foreground hover:bg-accent/10 transition-colors"
+              className={cn(
+                "lg:hidden inline-flex h-10 w-10 items-center justify-center rounded-md transition-colors",
+                isTransparent
+                  ? "text-primary-foreground hover:bg-primary-foreground/10"
+                  : "text-foreground hover:bg-accent/10"
+              )}
               aria-label={open ? "Close menu" : "Open menu"}
               aria-expanded={open}
               onClick={() => setOpen((v) => !v)}
