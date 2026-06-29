@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { motion } from "framer-motion";
+import Link from "next/link";
 import {
   Mail,
   Globe,
@@ -10,6 +11,11 @@ import {
   CheckCircle2,
   Clock,
   Download,
+  ArrowRight,
+  MessageSquare,
+  Building2,
+  Users,
+  Briefcase,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -50,10 +56,35 @@ export default function ContactPage() {
     setTimeout(() => setSubmitted(false), 5000);
   };
 
-  const contactItems = [
-    { icon: Globe, label: "Website", value: company.website, href: company.websiteUrl },
-    { icon: Mail, label: "Email", value: company.email, href: `mailto:${company.email}` },
-    { icon: MapPin, label: "Location", value: company.country, href: "#" },
+  const contactCards = [
+    {
+      icon: Mail,
+      label: "Email Us",
+      value: company.email,
+      href: `mailto:${company.email}`,
+      description: "Send us an email and we'll respond within one business day.",
+    },
+    {
+      icon: Globe,
+      label: "Website",
+      value: company.website,
+      href: company.websiteUrl,
+      description: "Visit our website for full service details and project portfolios.",
+    },
+    {
+      icon: MapPin,
+      label: "Location",
+      value: company.country,
+      href: "#",
+      description: "Serving clients across Saudi Arabia and the Gulf region.",
+    },
+  ];
+
+  const whyChooseUs = [
+    { icon: Users, title: "5,000+ Professionals", desc: "Skilled workforce ready for deployment" },
+    { icon: Briefcase, title: "16+ Major Projects", desc: "Proven track record across KSA" },
+    { icon: Clock, title: "24/7 Support", desc: "Round-the-clock assistance" },
+    { icon: Building2, title: "Aramco Approved", desc: "Certified safety officers & WPRs" },
   ];
 
   return (
@@ -66,109 +97,161 @@ export default function ContactPage() {
         image={siteImages.engineers[4]}
       />
 
-      <section className="relative py-20 md:py-28 bg-background">
+      {/* Contact method cards — creative 3-column layout */}
+      <section className="relative py-16 md:py-20 bg-background">
         <div className="container mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <div className="grid lg:grid-cols-12 gap-8 lg:gap-10 items-start">
-            {/* Left: Contact info */}
-            <motion.div
-              initial={{ opacity: 0, y: 24 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: "-80px" }}
-              transition={{ duration: 0.5, ease: "easeOut" }}
-              className="lg:col-span-5 space-y-4"
-            >
-              <div className="rounded-xl bg-primary text-primary-foreground p-6 sm:p-7 shadow-lg">
-                <h2 className="text-lg font-bold text-accent">Get in touch</h2>
-                <p className="mt-1.5 text-sm text-primary-foreground/75 leading-relaxed">
-                  Reach out for manpower, equipment rental, industrial trading, petro services or
-                  hospitality staffing — we respond to every enquiry personally.
-                </p>
+          <div className="grid md:grid-cols-3 gap-6">
+            {contactCards.map((card, i) => {
+              const Icon = card.icon;
+              return (
+                <motion.a
+                  key={card.label}
+                  href={card.href}
+                  initial={{ opacity: 0, y: 24 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true, margin: "-80px" }}
+                  transition={{ duration: 0.5, delay: i * 0.1, ease: "easeOut" }}
+                  className="group relative rounded-2xl border-2 border-border/70 bg-card p-6 hover:border-accent/40 hover:shadow-xl transition-all overflow-hidden block"
+                >
+                  {/* Decorative blob */}
+                  <div className="absolute -top-10 -right-10 h-32 w-32 rounded-full bg-accent/5 group-hover:bg-accent/10 transition-colors" aria-hidden="true" />
 
-                <div className="mt-6 space-y-4">
-                  {contactItems.map((item) => {
-                    const Icon = item.icon;
-                    return (
-                      <a
-                        key={item.label}
-                        href={item.href}
-                        className="flex items-center gap-3 group"
-                      >
-                        <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-md bg-accent/15 text-accent group-hover:bg-accent group-hover:text-accent-foreground transition-colors">
-                          <Icon className="h-5 w-5" />
-                        </div>
-                        <div>
-                          <p className="text-[11px] uppercase tracking-wider text-primary-foreground/60">
-                            {item.label}
-                          </p>
-                          <p className="text-sm font-bold text-primary-foreground">
-                            {item.value}
-                          </p>
-                        </div>
-                      </a>
-                    );
-                  })}
-                </div>
-
-                <div className="mt-6 pt-6 border-t border-primary-foreground/15">
-                  <div className="flex items-center gap-2 text-sm text-primary-foreground/80">
-                    <Clock className="h-4 w-4 text-accent" />
-                    <span>Saturday – Thursday · 8:00 AM – 6:00 PM</span>
+                  <div className="relative">
+                    <div className="flex h-14 w-14 items-center justify-center rounded-xl bg-accent/10 group-hover:bg-accent transition-colors mb-4">
+                      <Icon className="h-7 w-7 text-accent group-hover:text-accent-foreground transition-colors" />
+                    </div>
+                    <h3 className="text-xs font-bold uppercase tracking-widest text-muted-foreground mb-1">
+                      {card.label}
+                    </h3>
+                    <p className="text-lg font-extrabold text-foreground group-hover:text-accent transition-colors break-words">
+                      {card.value}
+                    </p>
+                    <p className="mt-2 text-sm text-muted-foreground leading-relaxed">
+                      {card.description}
+                    </p>
                   </div>
-                  <a
-                    href="/landmark-company-profile.pdf"
-                    download="Landmark-Inter-Gulf-Company-Profile.pdf"
-                    className="mt-3 inline-flex items-center gap-2 rounded-md bg-accent text-accent-foreground hover:bg-accent/90 px-4 py-2 text-sm font-bold transition-colors"
-                  >
-                    <Download className="h-4 w-4" />
-                    Download Company Profile
-                  </a>
+                </motion.a>
+              );
+            })}
+          </div>
+        </div>
+      </section>
+
+      {/* Form + Info split section */}
+      <section className="relative py-16 md:py-20 bg-secondary/40 overflow-hidden">
+        {/* Decorative background */}
+        <div className="absolute inset-0 bg-grid opacity-30" aria-hidden="true" />
+
+        <div className="container relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <div className="grid lg:grid-cols-12 gap-8 lg:gap-10 items-start">
+            {/* Left: Why choose us + image */}
+            <motion.div
+              initial={{ opacity: 0, x: -24 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true, margin: "-80px" }}
+              transition={{ duration: 0.6, ease: "easeOut" }}
+              className="lg:col-span-5 space-y-6"
+            >
+              <div>
+                <div className="inline-flex items-center gap-2 mb-3">
+                  <span className="h-px w-8 bg-accent" />
+                  <span className="text-xs font-bold uppercase tracking-widest text-accent">
+                    Why Choose Us
+                  </span>
                 </div>
+                <h2 className="text-3xl sm:text-4xl font-extrabold tracking-tight text-foreground text-balance">
+                  Partner with a team that delivers
+                </h2>
+                <p className="mt-3 text-base text-muted-foreground leading-relaxed">
+                  From Aramco-approved safety officers to TUV-certified riggers and modern
+                  equipment fleets — we bring the people and resources your project needs.
+                </p>
               </div>
 
-              {/* Map placeholder */}
-              <div className="rounded-xl overflow-hidden border-2 border-border/70 shadow-md">
-                <div className="aspect-[16/10] relative bg-secondary">
+              {/* Why choose us grid */}
+              <div className="grid grid-cols-2 gap-4">
+                {whyChooseUs.map((item, i) => {
+                  const Icon = item.icon;
+                  return (
+                    <motion.div
+                      key={item.title}
+                      initial={{ opacity: 0, scale: 0.9 }}
+                      whileInView={{ opacity: 1, scale: 1 }}
+                      viewport={{ once: true, margin: "-40px" }}
+                      transition={{ duration: 0.4, delay: i * 0.08, ease: "easeOut" }}
+                      className="rounded-xl border-2 border-border/70 bg-card p-4 hover:border-accent/40 transition-all"
+                    >
+                      <Icon className="h-6 w-6 text-accent mb-2" />
+                      <p className="text-sm font-bold text-foreground">{item.title}</p>
+                      <p className="text-xs text-muted-foreground mt-0.5">{item.desc}</p>
+                    </motion.div>
+                  );
+                })}
+              </div>
+
+              {/* Service area image */}
+              <div className="rounded-2xl overflow-hidden border-2 border-border/70 shadow-lg relative">
+                <div className="aspect-[16/10] relative">
                   { }
                   <img
                     src={siteImages.saudi[5]}
                     alt="Saudi Arabia - our service area"
                     className="w-full h-full object-cover"
                   />
-                  <div className="absolute inset-0 bg-gradient-to-t from-primary/80 via-primary/30 to-transparent" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-primary/90 via-primary/40 to-transparent" />
                   <div className="absolute bottom-4 left-4 right-4">
-                    <div className="inline-flex items-center gap-2 rounded-md bg-accent text-accent-foreground px-3 py-1.5 text-xs font-bold">
+                    <div className="inline-flex items-center gap-2 rounded-md bg-accent text-accent-foreground px-3 py-1.5 text-xs font-bold mb-2">
                       <MapPin className="h-3.5 w-3.5" />
-                      Serving all of {company.country}
+                      Kingdom-wide Operations
                     </div>
-                    <p className="mt-2 text-sm font-bold text-primary-foreground">
-                      Kingdom-wide operations
+                    <p className="text-base font-bold text-primary-foreground">
+                      Serving all of {company.country}
                     </p>
-                    <p className="text-xs text-primary-foreground/75">
+                    <p className="text-xs text-primary-foreground/75 mt-0.5">
                       From Jafurah to Marjan, Jubail to Yanbu, Riyadh to Dammam
                     </p>
                   </div>
                 </div>
               </div>
+
+              {/* Download profile */}
+              <a
+                href="/landmark-company-profile.pdf"
+                download="Landmark-Inter-Gulf-Company-Profile.pdf"
+                className="flex items-center justify-between rounded-xl bg-primary text-primary-foreground p-5 hover:bg-primary/90 transition-colors group"
+              >
+                <div className="flex items-center gap-3">
+                  <div className="flex h-10 w-10 items-center justify-center rounded-md bg-accent text-accent-foreground">
+                    <Download className="h-5 w-5" />
+                  </div>
+                  <div>
+                    <p className="text-sm font-bold">Download Company Profile</p>
+                    <p className="text-xs text-primary-foreground/70">PDF · Complete service details</p>
+                  </div>
+                </div>
+                <ArrowRight className="h-5 w-5 text-accent group-hover:translate-x-1 transition-transform" />
+              </a>
             </motion.div>
 
             {/* Right: Contact form */}
             <motion.div
-              initial={{ opacity: 0, y: 24 }}
-              whileInView={{ opacity: 1, y: 0 }}
+              initial={{ opacity: 0, x: 24 }}
+              whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true, margin: "-80px" }}
-              transition={{ duration: 0.5, delay: 0.08, ease: "easeOut" }}
+              transition={{ duration: 0.6, delay: 0.1, ease: "easeOut" }}
               className="lg:col-span-7"
             >
               <form
                 onSubmit={onSubmit}
-                className="rounded-xl border-2 border-border/70 bg-card p-6 sm:p-8 shadow-md space-y-5"
+                className="rounded-2xl border-2 border-border/70 bg-card p-6 sm:p-8 shadow-xl space-y-5"
               >
-                <div>
+                <div className="flex items-center gap-2 mb-2">
+                  <MessageSquare className="h-5 w-5 text-accent" />
                   <h2 className="text-xl font-extrabold text-foreground">Send us an enquiry</h2>
-                  <p className="mt-1 text-sm text-muted-foreground">
-                    Fill out the form below and our team will get back to you within one business day.
-                  </p>
                 </div>
+                <p className="text-sm text-muted-foreground -mt-2">
+                  Fill out the form below and our team will get back to you within one business day.
+                </p>
 
                 <div className="grid sm:grid-cols-2 gap-4">
                   <div className="space-y-2">
