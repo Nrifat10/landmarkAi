@@ -137,16 +137,14 @@ export function HomeHero() {
                   <ArrowRight className="h-4 w-4 ml-2" />
                 </Link>
               </Button>
-              <Button
-                asChild
-                size="lg"
-                variant="outline"
-                className="border-accent/40 bg-transparent text-primary-foreground hover:bg-accent/10 hover:text-accent hover:border-accent"
+              <a
+                href="/landmark-company-profile.pdf"
+                download="Landmark-Inter-Gulf-Company-Profile.pdf"
+                className="inline-flex items-center justify-center gap-2 rounded-md border border-accent/40 bg-transparent px-6 py-3 text-sm font-bold text-primary-foreground hover:bg-accent/10 hover:text-accent hover:border-accent transition-colors"
               >
-                <Link href="/contact">
-                  Talk to an Expert
-                </Link>
-              </Button>
+                <Download className="h-4 w-4" />
+                Download Profile
+              </a>
             </motion.div>
 
             {/* Trust strip */}
