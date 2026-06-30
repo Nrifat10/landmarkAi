@@ -41,6 +41,7 @@ function AnimatedCounter({
     if (hasAnimated.current) return;
     hasAnimated.current = true;
 
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setDisplay("0");
     const start = Date.now();
     const milliseconds = duration * 1000;
@@ -50,10 +51,12 @@ function AnimatedCounter({
       const progress = Math.min(elapsed / milliseconds, 1);
       const eased = 1 - Math.pow(1 - progress, 3);
       const current = Math.floor(eased * value);
+       
       setDisplay(current.toLocaleString("en-US"));
 
       if (progress >= 1) {
         clearInterval(interval);
+         
         setDisplay(value.toLocaleString("en-US"));
       }
     }, 16);
