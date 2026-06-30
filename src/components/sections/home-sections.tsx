@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
-import { motion, useInView, useMotionValue, animate, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import { cn } from "@/lib/utils";
 import {
   ArrowRight,
@@ -34,19 +34,32 @@ function AnimatedCounter({
   duration?: number;
 }) {
   const ref = useRef<HTMLSpanElement>(null);
-  const isInView = useInView(ref, { once: true, margin: "-80px" });
-  const motionValue = useMotionValue(0);
-  const [display, setDisplay] = useState("0");
+  const [display, setDisplay] = useState(value.toLocaleString("en-US"));
+  const hasAnimated = useRef(false);
 
   useEffect(() => {
-    if (!isInView) return;
-    const controls = animate(motionValue, value, {
-      duration,
-      ease: "easeOut",
-      onUpdate: (v) => setDisplay(Math.floor(v).toLocaleString("en-US")),
-    });
-    return () => controls.stop();
-  }, [isInView, value, duration, motionValue]);
+    if (hasAnimated.current) return;
+    hasAnimated.current = true;
+
+    setDisplay("0");
+    const start = Date.now();
+    const milliseconds = duration * 1000;
+
+    const interval = setInterval(() => {
+      const elapsed = Date.now() - start;
+      const progress = Math.min(elapsed / milliseconds, 1);
+      const eased = 1 - Math.pow(1 - progress, 3);
+      const current = Math.floor(eased * value);
+      setDisplay(current.toLocaleString("en-US"));
+
+      if (progress >= 1) {
+        clearInterval(interval);
+        setDisplay(value.toLocaleString("en-US"));
+      }
+    }, 16);
+
+    return () => clearInterval(interval);
+  }, [value, duration]);
 
   return (
     <span ref={ref}>
