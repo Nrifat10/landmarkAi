@@ -88,13 +88,13 @@ const jsonLdOrganization = {
   "@context": "https://schema.org",
   "@type": "Organization",
   name: company.name,
-  alternateName: company.shortName,
+  alternateName: ["Landmark Inter Gulf", "Landmark Gulf", "Landmark Inter Gulf LLC", "Landmark"],
   url: "https://www.landmarkgulf.com",
-  logo: "https://www.landmarkgulf.com/icon.svg",
+  logo: "https://www.landmarkgulf.com/landmark-logo-light.png",
+  image: "https://www.landmarkgulf.com/og-image.png",
   description: siteSeo.description,
   foundingDate: "2017",
   founder: { "@type": "Person", name: company.ceo },
-
   address: {
     "@type": "PostalAddress",
     addressCountry: "SA",
@@ -102,6 +102,17 @@ const jsonLdOrganization = {
   },
   areaServed: "Kingdom of Saudi Arabia",
   slogan: company.tagline,
+  knowsAbout: [
+    "Manpower Supply",
+    "Equipment Rental",
+    "Industrial Trading",
+    "Petro Services",
+    "Hospitality Services",
+    "Car Rental & Transport",
+    "Construction",
+    "Oil and Gas",
+    "Saudi Vision 2030",
+  ],
   sameAs: [],
 };
 
@@ -109,6 +120,7 @@ const jsonLdWebSite = {
   "@context": "https://schema.org",
   "@type": "WebSite",
   name: company.name,
+  alternateName: ["Landmark Gulf", "Landmark Inter Gulf"],
   url: "https://www.landmarkgulf.com",
   description: siteSeo.description,
   inLanguage: "en",

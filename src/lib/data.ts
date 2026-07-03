@@ -537,8 +537,17 @@ export const serviceNavLinks = [
 export const siteSeo = {
   title: "Landmark Inter Gulf LLC | Manpower, Equipment Rental & Industrial Services in Saudi Arabia",
   description:
-    "Landmark Inter Gulf LLC is a Saudi-based integrated services company providing skilled manpower supply, equipment rental, industrial trading, petro services and hospitality services across the Kingdom. 5,000+ professionals deployed. Contributing to Vision 2030.",
+    "Landmark Inter Gulf LLC (Landmark Gulf) is a Saudi-based integrated services company providing skilled manpower supply, equipment rental, industrial trading, petro services and hospitality services across the Kingdom. 5,000+ professionals deployed. Contributing to Vision 2030.",
   keywords: [
+    "Landmark Inter Gulf LLC",
+    "Landmark Inter Gulf",
+    "Landmark Gulf",
+    "Landmark Inter Gulf LLC Saudi Arabia",
+    "Landmark Inter Gulf company",
+    "Landmark Inter Gulf manpower",
+    "Landmark Gulf services",
+    "Landmark Gulf Saudi Arabia",
+    "landmarkgulf.com",
     "manpower supply Saudi Arabia",
     "equipment rental Saudi Arabia",
     "industrial services Riyadh",
@@ -547,13 +556,17 @@ export const siteSeo = {
     "construction manpower KSA",
     "hospitality staffing Saudi Arabia",
     "car rental Saudi Arabia",
-    "Landmark Inter Gulf",
     "Vision 2030 Saudi Arabia",
     "rigger TUV certified",
     "scaffolder TUV certified",
     "pipe fabricator Saudi Arabia",
     "welder 6G 3G Saudi Arabia",
     "fuel station staffing Saudi Arabia",
+    "skilled manpower supply KSA",
+    "heavy equipment rental KSA",
+    "integrated services company Saudi Arabia",
+    "Saudi Arabia industrial services",
+    "manpower supply company Saudi Arabia",
   ],
 };
 
