@@ -60,9 +60,9 @@ export default function ContactPage() {
     {
       icon: Mail,
       label: "Email Us",
-      value: company.email,
+      value: company.emailEncoded,
       href: `mailto:${company.emailUser}@${company.emailDomain}`,
-      description: "Send us an email and we'll respond within one business day.",
+      description: "We respond within one business day.",
       encoded: true,
     },
     {

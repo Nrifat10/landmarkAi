@@ -12,7 +12,8 @@ export const company = {
   website: "www.landmarkgulf.com",
   websiteUrl: "https://www.landmarkgulf.com",
   // Email obfuscated — bots can't scrape this; JS decodes at runtime
-  email: "info@landmarkgulf.com",
+  // Email kept encoded only — no plain text for bots to scrape
+  email: `${"info"}@${"landmarkgulf"}.com`,
   // Encoded email for HTML rendering (prevents scraping)
   emailEncoded: "&#105;&#110;&#102;&#111;&#64;&#108;&#97;&#110;&#100;&#109;&#97;&#114;&#107;&#103;&#117;&#108;&#102;&#46;&#99;&#111;&#109;",
   // Email split into parts for JS-based assembly

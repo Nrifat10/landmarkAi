@@ -2,9 +2,22 @@
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "framework": "nextjs",
   "buildCommand": "next build",
-  "installCommand": "bun install",
   "devCommand": "next dev",
-  "regions": ["sin1"],
+  "installCommand": "bun install",
+  "regions": ["iad1"],
+  "redirects": [
+    {
+      "source": "/:path*",
+      "has": [
+        {
+          "type": "host",
+          "value": "landmarkgulf.com"
+        }
+      ],
+      "destination": "https://www.landmarkgulf.com/:path*",
+      "permanent": true
+    }
+  ],
   "headers": [
     {
       "source": "/(.*)",
@@ -12,11 +25,12 @@
         { "key": "X-Content-Type-Options", "value": "nosniff" },
         { "key": "X-Frame-Options", "value": "SAMEORIGIN" },
         { "key": "Referrer-Policy", "value": "strict-origin-when-cross-origin" },
-        { "key": "Permissions-Policy", "value": "camera=(), microphone=(), geolocation=()" }
+        { "key": "Permissions-Policy", "value": "camera=(), microphone=(), geolocation=()" },
+        { "key": "X-Robots-Tag", "value": "index, follow" }
       ]
     },
     {
-      "source": "/(.*).(svg|ico|png|jpg|jpeg|gif|webp|woff|woff2)",
+      "source": "/(.*).(svg|ico|png|jpg|jpeg|gif|webp|woff|woff2|pdf)",
       "headers": [
         { "key": "Cache-Control", "value": "public, max-age=31536000, immutable" }
       ]
