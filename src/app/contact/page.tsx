@@ -61,8 +61,9 @@ export default function ContactPage() {
       icon: Mail,
       label: "Email Us",
       value: company.email,
-      href: `mailto:${company.email}`,
+      href: `mailto:${company.emailUser}@${company.emailDomain}`,
       description: "Send us an email and we'll respond within one business day.",
+      encoded: true,
     },
     {
       icon: Globe,
@@ -70,6 +71,7 @@ export default function ContactPage() {
       value: company.website,
       href: company.websiteUrl,
       description: "Visit our website for full service details and project portfolios.",
+      encoded: false,
     },
     {
       icon: MapPin,
@@ -77,6 +79,7 @@ export default function ContactPage() {
       value: company.country,
       href: "#",
       description: "Serving clients across Saudi Arabia and the Gulf region.",
+      encoded: false,
     },
   ];
 
@@ -124,7 +127,11 @@ export default function ContactPage() {
                       {card.label}
                     </h3>
                     <p className="text-lg font-extrabold text-foreground group-hover:text-accent transition-colors break-words">
-                      {card.value}
+                      {card.encoded ? (
+                        <span dangerouslySetInnerHTML={{ __html: company.emailEncoded }} />
+                      ) : (
+                        card.value
+                      )}
                     </p>
                     <p className="mt-2 text-sm text-muted-foreground leading-relaxed">
                       {card.description}

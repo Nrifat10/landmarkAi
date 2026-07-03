@@ -3,7 +3,7 @@ import type { Metadata } from "next";
 export const metadata: Metadata = {
   title: "Contact Us — Get a Quote for Manpower, Equipment & Industrial Services",
   description:
-    "Contact Landmark Inter Gulf LLC for manpower supply, equipment rental, industrial trading, petro services and hospitality staffing across Saudi Arabia. Email: info@landmarkgulf.com — we respond within one business day.",
+    "Contact Landmark Inter Gulf LLC for manpower supply, equipment rental, industrial trading, petro services and hospitality staffing across Saudi Arabia. We respond within one business day.",
   alternates: { canonical: "https://www.landmarkgulf.com/contact" },
   openGraph: {
     title: "Contact Landmark Inter Gulf LLC",

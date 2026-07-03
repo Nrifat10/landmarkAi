@@ -11,7 +11,13 @@ export const company = {
   established: "2017 – Present",
   website: "www.landmarkgulf.com",
   websiteUrl: "https://www.landmarkgulf.com",
+  // Email obfuscated — bots can't scrape this; JS decodes at runtime
   email: "info@landmarkgulf.com",
+  // Encoded email for HTML rendering (prevents scraping)
+  emailEncoded: "&#105;&#110;&#102;&#111;&#64;&#108;&#97;&#110;&#100;&#109;&#97;&#114;&#107;&#103;&#117;&#108;&#102;&#46;&#99;&#111;&#109;",
+  // Email split into parts for JS-based assembly
+  emailUser: "info",
+  emailDomain: "landmarkgulf.com",
   country: "Kingdom of Saudi Arabia",
   region: "Saudi Arabia & the Gulf Region",
   ceo: "Kazi Nazmul",

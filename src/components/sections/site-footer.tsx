@@ -81,11 +81,15 @@ export function SiteFooter() {
             <ul className="mt-4 space-y-3">
               <li>
                 <a
-                  href={`mailto:${company.email}`}
+                  href="#"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    window.location.href = `mailto:${company.emailUser}@${company.emailDomain}`;
+                  }}
                   className="flex items-start gap-2.5 text-sm text-primary-foreground/75 hover:text-accent transition-colors"
                 >
                   <Mail className="h-4 w-4 mt-0.5 text-accent shrink-0" />
-                  <span>{company.email}</span>
+                  <span dangerouslySetInnerHTML={{ __html: company.emailEncoded }} />
                 </a>
               </li>
               <li>
