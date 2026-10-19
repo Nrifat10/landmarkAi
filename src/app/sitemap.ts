@@ -12,6 +12,8 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { url: `${base}/projects`, ...monthly, priority: 0.9 },
     { url: `${base}/contact`, ...monthly, priority: 0.8 },
     { url: `${base}/jobs`, ...monthly, priority: 0.9 },
+    { url: `${base}/privacy-policy`, ...monthly, priority: 0.3 },
+    { url: `${base}/terms-of-service`, ...monthly, priority: 0.3 },
   ];
 
   // Add all service pages

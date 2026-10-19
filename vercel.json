@@ -7,6 +7,11 @@
   "regions": ["iad1"],
   "redirects": [
     {
+      "source": "/services/trading",
+      "destination": "/services/industrial",
+      "permanent": true
+    },
+    {
       "source": "/:path*",
       "has": [
         {

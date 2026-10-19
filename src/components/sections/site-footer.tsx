@@ -113,9 +113,20 @@ export function SiteFooter() {
 
         {/* Bottom bar */}
         <div className="mt-12 pt-6 border-t border-primary-foreground/15 flex flex-col sm:flex-row items-center justify-between gap-4">
-          <p className="text-xs text-primary-foreground/60 text-center sm:text-left">
-            © {year} {company.name}. All rights reserved. · {company.tagline}
-          </p>
+          <div className="flex flex-col sm:flex-row items-center gap-2 sm:gap-4">
+            <p className="text-xs text-primary-foreground/60 text-center sm:text-left">
+              © {year} {company.name}. All rights reserved.
+            </p>
+            <div className="flex items-center gap-3">
+              <Link href="/privacy-policy" className="text-xs text-primary-foreground/60 hover:text-accent transition-colors">
+                Privacy Policy
+              </Link>
+              <span className="text-primary-foreground/20">·</span>
+              <Link href="/terms-of-service" className="text-xs text-primary-foreground/60 hover:text-accent transition-colors">
+                Terms of Service
+              </Link>
+            </div>
+          </div>
           <Link
             href="#top"
             className="inline-flex items-center gap-1.5 text-xs font-semibold text-primary-foreground/75 hover:text-accent transition-colors"
