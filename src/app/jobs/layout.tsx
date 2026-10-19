@@ -23,21 +23,44 @@ const breadcrumbJsonLd = {
   ],
 };
 
+// JobPosting structured data — all required fields included for Google for Jobs
 const jobPostingJsonLd = {
   "@context": "https://schema.org",
   "@type": "JobPosting",
-  title: "Open Positions at Landmark Inter Gulf LLC",
-  description: "We are hiring skilled manpower, equipment operators, supervisors, hospitality staff and more across Saudi Arabia.",
+  title: "Skilled Manpower, Equipment Operators & Supervisors — Landmark Inter Gulf LLC",
+  description: "Landmark Inter Gulf LLC is hiring skilled manpower, equipment operators, supervisors, hospitality staff and management personnel across Saudi Arabia. Open positions include pipe fabricators, welders (6G/3G), riggers (TUV certified), scaffolders, safety officers (Aramco approved), crane operators, drivers, hotel staff and more. Apply online at landmarkgulf.com/jobs.",
+  datePosted: "2024-01-15",
+  validThrough: "2026-12-31",
+  employmentType: "FULL_TIME",
   hiringOrganization: {
     "@type": "Organization",
     name: "Landmark Inter Gulf LLC",
     sameAs: "https://www.landmarkgulf.com",
+    logo: "https://www.landmarkgulf.com/landmark-logo-light.png",
   },
   jobLocation: {
     "@type": "Place",
-    address: { "@type": "PostalAddress", addressCountry: "SA", addressRegion: "Saudi Arabia" },
+    address: {
+      "@type": "PostalAddress",
+      addressCountry: "SA",
+      addressRegion: "Saudi Arabia",
+      addressLocality: "Riyadh",
+      streetAddress: "Riyadh, Saudi Arabia",
+    },
   },
-  employmentType: "FULL_TIME",
+  baseSalary: {
+    "@type": "MonetaryAmount",
+    currency: "SAR",
+    value: {
+      "@type": "QuantitativeValue",
+      minValue: 2000,
+      maxValue: 15000,
+      unitText: "MONTH",
+    },
+  },
+  qualifications: "Relevant certifications and experience required. Aramco-approved and TUV-certified candidates preferred for specific roles.",
+  experienceRequirements: "Minimum 1-5 years depending on position.",
+  skills: "Pipe fabrication, welding, rigging, scaffolding, crane operation, safety management, hospitality service, driving, construction trades.",
 };
 
 export default function JobsLayout({ children }: { children: React.ReactNode }) {
