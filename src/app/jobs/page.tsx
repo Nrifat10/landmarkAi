@@ -418,40 +418,40 @@ function JobApplicationForm({ jobTitle, onClose }: { jobTitle: string; onClose: 
               <div className="grid sm:grid-cols-2 gap-3">
                 <div className="space-y-1.5">
                   <Label htmlFor="fullName">Full Name *</Label>
-                  <Input id="fullName" required placeholder="Your full name" className="h-10" />
+                  <Input id="fullName" name="fullName" required placeholder="Your full name" className="h-10" />
                 </div>
                 <div className="space-y-1.5">
                   <Label htmlFor="email">Email *</Label>
-                  <Input id="email" type="email" required placeholder="you@email.com" className="h-10" />
+                  <Input id="email" name="email" type="email" required placeholder="you@email.com" className="h-10" />
                 </div>
               </div>
               <div className="grid sm:grid-cols-2 gap-3">
                 <div className="space-y-1.5">
                   <Label htmlFor="phone">Phone *</Label>
-                  <Input id="phone" type="tel" required placeholder="+966 5X XXX XXXX" className="h-10" />
+                  <Input id="phone" name="phone" type="tel" required placeholder="+966 5X XXX XXXX" className="h-10" />
                 </div>
                 <div className="space-y-1.5">
                   <Label htmlFor="nationality">Nationality</Label>
-                  <Input id="nationality" placeholder="e.g. Indian, Filipino, Egyptian" className="h-10" />
+                  <Input id="nationality" name="nationality" placeholder="e.g. Indian, Filipino, Egyptian" className="h-10" />
                 </div>
               </div>
               <div className="grid sm:grid-cols-2 gap-3">
                 <div className="space-y-1.5">
                   <Label htmlFor="experience">Years of Experience *</Label>
-                  <Input id="experience" required placeholder="e.g. 5 years" className="h-10" />
+                  <Input id="experience" name="experience" required placeholder="e.g. 5 years" className="h-10" />
                 </div>
                 <div className="space-y-1.5">
                   <Label htmlFor="certifications">Certifications</Label>
-                  <Input id="certifications" placeholder="e.g. TUV, Aramco, 6G Welding" className="h-10" />
+                  <Input id="certifications" name="certifications" placeholder="e.g. TUV, Aramco, 6G Welding" className="h-10" />
                 </div>
               </div>
               <div className="space-y-1.5">
                 <Label htmlFor="currentLocation">Current Location *</Label>
-                <Input id="currentLocation" required placeholder="e.g. Riyadh, Saudi Arabia" className="h-10" />
+                <Input id="currentLocation" name="currentLocation" required placeholder="e.g. Riyadh, Saudi Arabia" className="h-10" />
               </div>
               <div className="space-y-1.5">
                 <Label htmlFor="message">Additional Information</Label>
-                <Textarea id="message" rows={3} placeholder="Tell us about your experience, availability, visa status..." />
+                <Textarea id="message" name="message" rows={3} placeholder="Tell us about your experience, availability, visa status..." />
               </div>
               <div className="flex items-center gap-2">
                 <input type="checkbox" id="consent" required className="h-4 w-4 rounded" />
