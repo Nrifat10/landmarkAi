@@ -6,6 +6,15 @@ const nextConfig: NextConfig = {
   typescript: {
     ignoreBuildErrors: true,
   },
+  async redirects() {
+    return [
+      {
+        source: "/services/trading",
+        destination: "/services/industrial",
+        permanent: true,
+      },
+    ];
+  },
   images: {
     remotePatterns: [
       {
