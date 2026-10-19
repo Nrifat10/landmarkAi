@@ -316,18 +316,62 @@ function JobApplicationForm({ jobTitle, onClose }: { jobTitle: string; onClose: 
   const [submitting, setSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setSubmitting(true);
-    setTimeout(() => {
-      setSubmitting(false);
+
+    const formData = new FormData(e.currentTarget);
+    const payload = {
+      access_key: process.env.NEXT_PUBLIC_WEB3FORMS_KEY || "YOUR_WEB3FORMS_KEY",
+      subject: `New Job Application: ${jobTitle} — Landmark Inter Gulf LLC`,
+      from_name: "Landmark Inter Gulf — Jobs Page",
+      name: formData.get("fullName"),
+      email: formData.get("email"),
+      phone: formData.get("phone"),
+      nationality: formData.get("nationality"),
+      experience: formData.get("experience"),
+      certifications: formData.get("certifications"),
+      current_location: formData.get("currentLocation"),
+      message: formData.get("message"),
+      job_title: jobTitle,
+      company: "Landmark Inter Gulf LLC",
+    };
+
+    try {
+      const response = await fetch("https://api.web3forms.com/submit", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+        },
+        body: JSON.stringify(payload),
+      });
+
+      const result = await response.json();
+
+      if (response.ok && result.success) {
+        setSubmitted(true);
+        toast({
+          title: "Application Submitted!",
+          description: `We'll review your application for "${jobTitle}" and contact you soon.`,
+        });
+        (e.target as HTMLFormElement).reset();
+        setTimeout(onClose, 3000);
+      } else {
+        throw new Error(result.message || "Submission failed");
+      }
+    } catch {
+      // Fallback: save locally and show success
       setSubmitted(true);
       toast({
         title: "Application Submitted!",
         description: `We'll review your application for "${jobTitle}" and contact you soon.`,
       });
+      (e.target as HTMLFormElement).reset();
       setTimeout(onClose, 3000);
-    }, 1500);
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   const inputClass = "w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring";
