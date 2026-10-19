@@ -522,6 +522,7 @@ export const navLinks = [
   { label: "About", href: "/about" },
   { label: "Services", href: "/#services" },
   { label: "Projects", href: "/projects" },
+  { label: "Jobs", href: "/jobs" },
   { label: "Contact", href: "/contact" },
 ];
 
@@ -562,6 +563,18 @@ export const siteSeo = {
     "pipe fabricator Saudi Arabia",
     "welder 6G 3G Saudi Arabia",
     "fuel station staffing Saudi Arabia",
+    "Landmark Inter Gulf jobs",
+    "jobs in Saudi Arabia construction",
+    "manpower jobs Saudi Arabia",
+    "welder jobs Saudi Arabia",
+    "rigger jobs Saudi Arabia",
+    "scaffolder jobs Saudi Arabia",
+    "safety officer jobs Saudi Arabia",
+    "crane operator jobs Saudi Arabia",
+    "driver jobs Saudi Arabia",
+    "hospitality jobs Saudi Arabia",
+    "careers Landmark Inter Gulf",
+    "job vacancies Saudi Arabia oil gas",
     "skilled manpower supply KSA",
     "heavy equipment rental KSA",
     "integrated services company Saudi Arabia",
@@ -608,3 +621,110 @@ export const clientLogos = [
 export function getService(slug: string) {
   return services.find((s) => s.slug === slug);
 }
+
+/**
+ * Job categories and open positions for the Careers page.
+ * Job seekers can browse by category and apply directly.
+ */
+export const jobCategories = [
+  {
+    id: "manpower",
+    name: "Manpower & Skilled Trades",
+    icon: "HardHat",
+    description: "Skilled, semi-skilled and unskilled positions across construction, oil & gas, petrochemical and industrial sectors.",
+    jobs: [
+      { title: "Pipe Fabricator", type: "Full-time", location: "Jafurah / Marjan", experience: "3+ years", cert: "Aramco preferred" },
+      { title: "Pipe Fitter", type: "Full-time", location: "Jubail / Yanbu", experience: "3+ years", cert: "Technical diploma" },
+      { title: "6G / 3G Welder", type: "Full-time", location: "Multiple Sites", experience: "5+ years", cert: "6G certification" },
+      { title: "TIG & ARC Welder", type: "Full-time", location: "Jafurah", experience: "3+ years", cert: "Welding cert" },
+      { title: "Rigger (TUV Certified)", type: "Full-time", location: "Multiple Sites", experience: "3+ years", cert: "TUV/Rigger 3 Aramco" },
+      { title: "Scaffolder (TUV Certified)", type: "Full-time", location: "Marjan / Jafurah", experience: "2+ years", cert: "TUV certified" },
+      { title: "Mason", type: "Full-time", location: "Multiple Sites", experience: "3+ years", cert: "—"
+      },
+      { title: "Steel Fixer", type: "Full-time", location: "Marjan", experience: "3+ years", cert: "—" },
+      { title: "Carpenter", type: "Full-time", location: "Jubail", experience: "3+ years", cert: "—" },
+      { title: "Electrician", type: "Full-time", location: "Jafurah", experience: "3+ years", cert: "ITI/equivalent" },
+      { title: "Plumber", type: "Full-time", location: "Multiple Sites", experience: "3+ years", cert: "—" },
+      { title: "Painter", type: "Full-time", location: "Riyadh", experience: "2+ years", cert: "—" },
+      { title: "Helper", type: "Full-time", location: "Multiple Sites", experience: "0-1 year", cert: "—" },
+    ],
+  },
+  {
+    id: "supervisors",
+    name: "Supervisors & Engineers",
+    icon: "Users",
+    description: "Leadership and technical supervision roles for experienced professionals.",
+    jobs: [
+      { title: "Mechanical Supervisor / Foreman", type: "Full-time", location: "Jafurah", experience: "8+ years", cert: "Engineering degree" },
+      { title: "Piping Supervisor / Foreman", type: "Full-time", location: "Marjan", experience: "8+ years", cert: "Engineering degree" },
+      { title: "Structural Supervisor / Foreman", type: "Full-time", location: "Jubail", experience: "8+ years", cert: "Engineering degree" },
+      { title: "Electrical Supervisor / Foreman", type: "Full-time", location: "Jafurah", experience: "8+ years", cert: "Electrical eng." },
+      { title: "Instrument Supervisor / Foreman", type: "Full-time", location: "Amiral", experience: "8+ years", cert: "Instrumentation" },
+      { title: "Civil Foreman", type: "Full-time", location: "Multiple Sites", experience: "5+ years", cert: "Civil diploma" },
+      { title: "Rigging Supervisor", type: "Full-time", location: "Jafurah", experience: "5+ years", cert: "Rigger certified" },
+      { title: "Safety Officer (Aramco)", type: "Full-time", location: "Multiple Sites", experience: "5+ years", cert: "Aramco approved" },
+      { title: "Work Permit Receiver (WPR)", type: "Full-time", location: "Multiple Sites", experience: "3+ years", cert: "Aramco WPR" },
+      { title: "QA/QC Inspector", type: "Full-time", location: "Jubail", experience: "5+ years", cert: "QA/QC certified" },
+      { title: "Planning Engineer", type: "Full-time", location: "Riyadh", experience: "5+ years", cert: "Engineering degree" },
+      { title: "Document Controller", type: "Full-time", location: "Riyadh", experience: "3+ years", cert: "—" },
+    ],
+  },
+  {
+    id: "operators",
+    name: "Equipment Operators",
+    icon: "Truck",
+    description: "Heavy equipment operation roles for certified operators across various sites.",
+    jobs: [
+      { title: "Crane Operator (Aramco)", type: "Full-time", location: "Multiple Sites", experience: "5+ years", cert: "Aramco certified" },
+      { title: "Forklift Operator (Aramco)", type: "Full-time", location: "Jubail", experience: "3+ years", cert: "Aramco certified" },
+      { title: "Bobcat Operator (Aramco)", type: "Full-time", location: "Marjan", experience: "3+ years", cert: "Aramco certified" },
+      { title: "Manlift Operator (Aramco)", type: "Full-time", location: "Jafurah", experience: "3+ years", cert: "Aramco certified" },
+      { title: "Boom Truck Operator (Aramco)", type: "Full-time", location: "Multiple Sites", experience: "3+ years", cert: "Aramco certified" },
+      { title: "Excavator Operator", type: "Full-time", location: "Riyadh", experience: "3+ years", cert: "License required" },
+      { title: "Light Driver", type: "Full-time", location: "Multiple Sites", experience: "2+ years", cert: "Valid license" },
+      { title: "Heavy Driver", type: "Full-time", location: "Multiple Sites", experience: "3+ years", cert: "HV license" },
+    ],
+  },
+  {
+    id: "hospitality",
+    name: "Hospitality & Catering",
+    icon: "ConciergeBell",
+    description: "Hotel, catering and facility management positions across the Kingdom.",
+    jobs: [
+      { title: "Hotel Receptionist", type: "Full-time", location: "Riyadh / Jeddah", experience: "2+ years", cert: "Hospitality diploma" },
+      { title: "Housekeeping Staff", type: "Full-time", location: "Riyadh", experience: "1+ year", cert: "—" },
+      { title: "Waiter / Steward", type: "Full-time", location: "Multiple Cities", experience: "1+ year", cert: "—" },
+      { title: "Kitchen Helper", type: "Full-time", location: "Riyadh / Jeddah", experience: "1+ year", cert: "—" },
+      { title: "Cleaner", type: "Full-time", location: "Multiple Sites", experience: "0-1 year", cert: "—" },
+      { title: "Catering Support Staff", type: "Contract", location: "Event Venues", experience: "1+ year", cert: "—" },
+    ],
+  },
+  {
+    id: "transport",
+    name: "Transport & Logistics",
+    icon: "Car",
+    description: "Driving and transport roles for corporate and project logistics.",
+    jobs: [
+      { title: "Corporate Driver (Sedan/SUV)", type: "Full-time", location: "Riyadh", experience: "3+ years", cert: "Valid license" },
+      { title: "Bus Driver (30-50 Seater)", type: "Full-time", location: "Multiple Sites", experience: "3+ years", cert: "Bus license" },
+      { title: "Pickup Truck Driver", type: "Full-time", location: "Construction Sites", experience: "2+ years", cert: "Valid license" },
+      { title: "Water Tanker Driver", type: "Full-time", location: "Multiple Sites", experience: "2+ years", cert: "HV license" },
+      { title: "Low Bed Trailer Driver", type: "Full-time", location: "Highway Routes", experience: "5+ years", cert: "Trailer license" },
+    ],
+  },
+  {
+    id: "management",
+    name: "Management & Office",
+    icon: "Briefcase",
+    description: "Administrative and management positions at our head office.",
+    jobs: [
+      { title: "Site Manager", type: "Full-time", location: "Multiple Sites", experience: "10+ years", cert: "Engineering degree" },
+      { title: "Safety Manager", type: "Full-time", location: "Riyadh", experience: "8+ years", cert: "NEBOSH/equivalent" },
+      { title: "Project Coordinator", type: "Full-time", location: "Riyadh", experience: "5+ years", cert: "Engineering/MBA" },
+      { title: "HR Coordinator", type: "Full-time", location: "Riyadh", experience: "3+ years", cert: "HR degree" },
+      { title: "Accountant", type: "Full-time", location: "Riyadh", experience: "3+ years", cert: "Accounting degree" },
+      { title: "Admin Officer", type: "Full-time", location: "Riyadh", experience: "3+ years", cert: "—" },
+      { title: "AutoCAD Operator", type: "Full-time", location: "Riyadh", experience: "2+ years", cert: "AutoCAD certified" },
+    ],
+  },
+];
