@@ -329,9 +329,17 @@ function JobApplicationForm({ jobTitle, onClose }: { jobTitle: string; onClose: 
       email: formData.get("email"),
       phone: formData.get("phone"),
       nationality: formData.get("nationality"),
+      age: formData.get("age"),
+      gender: formData.get("gender"),
       experience: formData.get("experience"),
+      education: formData.get("education"),
       certifications: formData.get("certifications"),
+      languages: formData.get("languages"),
+      current_employer: formData.get("currentEmployer"),
       current_location: formData.get("currentLocation"),
+      iqama_visa_status: formData.get("iqamaStatus"),
+      notice_period: formData.get("noticePeriod"),
+      expected_salary: formData.get("expectedSalary"),
       message: formData.get("message"),
       job_title: jobTitle,
       company: "Landmark Inter Gulf LLC",
@@ -415,48 +423,121 @@ function JobApplicationForm({ jobTitle, onClose }: { jobTitle: string; onClose: 
               </button>
             </div>
             <form onSubmit={handleSubmit} className="p-5 space-y-4">
-              <div className="grid sm:grid-cols-2 gap-3">
-                <div className="space-y-1.5">
-                  <Label htmlFor="fullName">Full Name *</Label>
-                  <Input id="fullName" name="fullName" required placeholder="Your full name" className="h-10" />
+              {/* Section: Personal Information */}
+              <div>
+                <p className="text-xs font-bold uppercase tracking-wider text-accent mb-3">Personal Information</p>
+                <div className="grid sm:grid-cols-2 gap-3">
+                  <div className="space-y-1.5">
+                    <Label htmlFor="fullName">Full Name *</Label>
+                    <Input id="fullName" name="fullName" required placeholder="Your full name" className="h-10" />
+                  </div>
+                  <div className="space-y-1.5">
+                    <Label htmlFor="email">Email *</Label>
+                    <Input id="email" name="email" type="email" required placeholder="you@email.com" className="h-10" />
+                  </div>
                 </div>
-                <div className="space-y-1.5">
-                  <Label htmlFor="email">Email *</Label>
-                  <Input id="email" name="email" type="email" required placeholder="you@email.com" className="h-10" />
+                <div className="grid sm:grid-cols-2 gap-3 mt-3">
+                  <div className="space-y-1.5">
+                    <Label htmlFor="phone">Phone / WhatsApp *</Label>
+                    <Input id="phone" name="phone" type="tel" required placeholder="+966 5X XXX XXXX" className="h-10" />
+                  </div>
+                  <div className="space-y-1.5">
+                    <Label htmlFor="nationality">Nationality *</Label>
+                    <Input id="nationality" name="nationality" required placeholder="e.g. Indian, Filipino, Egyptian" className="h-10" />
+                  </div>
+                </div>
+                <div className="grid sm:grid-cols-2 gap-3 mt-3">
+                  <div className="space-y-1.5">
+                    <Label htmlFor="age">Age</Label>
+                    <Input id="age" name="age" type="number" placeholder="e.g. 32" className="h-10" />
+                  </div>
+                  <div className="space-y-1.5">
+                    <Label htmlFor="gender">Gender</Label>
+                    <select id="gender" name="gender" className="h-10 w-full rounded-md border border-input bg-background px-3 text-sm">
+                      <option value="">Select</option>
+                      <option value="Male">Male</option>
+                      <option value="Female">Female</option>
+                    </select>
+                  </div>
                 </div>
               </div>
-              <div className="grid sm:grid-cols-2 gap-3">
-                <div className="space-y-1.5">
-                  <Label htmlFor="phone">Phone *</Label>
-                  <Input id="phone" name="phone" type="tel" required placeholder="+966 5X XXX XXXX" className="h-10" />
+
+              {/* Section: Professional Details */}
+              <div className="pt-2">
+                <p className="text-xs font-bold uppercase tracking-wider text-accent mb-3">Professional Details</p>
+                <div className="grid sm:grid-cols-2 gap-3">
+                  <div className="space-y-1.5">
+                    <Label htmlFor="experience">Years of Experience *</Label>
+                    <Input id="experience" name="experience" required placeholder="e.g. 5 years" className="h-10" />
+                  </div>
+                  <div className="space-y-1.5">
+                    <Label htmlFor="education">Education</Label>
+                    <Input id="education" name="education" placeholder="e.g. ITI, Diploma, B.Tech" className="h-10" />
+                  </div>
                 </div>
-                <div className="space-y-1.5">
-                  <Label htmlFor="nationality">Nationality</Label>
-                  <Input id="nationality" name="nationality" placeholder="e.g. Indian, Filipino, Egyptian" className="h-10" />
+                <div className="grid sm:grid-cols-2 gap-3 mt-3">
+                  <div className="space-y-1.5">
+                    <Label htmlFor="certifications">Certifications</Label>
+                    <Input id="certifications" name="certifications" placeholder="e.g. TUV, Aramco, 6G Welding" className="h-10" />
+                  </div>
+                  <div className="space-y-1.5">
+                    <Label htmlFor="languages">Languages</Label>
+                    <Input id="languages" name="languages" placeholder="e.g. English, Arabic, Hindi" className="h-10" />
+                  </div>
+                </div>
+                <div className="grid sm:grid-cols-2 gap-3 mt-3">
+                  <div className="space-y-1.5">
+                    <Label htmlFor="currentEmployer">Current Employer</Label>
+                    <Input id="currentEmployer" name="currentEmployer" placeholder="Current company name" className="h-10" />
+                  </div>
+                  <div className="space-y-1.5">
+                    <Label htmlFor="currentLocation">Current Location *</Label>
+                    <Input id="currentLocation" name="currentLocation" required placeholder="e.g. Riyadh, KSA" className="h-10" />
+                  </div>
                 </div>
               </div>
-              <div className="grid sm:grid-cols-2 gap-3">
+
+              {/* Section: Visa & Availability */}
+              <div className="pt-2">
+                <p className="text-xs font-bold uppercase tracking-wider text-accent mb-3">Visa & Availability</p>
                 <div className="space-y-1.5">
-                  <Label htmlFor="experience">Years of Experience *</Label>
-                  <Input id="experience" name="experience" required placeholder="e.g. 5 years" className="h-10" />
+                  <Label htmlFor="iqamaStatus">Iqama / Visa Status *</Label>
+                  <select id="iqamaStatus" name="iqamaStatus" required className="h-10 w-full rounded-md border border-input bg-background px-3 text-sm">
+                    <option value="">Select your visa status</option>
+                    <option value="Transferable Iqama">Transferable Iqama</option>
+                    <option value="Non-transferable Iqama">Non-transferable Iqama</option>
+                    <option value="Visit Visa">Visit Visa</option>
+                    <option value="Exit & Re-entry">Exit & Re-entry</option>
+                    <option value="Outside KSA">Outside KSA (need visa)</option>
+                    <option value="Saudi National">Saudi National</option>
+                  </select>
                 </div>
+                <div className="grid sm:grid-cols-2 gap-3 mt-3">
+                  <div className="space-y-1.5">
+                    <Label htmlFor="noticePeriod">Notice Period / Availability</Label>
+                    <Input id="noticePeriod" name="noticePeriod" placeholder="e.g. Immediate, 30 days" className="h-10" />
+                  </div>
+                  <div className="space-y-1.5">
+                    <Label htmlFor="expectedSalary">Expected Salary (SAR/month)</Label>
+                    <Input id="expectedSalary" name="expectedSalary" placeholder="e.g. 3500 SAR" className="h-10" />
+                  </div>
+                </div>
+              </div>
+
+              {/* Section: Additional Info */}
+              <div className="pt-2">
+                <p className="text-xs font-bold uppercase tracking-wider text-accent mb-3">Additional Information</p>
                 <div className="space-y-1.5">
-                  <Label htmlFor="certifications">Certifications</Label>
-                  <Input id="certifications" name="certifications" placeholder="e.g. TUV, Aramco, 6G Welding" className="h-10" />
+                  <Label htmlFor="message">Tell us about yourself</Label>
+                  <Textarea id="message" name="message" rows={3} placeholder="Describe your experience, skills, visa details, availability..." />
                 </div>
               </div>
-              <div className="space-y-1.5">
-                <Label htmlFor="currentLocation">Current Location *</Label>
-                <Input id="currentLocation" name="currentLocation" required placeholder="e.g. Riyadh, Saudi Arabia" className="h-10" />
-              </div>
-              <div className="space-y-1.5">
-                <Label htmlFor="message">Additional Information</Label>
-                <Textarea id="message" name="message" rows={3} placeholder="Tell us about your experience, availability, visa status..." />
-              </div>
-              <div className="flex items-center gap-2">
-                <input type="checkbox" id="consent" required className="h-4 w-4 rounded" />
+
+              {/* Consent */}
+              <div className="flex items-start gap-2 pt-2">
+                <input type="checkbox" id="consent" name="consent" required className="h-4 w-4 rounded mt-1 shrink-0" />
                 <Label htmlFor="consent" className="text-xs text-muted-foreground cursor-pointer">
-                  I consent to Landmark Inter Gulf LLC processing my application data.
+                  I consent to Landmark Inter Gulf LLC processing my application data and contacting me regarding job opportunities.
                 </Label>
               </div>
               <Button
