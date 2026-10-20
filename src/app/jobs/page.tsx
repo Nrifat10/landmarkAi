@@ -339,7 +339,6 @@ function JobApplicationForm({ jobTitle, onClose }: { jobTitle: string; onClose: 
       current_location: formData.get("currentLocation"),
       iqama_visa_status: formData.get("iqamaStatus"),
       notice_period: formData.get("noticePeriod"),
-      expected_salary: formData.get("expectedSalary"),
       message: formData.get("message"),
       job_title: jobTitle,
       company: "Landmark Inter Gulf LLC",
@@ -516,10 +515,6 @@ function JobApplicationForm({ jobTitle, onClose }: { jobTitle: string; onClose: 
                   <div className="space-y-1.5">
                     <Label htmlFor="noticePeriod">Notice Period / Availability</Label>
                     <Input id="noticePeriod" name="noticePeriod" placeholder="e.g. Immediate, 30 days" className="h-10" />
-                  </div>
-                  <div className="space-y-1.5">
-                    <Label htmlFor="expectedSalary">Expected Salary (SAR/hour)</Label>
-                    <Input id="expectedSalary" name="expectedSalary" placeholder="e.g. 25 SAR/hour" className="h-10" />
                   </div>
                 </div>
               </div>
