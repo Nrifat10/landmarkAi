@@ -518,8 +518,8 @@ function JobApplicationForm({ jobTitle, onClose }: { jobTitle: string; onClose: 
                     <Input id="noticePeriod" name="noticePeriod" placeholder="e.g. Immediate, 30 days" className="h-10" />
                   </div>
                   <div className="space-y-1.5">
-                    <Label htmlFor="expectedSalary">Expected Salary (SAR/month)</Label>
-                    <Input id="expectedSalary" name="expectedSalary" placeholder="e.g. 3500 SAR" className="h-10" />
+                    <Label htmlFor="expectedSalary">Expected Salary (SAR/hour)</Label>
+                    <Input id="expectedSalary" name="expectedSalary" placeholder="e.g. 25 SAR/hour" className="h-10" />
                   </div>
                 </div>
               </div>
