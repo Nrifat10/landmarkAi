@@ -10,7 +10,6 @@ import {
   ConciergeBell,
   Car,
   Briefcase,
-  MapPin,
   Clock,
   Award,
   CheckCircle2,
@@ -52,7 +51,7 @@ export default function JobsPage() {
   const searchedJobs = searchQuery.trim()
     ? allJobs.filter((j) =>
         j.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        j.location.toLowerCase().includes(searchQuery.toLowerCase())
+        j.title.toLowerCase().includes(searchQuery.toLowerCase())
       )
     : null;
 
@@ -106,7 +105,7 @@ export default function JobsPage() {
               <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
               <Input
                 type="text"
-                placeholder="Search jobs by title or location..."
+                placeholder="Search jobs by title..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 className="pl-12 h-12 text-base"
@@ -132,7 +131,6 @@ export default function JobsPage() {
                       <CardContent className="p-5">
                         <h4 className="font-bold text-foreground text-base">{job.title}</h4>
                         <div className="mt-2 space-y-1 text-xs text-muted-foreground">
-                          <p className="flex items-center gap-1.5"><MapPin className="h-3.5 w-3.5 text-accent" /> {job.location}</p>
                           <p className="flex items-center gap-1.5"><Clock className="h-3.5 w-3.5 text-accent" /> {job.type}</p>
                           <p className="flex items-center gap-1.5"><Award className="h-3.5 w-3.5 text-accent" /> {job.experience}</p>
                         </div>
@@ -224,10 +222,7 @@ export default function JobsPage() {
                                   {job.title}
                                 </h4>
                                 <div className="mt-2 space-y-1.5 text-xs text-muted-foreground flex-1">
-                                  <p className="flex items-center gap-1.5">
-                                    <MapPin className="h-3.5 w-3.5 text-accent shrink-0" />
-                                    {job.location}
-                                  </p>
+
                                   <p className="flex items-center gap-1.5">
                                     <Clock className="h-3.5 w-3.5 text-accent shrink-0" />
                                     {job.type} · {job.experience}
