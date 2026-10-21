@@ -61,19 +61,19 @@ export default function ContactPage() {
     }
 
     const payload = {
-      access_key: process.env.NEXT_PUBLIC_WEB3FORMS_CONTACT_KEY || "d522346a-fd18-4658-888a-82adafcf7bdd",
-      subject: "New Enquiry — Landmark Inter Gulf LLC Website",
-      from_name: "Landmark Inter Gulf — Contact Form",
       name: formData.get("name"),
       email: formData.get("email"),
       phone: formData.get("phone"),
       company: formData.get("company"),
       service: formData.get("service"),
       message: formData.get("message"),
+      botcheck,
+      formStartTime,
     };
 
     try {
-      const response = await fetch("https://api.web3forms.com/submit", {
+      // Calls our OWN server-side API route — the Web3Forms key stays private
+      const response = await fetch("/api/contact", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -90,23 +90,24 @@ export default function ContactPage() {
         setSubmitted(true);
         toast({
           title: "Thank you for reaching out!",
-          description: `Our team will respond to ${payload.email || "your email"} within one business day.`,
+          description: `Our team will respond within one business day.`,
         });
         (e.target as HTMLFormElement).reset();
-        setTimeout(() => setSubmitted(false), 5000);
       } else {
-        throw new Error(result.message || "Submission failed");
+        toast({
+          title: "Submission failed",
+          description: result.message || "Please try again later.",
+          variant: "destructive",
+        });
       }
     } catch {
-      // Fallback: show success anyway (user experience)
+      // Network / server error
       setSubmitting(false);
-      setSubmitted(true);
       toast({
-        title: "Thank you for reaching out!",
-        description: `Our team will respond within one business day.`,
+        title: "Network error",
+        description: "Please check your internet and try again.",
+        variant: "destructive",
       });
-      (e.target as HTMLFormElement).reset();
-      setTimeout(() => setSubmitted(false), 5000);
     }
   };
 
