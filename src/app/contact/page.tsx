@@ -16,6 +16,10 @@ import {
   Building2,
   Users,
   Briefcase,
+  Sparkles,
+  PartyPopper,
+  Phone,
+  Loader2,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -30,18 +34,39 @@ export default function ContactPage() {
   const { toast } = useToast();
   const [submitting, setSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
+  const [formStartTime] = useState(() => Date.now());
 
   const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setSubmitting(true);
 
     const formData = new FormData(e.currentTarget);
+    const botcheck = formData.get("botcheck");
+
+    // Bot protection #1: Honeypot — bots fill hidden fields, humans don't
+    if (botcheck) {
+      setSubmitting(false);
+      return;
+    }
+
+    // Bot protection #2: Time-based check — humans take >3s to fill a form, bots submit instantly
+    const elapsed = Date.now() - formStartTime;
+    if (elapsed < 3000) {
+      setSubmitting(false);
+      toast({
+        title: "Please take a moment",
+        description: "Please review the form and try submitting again.",
+      });
+      return;
+    }
+
     const payload = {
-      access_key: process.env.NEXT_PUBLIC_WEB3FORMS_KEY || "YOUR_WEB3FORMS_KEY",
+      access_key: process.env.NEXT_PUBLIC_WEB3FORMS_CONTACT_KEY || "d522346a-fd18-4658-888a-82adafcf7bdd",
       subject: "New Enquiry — Landmark Inter Gulf LLC Website",
       from_name: "Landmark Inter Gulf — Contact Form",
       name: formData.get("name"),
       email: formData.get("email"),
+      phone: formData.get("phone"),
       company: formData.get("company"),
       service: formData.get("service"),
       message: formData.get("message"),
@@ -277,113 +302,208 @@ export default function ContactPage() {
               transition={{ duration: 0.6, delay: 0.1, ease: "easeOut" }}
               className="lg:col-span-7"
             >
-              <form
-                onSubmit={onSubmit}
-                className="rounded-2xl border-2 border-border/70 bg-card p-6 sm:p-8 shadow-xl space-y-5"
-              >
-                <div className="flex items-center gap-2 mb-2">
-                  <MessageSquare className="h-5 w-5 text-accent" />
-                  <h2 className="text-xl font-extrabold text-foreground">Send us an enquiry</h2>
-                </div>
-                <p className="text-sm text-muted-foreground -mt-2">
-                  Fill out the form below and our team will get back to you within one business day.
-                </p>
-
-                <div className="grid sm:grid-cols-2 gap-4">
-                  <div className="space-y-2">
-                    <Label htmlFor="name">Full Name *</Label>
-                    <Input
-                      id="name"
-                      name="name"
-                      required
-                      placeholder="Your full name"
-                      autoComplete="name"
-                    />
-                  </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="email">Email Address *</Label>
-                    <Input
-                      id="email"
-                      name="email"
-                      type="email"
-                      required
-                      placeholder="you@company.com"
-                      autoComplete="email"
-                    />
-                  </div>
-                </div>
-
-                <div className="grid sm:grid-cols-2 gap-4">
-                  <div className="space-y-2">
-                    <Label htmlFor="company">Company / Project</Label>
-                    <Input
-                      id="company"
-                      name="company"
-                      placeholder="Your company or project name"
-                      autoComplete="organization"
-                    />
-                  </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="service">Service of Interest</Label>
-                    <select
-                      id="service"
-                      name="service"
-                      defaultValue=""
-                      className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
-                    >
-                      <option value="" disabled>
-                        Select a service
-                      </option>
-                      {services.map((s) => (
-                        <option key={s.id} value={s.title}>
-                          {s.title}
-                        </option>
+              <div className="rounded-2xl border-2 border-border/70 bg-card p-6 sm:p-8 shadow-xl overflow-hidden relative">
+                {submitted ? (
+                  <div className="relative py-6 text-center">
+                    {/* Confetti dots */}
+                    <div className="absolute inset-0 pointer-events-none" aria-hidden="true">
+                      {[...Array(14)].map((_, i) => (
+                        <motion.span
+                          key={i}
+                          initial={{ opacity: 0, y: -20, x: 0 }}
+                          animate={{
+                            opacity: [0, 1, 0],
+                            y: [0, 320],
+                            x: [(i - 7) * 18, (i - 7) * 30],
+                            rotate: [0, 360],
+                          }}
+                          transition={{ duration: 1.8, delay: i * 0.08, ease: "easeOut" }}
+                          className="absolute top-2 left-1/2 h-2 w-2 rounded-full"
+                          style={{
+                            backgroundColor: ["#f59e0b", "#10b981", "#3b82f6", "#ef4444", "#8b5cf6"][i % 5],
+                          }}
+                        />
                       ))}
-                      <option value="Other">Other / General Enquiry</option>
-                    </select>
+                    </div>
+
+                    {/* Animated checkmark */}
+                    <motion.div
+                      initial={{ scale: 0, rotate: -30 }}
+                      animate={{ scale: 1, rotate: 0 }}
+                      transition={{ type: "spring", stiffness: 200, damping: 12 }}
+                      className="mx-auto mb-4 flex h-20 w-20 items-center justify-center rounded-full bg-green-500/10 ring-4 ring-green-500/20"
+                    >
+                      <motion.div
+                        initial={{ scale: 0 }}
+                        animate={{ scale: 1 }}
+                        transition={{ delay: 0.2, type: "spring", stiffness: 300, damping: 15 }}
+                      >
+                        <CheckCircle2 className="h-11 w-11 text-green-500" strokeWidth={2.5} />
+                      </motion.div>
+                    </motion.div>
+
+                    <motion.div
+                      initial={{ opacity: 0, y: 10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: 0.4 }}
+                    >
+                      <div className="flex items-center justify-center gap-2 mb-2">
+                        <PartyPopper className="h-5 w-5 text-accent" />
+                        <h3 className="text-xl font-extrabold text-foreground">Enquiry Sent Successfully!</h3>
+                      </div>
+                      <p className="mt-1 text-sm text-muted-foreground max-w-md mx-auto">
+                        Thank you for reaching out. Our team will review your enquiry and respond within <strong>one business day</strong>.
+                      </p>
+
+                      {/* What's next box */}
+                      <div className="mt-5 rounded-xl border-2 border-accent/20 bg-accent/5 p-4 text-left max-w-md mx-auto">
+                        <p className="text-xs font-bold uppercase tracking-wider text-accent mb-3 flex items-center gap-1.5">
+                          <Sparkles className="h-3.5 w-3.5" /> What happens next?
+                        </p>
+                        <ul className="space-y-2 text-xs text-muted-foreground">
+                          <li className="flex items-start gap-2">
+                            <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-accent/15 text-[10px] font-bold text-accent">1</span>
+                            <span>Our team reviews your enquiry and the service you selected.</span>
+                          </li>
+                          <li className="flex items-start gap-2">
+                            <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-accent/15 text-[10px] font-bold text-accent">2</span>
+                            <span>A specialist will reach out via email or phone within one business day.</span>
+                          </li>
+                          <li className="flex items-start gap-2">
+                            <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-accent/15 text-[10px] font-bold text-accent">3</span>
+                            <span>We&apos;ll prepare a tailored proposal based on your project needs.</span>
+                          </li>
+                        </ul>
+                      </div>
+
+                      <Button
+                        onClick={() => setSubmitted(false)}
+                        className="mt-5 bg-accent text-accent-foreground hover:bg-accent/90 font-bold h-11"
+                      >
+                        Send Another Enquiry
+                      </Button>
+                    </motion.div>
                   </div>
-                </div>
+                ) : (
+                  <form onSubmit={onSubmit} className="space-y-5">
+                    {/* Honeypot field — bots fill this, humans don't see it */}
+                    <input type="checkbox" name="botcheck" className="hidden" style={{ display: "none" }} tabIndex={-1} autoComplete="off" />
 
-                <div className="space-y-2">
-                  <Label htmlFor="message">Project Details *</Label>
-                  <Textarea
-                    id="message"
-                    name="message"
-                    required
-                    rows={6}
-                    placeholder="Tell us about your project — scope, location, timeline, number of personnel or equipment needed, and any specific certifications required..."
-                  />
-                </div>
+                    <div className="flex items-center gap-2 mb-2">
+                      <MessageSquare className="h-5 w-5 text-accent" />
+                      <h2 className="text-xl font-extrabold text-foreground">Send us an enquiry</h2>
+                    </div>
+                    <p className="text-sm text-muted-foreground -mt-2">
+                      Fill out the form below and our team will get back to you within one business day.
+                    </p>
 
-                <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 pt-1">
-                  <Button
-                    type="submit"
-                    disabled={submitting}
-                    className="bg-accent text-accent-foreground hover:bg-accent/90 font-bold"
-                  >
-                    {submitting ? (
-                      <>
-                        <span className="h-4 w-4 mr-2 animate-spin rounded-full border-2 border-current border-t-transparent" />
-                        Sending...
-                      </>
-                    ) : (
-                      <>
-                        <Send className="h-4 w-4 mr-2" />
-                        Send Enquiry
-                      </>
-                    )}
-                  </Button>
-                  {submitted && (
-                    <span className="inline-flex items-center text-sm font-medium text-green-600 dark:text-green-400">
-                      <CheckCircle2 className="h-4 w-4 mr-1.5" />
-                      Message sent — we&apos;ll be in touch shortly.
-                    </span>
-                  )}
-                  <p className="text-xs text-muted-foreground sm:ml-auto">
-                    By submitting, you agree to be contacted about your enquiry.
-                  </p>
-                </div>
-              </form>
+                    <div className="grid sm:grid-cols-2 gap-4">
+                      <div className="space-y-2">
+                        <Label htmlFor="name">Full Name *</Label>
+                        <Input
+                          id="name"
+                          name="name"
+                          required
+                          placeholder="Your full name"
+                          autoComplete="name"
+                          className="h-10"
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <Label htmlFor="email">Email Address *</Label>
+                        <Input
+                          id="email"
+                          name="email"
+                          type="email"
+                          required
+                          placeholder="you@company.com"
+                          autoComplete="email"
+                          className="h-10"
+                        />
+                      </div>
+                    </div>
+
+                    <div className="grid sm:grid-cols-2 gap-4">
+                      <div className="space-y-2">
+                        <Label htmlFor="phone">Phone / WhatsApp</Label>
+                        <Input
+                          id="phone"
+                          name="phone"
+                          type="tel"
+                          placeholder="+966 5X XXX XXXX"
+                          autoComplete="tel"
+                          className="h-10"
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <Label htmlFor="company">Company / Project</Label>
+                        <Input
+                          id="company"
+                          name="company"
+                          placeholder="Your company or project name"
+                          autoComplete="organization"
+                          className="h-10"
+                        />
+                      </div>
+                    </div>
+
+                    <div className="space-y-2">
+                      <Label htmlFor="service">Service of Interest</Label>
+                      <select
+                        id="service"
+                        name="service"
+                        defaultValue=""
+                        className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+                      >
+                        <option value="" disabled>
+                          Select a service
+                        </option>
+                        {services.map((s) => (
+                          <option key={s.id} value={s.title}>
+                            {s.title}
+                          </option>
+                        ))}
+                        <option value="Other">Other / General Enquiry</option>
+                      </select>
+                    </div>
+
+                    <div className="space-y-2">
+                      <Label htmlFor="message">Project Details *</Label>
+                      <Textarea
+                        id="message"
+                        name="message"
+                        required
+                        rows={6}
+                        placeholder="Tell us about your project — scope, location, timeline, number of personnel or equipment needed, and any specific certifications required..."
+                      />
+                    </div>
+
+                    <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 pt-1">
+                      <Button
+                        type="submit"
+                        disabled={submitting}
+                        className="bg-accent text-accent-foreground hover:bg-accent/90 font-bold h-11"
+                      >
+                        {submitting ? (
+                          <>
+                            <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                            Sending...
+                          </>
+                        ) : (
+                          <>
+                            <Send className="h-4 w-4 mr-2" />
+                            Send Enquiry
+                          </>
+                        )}
+                      </Button>
+                      <p className="text-xs text-muted-foreground sm:ml-auto flex items-center gap-1.5">
+                        <Sparkles className="h-3 w-3 text-accent" />
+                        Protected against spam & bots
+                      </p>
+                    </div>
+                  </form>
+                )}
+              </div>
             </motion.div>
           </div>
         </div>
