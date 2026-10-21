@@ -316,6 +316,28 @@ function JobApplicationForm({ jobTitle, onClose }: { jobTitle: string; onClose: 
     setSubmitting(true);
 
     const formData = new FormData(e.currentTarget);
+    const email = formData.get("email") as string;
+    const phone = formData.get("phone") as string;
+
+    // Check if this person already applied for this job
+    const applicationKey = `landmark_applications`;
+    const existingApplications = JSON.parse(localStorage.getItem(applicationKey) || "[]");
+    const alreadyApplied = existingApplications.some(
+      (app: { email: string; phone: string; jobTitle: string }) =>
+        (app.email === email || app.phone === phone) && app.jobTitle === jobTitle
+    );
+
+    if (alreadyApplied) {
+      setSubmitting(false);
+      setSubmitted(true);
+      toast({
+        title: "Already Applied!",
+        description: `You have already submitted an application for "${jobTitle}". Our team will contact you soon. For other positions, please apply separately.`,
+      });
+      setTimeout(onClose, 4000);
+      return;
+    }
+
     const payload = {
       access_key: process.env.NEXT_PUBLIC_WEB3FORMS_KEY || "YOUR_WEB3FORMS_KEY",
       subject: `New Job Application: ${jobTitle} — Landmark Inter Gulf LLC`,
@@ -352,6 +374,10 @@ function JobApplicationForm({ jobTitle, onClose }: { jobTitle: string; onClose: 
       const result = await response.json();
 
       if (response.ok && result.success) {
+        // Save to localStorage to prevent duplicate applications
+        existingApplications.push({ email, phone, jobTitle, date: new Date().toISOString() });
+        localStorage.setItem(applicationKey, JSON.stringify(existingApplications));
+
         setSubmitted(true);
         toast({
           title: "Application Submitted!",
@@ -364,6 +390,9 @@ function JobApplicationForm({ jobTitle, onClose }: { jobTitle: string; onClose: 
       }
     } catch {
       // Fallback: save locally and show success
+      existingApplications.push({ email, phone, jobTitle, date: new Date().toISOString() });
+      localStorage.setItem(applicationKey, JSON.stringify(existingApplications));
+
       setSubmitted(true);
       toast({
         title: "Application Submitted!",
