@@ -318,6 +318,13 @@ function JobApplicationForm({ jobTitle, onClose }: { jobTitle: string; onClose: 
     const formData = new FormData(e.currentTarget);
     const email = formData.get("email") as string;
     const phone = formData.get("phone") as string;
+    const botcheck = formData.get("botcheck");
+
+    // Honeypot check — if filled, it's a bot
+    if (botcheck) {
+      setSubmitting(false);
+      return;
+    }
 
     // Check if this person already applied (one application per person)
     const applicationKey = `landmark_application`;
@@ -346,14 +353,9 @@ function JobApplicationForm({ jobTitle, onClose }: { jobTitle: string; onClose: 
       email: formData.get("email"),
       phone: formData.get("phone"),
       nationality: formData.get("nationality"),
-      age: formData.get("age"),
-      gender: formData.get("gender"),
-      experience: formData.get("experience"),
-      education: formData.get("education"),
-      certifications: formData.get("certifications"),
-      languages: formData.get("languages"),
-      current_employer: formData.get("currentEmployer"),
       current_location: formData.get("currentLocation"),
+      experience: formData.get("experience"),
+      certifications: formData.get("certifications"),
       iqama_visa_status: formData.get("iqamaStatus"),
       notice_period: formData.get("noticePeriod"),
       message: formData.get("message"),
@@ -444,6 +446,9 @@ function JobApplicationForm({ jobTitle, onClose }: { jobTitle: string; onClose: 
               </button>
             </div>
             <form onSubmit={handleSubmit} className="p-5 space-y-4">
+              {/* Honeypot field — bots fill this, humans don't see it */}
+              <input type="checkbox" name="botcheck" className="hidden" style={{ display: "none" }} tabIndex={-1} autoComplete="off" />
+
               {/* Section: Personal Information */}
               <div>
                 <p className="text-xs font-bold uppercase tracking-wider text-accent mb-3">Personal Information</p>
@@ -467,19 +472,9 @@ function JobApplicationForm({ jobTitle, onClose }: { jobTitle: string; onClose: 
                     <Input id="nationality" name="nationality" required placeholder="e.g. Indian, Filipino, Egyptian" className="h-10" />
                   </div>
                 </div>
-                <div className="grid sm:grid-cols-2 gap-3 mt-3">
-                  <div className="space-y-1.5">
-                    <Label htmlFor="age">Age</Label>
-                    <Input id="age" name="age" type="number" placeholder="e.g. 32" className="h-10" />
-                  </div>
-                  <div className="space-y-1.5">
-                    <Label htmlFor="gender">Gender</Label>
-                    <select id="gender" name="gender" className="h-10 w-full rounded-md border border-input bg-background px-3 text-sm">
-                      <option value="">Select</option>
-                      <option value="Male">Male</option>
-                      <option value="Female">Female</option>
-                    </select>
-                  </div>
+                <div className="space-y-1.5 mt-3">
+                  <Label htmlFor="currentLocation">Current Location *</Label>
+                  <Input id="currentLocation" name="currentLocation" required placeholder="e.g. Riyadh, KSA or Mumbai, India" className="h-10" />
                 </div>
               </div>
 
@@ -492,28 +487,8 @@ function JobApplicationForm({ jobTitle, onClose }: { jobTitle: string; onClose: 
                     <Input id="experience" name="experience" required placeholder="e.g. 5 years" className="h-10" />
                   </div>
                   <div className="space-y-1.5">
-                    <Label htmlFor="education">Education</Label>
-                    <Input id="education" name="education" placeholder="e.g. ITI, Diploma, B.Tech" className="h-10" />
-                  </div>
-                </div>
-                <div className="grid sm:grid-cols-2 gap-3 mt-3">
-                  <div className="space-y-1.5">
                     <Label htmlFor="certifications">Certifications</Label>
                     <Input id="certifications" name="certifications" placeholder="e.g. TUV, Aramco, 6G Welding" className="h-10" />
-                  </div>
-                  <div className="space-y-1.5">
-                    <Label htmlFor="languages">Languages</Label>
-                    <Input id="languages" name="languages" placeholder="e.g. English, Arabic, Hindi" className="h-10" />
-                  </div>
-                </div>
-                <div className="grid sm:grid-cols-2 gap-3 mt-3">
-                  <div className="space-y-1.5">
-                    <Label htmlFor="currentEmployer">Current Employer</Label>
-                    <Input id="currentEmployer" name="currentEmployer" placeholder="Current company name" className="h-10" />
-                  </div>
-                  <div className="space-y-1.5">
-                    <Label htmlFor="currentLocation">Current Location *</Label>
-                    <Input id="currentLocation" name="currentLocation" required placeholder="e.g. Riyadh, KSA" className="h-10" />
                   </div>
                 </div>
               </div>
@@ -533,11 +508,9 @@ function JobApplicationForm({ jobTitle, onClose }: { jobTitle: string; onClose: 
                     <option value="Saudi National">Saudi National</option>
                   </select>
                 </div>
-                <div className="grid sm:grid-cols-2 gap-3 mt-3">
-                  <div className="space-y-1.5">
-                    <Label htmlFor="noticePeriod">Notice Period / Availability</Label>
-                    <Input id="noticePeriod" name="noticePeriod" placeholder="e.g. Immediate, 30 days" className="h-10" />
-                  </div>
+                <div className="space-y-1.5 mt-3">
+                  <Label htmlFor="noticePeriod">Notice Period / Availability</Label>
+                  <Input id="noticePeriod" name="noticePeriod" placeholder="e.g. Immediate, 30 days" className="h-10" />
                 </div>
               </div>
 
@@ -545,7 +518,7 @@ function JobApplicationForm({ jobTitle, onClose }: { jobTitle: string; onClose: 
               <div className="pt-2">
                 <p className="text-xs font-bold uppercase tracking-wider text-accent mb-3">Additional Information</p>
                 <div className="space-y-1.5">
-                  <Label htmlFor="message">Tell us about yourself</Label>
+                  <Label htmlFor="message">Tell us about your experience</Label>
                   <Textarea id="message" name="message" rows={3} placeholder="Describe your experience, skills, visa details, availability..." />
                 </div>
               </div>
