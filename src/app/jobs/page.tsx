@@ -319,23 +319,23 @@ function JobApplicationForm({ jobTitle, onClose }: { jobTitle: string; onClose: 
     const email = formData.get("email") as string;
     const phone = formData.get("phone") as string;
 
-    // Check if this person already applied for this job
-    const applicationKey = `landmark_applications`;
-    const existingApplications = JSON.parse(localStorage.getItem(applicationKey) || "[]");
-    const alreadyApplied = existingApplications.some(
-      (app: { email: string; phone: string; jobTitle: string }) =>
-        (app.email === email || app.phone === phone) && app.jobTitle === jobTitle
-    );
+    // Check if this person already applied (one application per person)
+    const applicationKey = `landmark_application`;
+    const existingApplication = localStorage.getItem(applicationKey);
 
-    if (alreadyApplied) {
-      setSubmitting(false);
-      setSubmitted(true);
-      toast({
-        title: "Already Applied!",
-        description: `You have already submitted an application for "${jobTitle}". Our team will contact you soon. For other positions, please apply separately.`,
-      });
-      setTimeout(onClose, 4000);
-      return;
+    if (existingApplication) {
+      const app = JSON.parse(existingApplication);
+      // Check if same email or phone was used before
+      if (app.email === email || app.phone === phone) {
+        setSubmitting(false);
+        setSubmitted(true);
+        toast({
+          title: "Already Applied!",
+          description: `You have already submitted an application for "${app.jobTitle}". Our team will contact you soon. If you need to update your application, please email info@landmarkgulf.com.`,
+        });
+        setTimeout(onClose, 5000);
+        return;
+      }
     }
 
     const payload = {
@@ -374,9 +374,8 @@ function JobApplicationForm({ jobTitle, onClose }: { jobTitle: string; onClose: 
       const result = await response.json();
 
       if (response.ok && result.success) {
-        // Save to localStorage to prevent duplicate applications
-        existingApplications.push({ email, phone, jobTitle, date: new Date().toISOString() });
-        localStorage.setItem(applicationKey, JSON.stringify(existingApplications));
+        // Save to localStorage — one application per person
+        localStorage.setItem(applicationKey, JSON.stringify({ email, phone, jobTitle, date: new Date().toISOString() }));
 
         setSubmitted(true);
         toast({
@@ -389,9 +388,8 @@ function JobApplicationForm({ jobTitle, onClose }: { jobTitle: string; onClose: 
         throw new Error(result.message || "Submission failed");
       }
     } catch {
-      // Fallback: save locally and show success
-      existingApplications.push({ email, phone, jobTitle, date: new Date().toISOString() });
-      localStorage.setItem(applicationKey, JSON.stringify(existingApplications));
+      // Fallback: save locally
+      localStorage.setItem(applicationKey, JSON.stringify({ email, phone, jobTitle, date: new Date().toISOString() }));
 
       setSubmitted(true);
       toast({
