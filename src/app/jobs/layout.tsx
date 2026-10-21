@@ -59,7 +59,10 @@ const jobPostingJsonLd = {
     },
   },
   qualifications: "Relevant certifications and experience required. Aramco-approved and TUV-certified candidates preferred for specific roles.",
-  experienceRequirements: "Min 1 year",
+  experienceRequirements: {
+    "@type": "OccupationalExperienceRequirements",
+    "monthsOfExperience": 12,
+  },
   skills: "Pipe fabrication, welding, rigging, scaffolding, crane operation, safety management, hospitality service, driving, construction trades.",
 };
 
