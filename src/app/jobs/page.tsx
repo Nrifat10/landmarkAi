@@ -19,6 +19,10 @@ import {
   Download,
   ArrowRight,
   Search,
+  Sparkles,
+  MailCheck,
+  Phone,
+  PartyPopper,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -427,15 +431,142 @@ function JobApplicationForm({ jobTitle, onClose }: { jobTitle: string; onClose: 
         onClick={(e) => e.stopPropagation()}
       >
         {submitted ? (
-          <div className="p-8 text-center">
-            <CheckCircle2 className="h-12 w-12 text-green-500 mx-auto mb-3" />
-            <h3 className="text-xl font-bold text-foreground">Application Submitted!</h3>
-            <p className="mt-2 text-sm text-muted-foreground">
-              We&apos;ll review your application for <strong>{jobTitle}</strong> and contact you soon.
-            </p>
-            <Button onClick={onClose} className="mt-4 bg-accent text-accent-foreground hover:bg-accent/90">
-              Close
-            </Button>
+          <div className="relative p-8 text-center overflow-hidden">
+            {/* Confetti dots */}
+            <div className="absolute inset-0 pointer-events-none" aria-hidden="true">
+              {[...Array(14)].map((_, i) => (
+                <motion.span
+                  key={i}
+                  initial={{ opacity: 0, y: -20, x: 0 }}
+                  animate={{
+                    opacity: [0, 1, 0],
+                    y: [0, 280],
+                    x: [(i - 7) * 18, (i - 7) * 30],
+                    rotate: [0, 360],
+                  }}
+                  transition={{ duration: 1.8, delay: i * 0.08, ease: "easeOut" }}
+                  className="absolute top-2 left-1/2 h-2 w-2 rounded-full"
+                  style={{
+                    backgroundColor: ["#f59e0b", "#10b981", "#3b82f6", "#ef4444", "#8b5cf6"][i % 5],
+                  }}
+                />
+              ))}
+            </div>
+
+            {/* Animated checkmark */}
+            <motion.div
+              initial={{ scale: 0, rotate: -30 }}
+              animate={{ scale: 1, rotate: 0 }}
+              transition={{ type: "spring", stiffness: 200, damping: 12 }}
+              className="mx-auto mb-4 flex h-20 w-20 items-center justify-center rounded-full bg-green-500/10 ring-4 ring-green-500/20"
+            >
+              <motion.div
+                initial={{ scale: 0 }}
+                animate={{ scale: 1 }}
+                transition={{ delay: 0.2, type: "spring", stiffness: 300, damping: 15 }}
+              >
+                <CheckCircle2 className="h-11 w-11 text-green-500" strokeWidth={2.5} />
+              </motion.div>
+            </motion.div>
+
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.4 }}
+            >
+              <div className="flex items-center justify-center gap-2 mb-2">
+                <PartyPopper className="h-5 w-5 text-accent" />
+                <h3 className="text-xl font-extrabold text-foreground">Application Submitted!</h3>
+              </div>
+              <p className="mt-1 text-sm text-muted-foreground">
+                Thank you for applying for <strong className="text-foreground">{jobTitle}</strong>. Our HR team will review your application and contact you within <strong>2–5 working days</strong>.
+              </p>
+
+              {/* What's next box */}
+              <div className="mt-5 rounded-xl border-2 border-accent/20 bg-accent/5 p-4 text-left">
+                <p className="text-xs font-bold uppercase tracking-wider text-accent mb-3 flex items-center gap-1.5">
+                  <Sparkles className="h-3.5 w-3.5" /> What happens next?
+                </p>
+                <ul className="space-y-2 text-xs text-muted-foreground">
+                  <li className="flex items-start gap-2">
+                    <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-accent/15 text-[10px] font-bold text-accent">1</span>
+                    <span>Our HR team reviews your application and qualifications.</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-accent/15 text-[10px] font-bold text-accent">2</span>
+                    <span>If shortlisted, we&apos;ll contact you for an interview via phone or email.</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-accent/15 text-[10px] font-bold text-accent">3</span>
+                    <span>Selected candidates will receive an offer letter and onboarding details.</span>
+                  </li>
+                </ul>
+              </div>
+
+              {/* Contact row */}
+              <div className="mt-4 flex flex-col sm:flex-row items-center justify-center gap-3 text-xs text-muted-foreground">
+                <span className="flex items-center gap-1.5">
+                  <MailCheck className="h-3.5 w-3.5 text-accent" /> info&#64;landmarkgulf.com
+                </span>
+                <span className="hidden sm:inline text-muted-foreground/40">•</span>
+                <span className="flex items-center gap-1.5">
+                  <Phone className="h-3.5 w-3.5 text-accent" /> HR team, Riyadh
+                </span>
+              </div>
+
+              <Button onClick={onClose} className="mt-5 w-full bg-accent text-accent-foreground hover:bg-accent/90 font-bold h-11">
+                Done
+              </Button>
+            </motion.div>
+          </div>
+        ) : submitting ? (
+          <div className="p-12 text-center">
+            {/* Animated paper plane */}
+            <motion.div
+              animate={{ y: [0, -10, 0], rotate: [0, -5, 5, 0] }}
+              transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
+              className="mx-auto mb-5 flex h-20 w-20 items-center justify-center rounded-full bg-accent/10 ring-4 ring-accent/20"
+            >
+              <Send className="h-9 w-9 text-accent" />
+            </motion.div>
+
+            {/* Animated dots */}
+            <motion.h3
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              className="text-lg font-bold text-foreground"
+            >
+              Sending your application...
+            </motion.h3>
+            <motion.p
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.2 }}
+              className="mt-2 text-sm text-muted-foreground"
+            >
+              Please wait while we securely submit your details.
+            </motion.p>
+
+            {/* Loading bar */}
+            <div className="mt-5 h-1.5 w-full overflow-hidden rounded-full bg-muted">
+              <motion.div
+                initial={{ x: "-100%" }}
+                animate={{ x: "100%" }}
+                transition={{ duration: 1.4, repeat: Infinity, ease: "easeInOut" }}
+                className="h-full w-1/2 rounded-full bg-accent"
+              />
+            </div>
+
+            {/* Tips while waiting */}
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.6 }}
+              className="mt-5 text-xs text-muted-foreground/70"
+            >
+              <Sparkles className="inline h-3 w-3 text-accent mr-1" />
+              Tip: Keep your phone & email accessible for our HR team.
+            </motion.div>
           </div>
         ) : (
           <>
