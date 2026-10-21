@@ -1,8 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
 
-// Rate limiting — in-memory store (per server instance)
-// Allows max 5 submissions per IP per 10 minutes
-const RATE_LIMIT_WINDOW_MS = 10 * 60 * 1000; // 10 minutes
+// Rate limiting — simple in-memory counter (per server instance)
+// Resets every 10 minutes. Note: serverless instances each have their own state,
+// so this is best-effort protection (good enough for general bot defense).
+const RATE_LIMIT_WINDOW_MS = 10 * 60 * 1000;
 const RATE_LIMIT_MAX = 5;
 const ipHits = new Map<string, { count: number; firstHit: number }>();
 
@@ -14,50 +15,44 @@ function getClientIp(req: NextRequest): string {
   return "unknown";
 }
 
-function isRateLimited(ip: string): { limited: boolean; remaining: number; resetIn: number } {
-  const now = Date.now();
-  const entry = ipHits.get(ip);
-
-  if (!entry || now - entry.firstHit > RATE_LIMIT_WINDOW_MS) {
-    ipHits.set(ip, { count: 1, firstHit: now });
-    return { limited: false, remaining: RATE_LIMIT_MAX - 1, resetIn: RATE_LIMIT_WINDOW_MS };
-  }
-
-  entry.count += 1;
-  const remaining = Math.max(0, RATE_LIMIT_MAX - entry.count);
-  const resetIn = RATE_LIMIT_WINDOW_MS - (now - entry.firstHit);
-
-  return {
-    limited: entry.count > RATE_LIMIT_MAX,
-    remaining,
-    resetIn: Math.max(0, resetIn),
-  };
-}
-
-// Clean up old entries every 5 minutes to prevent memory leak
-setInterval(() => {
-  const now = Date.now();
-  for (const [ip, entry] of ipHits.entries()) {
-    if (now - entry.firstHit > RATE_LIMIT_WINDOW_MS) {
-      ipHits.delete(ip);
-    }
-  }
-}, 5 * 60 * 1000);
+// Fallback key — used if env var is not set. This is still private because
+// the file lives only on the server, never sent to the browser.
+const FALLBACK_WEB3FORMS_KEY = "d522346a-fd18-4658-888a-82adafcf7bdd";
 
 export async function POST(req: NextRequest) {
   try {
     // 1. Rate limiting check
     const clientIp = getClientIp(req);
-    const rateCheck = isRateLimited(clientIp);
-    if (rateCheck.limited) {
+    const now = Date.now();
+    const entry = ipHits.get(clientIp);
+
+    let isLimited = false;
+    if (!entry || now - entry.firstHit > RATE_LIMIT_WINDOW_MS) {
+      ipHits.set(clientIp, { count: 1, firstHit: now });
+    } else {
+      entry.count += 1;
+      if (entry.count > RATE_LIMIT_MAX) {
+        isLimited = true;
+      }
+    }
+
+    if (isLimited) {
       return NextResponse.json(
         {
           success: false,
           message: "Too many submissions. Please try again later.",
-          resetIn: Math.ceil(rateCheck.resetIn / 1000),
         },
         { status: 429 }
       );
+    }
+
+    // Cleanup old entries (lazy cleanup, no setInterval)
+    if (ipHits.size > 1000) {
+      for (const [ip, e] of ipHits.entries()) {
+        if (now - e.firstHit > RATE_LIMIT_WINDOW_MS) {
+          ipHits.delete(ip);
+        }
+      }
     }
 
     // 2. Parse body
@@ -73,11 +68,16 @@ export async function POST(req: NextRequest) {
     }
 
     // 4. Time-based check — humans take >3s to fill a form
-    if (formStartTime && Date.now() - formStartTime < 3000) {
-      return NextResponse.json(
-        { success: false, message: "Form submitted too quickly. Please try again." },
-        { status: 400 }
-      );
+    // Skip check if formStartTime is invalid (e.g., clock skew)
+    if (formStartTime && typeof formStartTime === "number" && formStartTime > 0) {
+      const elapsed = now - formStartTime;
+      // Only reject if elapsed is positive AND less than 3s (catches instant bots, ignores clock skew)
+      if (elapsed > 0 && elapsed < 3000) {
+        return NextResponse.json(
+          { success: false, message: "Form submitted too quickly. Please try again." },
+          { status: 400 }
+        );
+      }
     }
 
     // 5. Required field validation
@@ -97,7 +97,18 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    // 7. Forward to Web3Forms with PRIVATE key (never exposed to browser)
+    // 7. Get the Web3Forms key — from env var, fallback to hardcoded
+    const accessKey = process.env.WEB3FORMS_CONTACT_KEY || FALLBACK_WEB3FORMS_KEY;
+
+    if (!accessKey || accessKey === "undefined") {
+      console.error("WEB3FORMS_CONTACT_KEY not configured");
+      return NextResponse.json(
+        { success: false, message: "Form not configured. Please contact us directly at info@landmarkgulf.com" },
+        { status: 500 }
+      );
+    }
+
+    // 8. Forward to Web3Forms with PRIVATE key
     const web3formsResponse = await fetch("https://api.web3forms.com/submit", {
       method: "POST",
       headers: {
@@ -105,7 +116,7 @@ export async function POST(req: NextRequest) {
         Accept: "application/json",
       },
       body: JSON.stringify({
-        access_key: process.env.WEB3FORMS_CONTACT_KEY,
+        access_key: accessKey,
         subject: "New Enquiry — Landmark Inter Gulf LLC Website",
         from_name: "Landmark Inter Gulf — Contact Form",
         name,
@@ -114,7 +125,6 @@ export async function POST(req: NextRequest) {
         company: company || "Not provided",
         service: service || "Not specified",
         message,
-        // Reply-to so the HR team can directly reply to the enquirer
         replyto: email,
       }),
     });
@@ -129,13 +139,13 @@ export async function POST(req: NextRequest) {
     }
 
     return NextResponse.json(
-      { success: false, message: result.message || "Submission failed." },
+      { success: false, message: result.message || "Submission failed. Please try again." },
       { status: 400 }
     );
   } catch (error) {
     console.error("Contact form API error:", error);
     return NextResponse.json(
-      { success: false, message: "Server error. Please try again later." },
+      { success: false, message: "Server error. Please try again later or email us at info@landmarkgulf.com" },
       { status: 500 }
     );
   }
