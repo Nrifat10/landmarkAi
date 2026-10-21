@@ -53,13 +53,13 @@ const jobPostingJsonLd = {
     currency: "SAR",
     value: {
       "@type": "QuantitativeValue",
-      minValue: 2000,
-      maxValue: 15000,
-      unitText: "MONTH",
+      minValue: 15,
+      maxValue: 80,
+      unitText: "HOUR",
     },
   },
   qualifications: "Relevant certifications and experience required. Aramco-approved and TUV-certified candidates preferred for specific roles.",
-  experienceRequirements: "Minimum 1-5 years depending on position.",
+  experienceRequirements: "Min 1 year",
   skills: "Pipe fabrication, welding, rigging, scaffolding, crane operation, safety management, hospitality service, driving, construction trades.",
 };
 
