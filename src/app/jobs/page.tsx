@@ -362,8 +362,6 @@ function JobApplicationForm({ jobTitle, onClose }: { jobTitle: string; onClose: 
       certifications: formData.get("certifications"),
       languages: formData.get("languages"),
       iqama_visa_status: formData.get("iqamaStatus"),
-      iqama_number: formData.get("iqamaNumber"),
-      iqama_expiry: formData.get("iqamaExpiry"),
       notice_period: formData.get("noticePeriod"),
       message: formData.get("message"),
       job_title: jobTitle,
@@ -646,19 +644,6 @@ function JobApplicationForm({ jobTitle, onClose }: { jobTitle: string; onClose: 
                     <option value="Saudi National">Saudi National</option>
                   </select>
                 </div>
-                <div className="grid sm:grid-cols-2 gap-3 mt-3">
-                  <div className="space-y-1.5">
-                    <Label htmlFor="iqamaNumber">Iqama / ID Number</Label>
-                    <Input id="iqamaNumber" name="iqamaNumber" placeholder="e.g. 2XXXXXXXXX" className="h-10" />
-                  </div>
-                  <div className="space-y-1.5">
-                    <Label htmlFor="iqamaExpiry">Iqama Expiry Date</Label>
-                    <Input id="iqamaExpiry" name="iqamaExpiry" type="date" className="h-10" />
-                  </div>
-                </div>
-                <p className="text-[11px] text-muted-foreground/80 mt-1.5">
-                  Iqama details are optional but help us verify your visa status faster. Leave blank if you prefer to share later.
-                </p>
                 <div className="space-y-1.5 mt-3">
                   <Label htmlFor="noticePeriod">Notice Period / Availability</Label>
                   <Input id="noticePeriod" name="noticePeriod" placeholder="e.g. Immediate, 30 days" className="h-10" />
