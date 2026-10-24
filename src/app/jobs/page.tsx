@@ -314,6 +314,7 @@ function JobApplicationForm({ jobTitle, onClose }: { jobTitle: string; onClose: 
   const { toast } = useToast();
   const [submitting, setSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
+  const [formStartTime] = useState(() => Date.now());
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -330,46 +331,60 @@ function JobApplicationForm({ jobTitle, onClose }: { jobTitle: string; onClose: 
       return;
     }
 
+    // Time-based check — humans take >3s to fill a form
+    const elapsed = Date.now() - formStartTime;
+    if (elapsed < 3000) {
+      setSubmitting(false);
+      toast({
+        title: "Please take a moment",
+        description: "Please review the form and try submitting again.",
+      });
+      return;
+    }
+
     // Check if this person already applied (one application per person)
     const applicationKey = `landmark_application`;
     const existingApplication = localStorage.getItem(applicationKey);
 
     if (existingApplication) {
-      const app = JSON.parse(existingApplication);
-      // Check if same email or phone was used before
-      if (app.email === email || app.phone === phone) {
-        setSubmitting(false);
-        setSubmitted(true);
-        toast({
-          title: "Already Applied!",
-          description: `You have already submitted an application for "${app.jobTitle}". Our team will contact you soon. If you need to update your application, please email info@landmarkgulf.com.`,
-        });
-        setTimeout(onClose, 5000);
-        return;
+      try {
+        const app = JSON.parse(existingApplication);
+        // Check if same email or phone was used before
+        if (app.email === email || app.phone === phone) {
+          setSubmitting(false);
+          setSubmitted(true);
+          toast({
+            title: "Already Applied!",
+            description: `You have already submitted an application for "${app.jobTitle}". Our team will contact you soon. If you need to update your application, please email info@landmarkgulf.com.`,
+          });
+          setTimeout(onClose, 5000);
+          return;
+        }
+      } catch {
+        // If localStorage data is corrupted, ignore and continue
       }
     }
 
     const payload = {
-      access_key: process.env.NEXT_PUBLIC_WEB3FORMS_KEY || "YOUR_WEB3FORMS_KEY",
-      subject: `New Job Application: ${jobTitle} — Landmark Inter Gulf LLC`,
-      from_name: "Landmark Inter Gulf — Jobs Page",
       name: formData.get("fullName"),
-      email: formData.get("email"),
-      phone: formData.get("phone"),
+      email,
+      phone,
       nationality: formData.get("nationality"),
-      current_location: formData.get("currentLocation"),
+      currentLocation: formData.get("currentLocation"),
       experience: formData.get("experience"),
       certifications: formData.get("certifications"),
       languages: formData.get("languages"),
-      iqama_visa_status: formData.get("iqamaStatus"),
-      notice_period: formData.get("noticePeriod"),
+      iqamaStatus: formData.get("iqamaStatus"),
+      noticePeriod: formData.get("noticePeriod"),
       message: formData.get("message"),
-      job_title: jobTitle,
-      company: "Landmark Inter Gulf LLC",
+      jobTitle,
+      botcheck,
+      formStartTime,
     };
 
     try {
-      const response = await fetch("https://api.web3forms.com/submit", {
+      // Calls our OWN server-side API route — the Web3Forms key stays private
+      const response = await fetch("/api/job-application", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -392,19 +407,20 @@ function JobApplicationForm({ jobTitle, onClose }: { jobTitle: string; onClose: 
         (e.target as HTMLFormElement).reset();
         setTimeout(onClose, 3000);
       } else {
-        throw new Error(result.message || "Submission failed");
+        setSubmitting(false);
+        toast({
+          title: "Submission failed",
+          description: result.message || "Please try again later.",
+          variant: "destructive",
+        });
       }
     } catch {
-      // Fallback: save locally
-      localStorage.setItem(applicationKey, JSON.stringify({ email, phone, jobTitle, date: new Date().toISOString() }));
-
-      setSubmitted(true);
+      setSubmitting(false);
       toast({
-        title: "Application Submitted!",
-        description: `We'll review your application for "${jobTitle}" and contact you soon.`,
+        title: "Network error",
+        description: "Please check your internet connection and try again.",
+        variant: "destructive",
       });
-      (e.target as HTMLFormElement).reset();
-      setTimeout(onClose, 3000);
     } finally {
       setSubmitting(false);
     }
