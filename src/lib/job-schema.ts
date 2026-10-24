@@ -118,9 +118,10 @@ export function generateJobPostingsSchema() {
           address: {
             "@type": "PostalAddress",
             addressCountry: "SA",
-            addressRegion: "Saudi Arabia",
+            addressRegion: "Riyadh Province",
             addressLocality: "Riyadh",
-            streetAddress: "Riyadh, Saudi Arabia",
+            postalCode: "11564",
+            streetAddress: "King Fahd Road, Olaya District, Riyadh",
           },
         },
         baseSalary: {
