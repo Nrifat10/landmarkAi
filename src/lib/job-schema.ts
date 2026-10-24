@@ -118,10 +118,10 @@ export function generateJobPostingsSchema() {
           address: {
             "@type": "PostalAddress",
             addressCountry: "SA",
-            addressRegion: "Riyadh Province",
-            addressLocality: "Riyadh",
-            postalCode: "11564",
-            streetAddress: "King Fahd Road, Olaya District, Riyadh",
+            addressRegion: "Eastern Province",
+            addressLocality: "Al Jubail",
+            postalCode: "35712",
+            streetAddress: "King Faisal W, King Fahd Industrial Port, Al Jubail",
           },
         },
         baseSalary: {

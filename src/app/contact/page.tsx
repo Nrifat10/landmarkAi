@@ -20,6 +20,9 @@ import {
   PartyPopper,
   Phone,
   Loader2,
+  Star,
+  ExternalLink,
+  Navigation,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -131,12 +134,28 @@ export default function ContactPage() {
     {
       icon: MapPin,
       label: "Location",
-      value: company.country,
-      href: "#",
-      description: "Serving clients across Saudi Arabia and the Gulf region.",
+      value: "Al Jubail, Eastern Province",
+      href: company.googleBusiness.url,
+      description: "King Faisal W, King Fahd Industrial Port, Al Jubail 35712",
       encoded: false,
     },
   ];
+
+  // Opening hours — synced with Google Business Profile
+  const openingHours = [
+    { day: "Saturday", hours: "7:00 AM – 5:00 PM", open: true },
+    { day: "Sunday", hours: "7:00 AM – 5:00 PM", open: true },
+    { day: "Monday", hours: "7:00 AM – 5:00 PM", open: true },
+    { day: "Tuesday", hours: "7:00 AM – 5:00 PM", open: true },
+    { day: "Wednesday", hours: "7:00 AM – 5:00 PM", open: true },
+    { day: "Thursday", hours: "7:00 AM – 5:00 PM", open: true },
+    { day: "Friday", hours: "Closed", open: false },
+  ];
+
+  // Check if today is open
+  const todayName = new Date().toLocaleDateString("en-US", { weekday: "long" });
+  const todayHours = openingHours.find((h) => h.day === todayName);
+  const isOpenNow = todayHours?.open ?? false;
 
   const whyChooseUs = [
     { icon: Users, title: "5,000+ Professionals", desc: "Skilled workforce ready for deployment" },
@@ -504,6 +523,168 @@ export default function ContactPage() {
                     </div>
                   </form>
                 )}
+              </div>
+            </motion.div>
+          </div>
+        </div>
+      </section>
+
+      {/* Google Maps + Opening Hours + Review CTA */}
+      <section className="relative py-16 md:py-20 bg-background">
+        <div className="container mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          {/* Section heading */}
+          <div className="text-center max-w-2xl mx-auto mb-10">
+            <div className="inline-flex items-center gap-2 mb-3">
+              <span className="h-px w-8 bg-accent" />
+              <span className="text-xs font-bold uppercase tracking-widest text-accent">
+                Visit Our Office
+              </span>
+              <span className="h-px w-8 bg-accent" />
+            </div>
+            <h2 className="text-3xl sm:text-4xl font-extrabold tracking-tight text-foreground text-balance">
+              Find us in Al Jubail, Saudi Arabia
+            </h2>
+            <p className="mt-3 text-base text-muted-foreground leading-relaxed">
+              Located at King Fahd Industrial Port in Al Jubail — the heart of Saudi Arabia&apos;s industrial corridor. We&apos;re open 6 days a week.
+            </p>
+          </div>
+
+          <div className="grid lg:grid-cols-12 gap-6 lg:gap-8">
+            {/* Left: Google Map embed */}
+            <motion.div
+              initial={{ opacity: 0, x: -24 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true, margin: "-80px" }}
+              transition={{ duration: 0.6, ease: "easeOut" }}
+              className="lg:col-span-7"
+            >
+              <div className="rounded-2xl border-2 border-border/70 bg-card p-2 shadow-xl overflow-hidden">
+                <iframe
+                  src="https://www.google.com/maps?q=Landmark+Inter+Gulf+Co+L.L.C,+Al+Jubail+35712&output=embed"
+                  width="100%"
+                  height="420"
+                  style={{ border: 0, borderRadius: "0.75rem" }}
+                  allowFullScreen
+                  loading="lazy"
+                  referrerPolicy="no-referrer-when-downgrade"
+                  title="Landmark Inter Gulf LLC location on Google Maps"
+                />
+              </div>
+              {/* Action buttons below map */}
+              <div className="mt-4 flex flex-col sm:flex-row gap-3">
+                <a
+                  href={company.googleBusiness.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex-1 inline-flex items-center justify-center gap-2 rounded-xl bg-accent text-accent-foreground hover:bg-accent/90 transition-colors px-5 py-3 font-bold text-sm shadow-md"
+                >
+                  <Navigation className="h-4 w-4" />
+                  Get Directions
+                </a>
+                <a
+                  href={company.googleBusiness.reviewUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex-1 inline-flex items-center justify-center gap-2 rounded-xl border-2 border-accent/30 bg-background hover:bg-accent/5 text-foreground hover:border-accent/50 transition-all px-5 py-3 font-bold text-sm"
+                >
+                  <Star className="h-4 w-4 text-accent fill-accent" />
+                  Write a Review on Google
+                </a>
+              </div>
+            </motion.div>
+
+            {/* Right: Opening hours + address details */}
+            <motion.div
+              initial={{ opacity: 0, x: 24 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true, margin: "-80px" }}
+              transition={{ duration: 0.6, delay: 0.1, ease: "easeOut" }}
+              className="lg:col-span-5 space-y-5"
+            >
+              {/* Open/Closed status */}
+              <div className={`rounded-2xl border-2 p-5 ${isOpenNow ? "border-green-500/40 bg-green-500/5" : "border-red-500/40 bg-red-500/5"}`}>
+                <div className="flex items-center gap-3">
+                  <span className={`relative flex h-3 w-3 ${isOpenNow ? "bg-green-500" : "bg-red-500"}`}>
+                    {isOpenNow && (
+                      <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-green-500 opacity-75" />
+                    )}
+                  </span>
+                  <div>
+                    <p className="text-sm font-bold text-foreground">
+                      {isOpenNow ? "Open Now" : "Closed Now"}
+                    </p>
+                    <p className="text-xs text-muted-foreground">
+                      {todayHours ? `Today: ${todayHours.hours}` : "Hours unavailable"}
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              {/* Opening hours list */}
+              <div className="rounded-2xl border-2 border-border/70 bg-card p-5 shadow-md">
+                <div className="flex items-center gap-2 mb-4">
+                  <Clock className="h-5 w-5 text-accent" />
+                  <h3 className="text-sm font-bold uppercase tracking-wider text-foreground">
+                    Opening Hours
+                  </h3>
+                </div>
+                <ul className="space-y-2.5 text-sm">
+                  {openingHours.map((entry) => {
+                    const isToday = entry.day === todayName;
+                    return (
+                      <li
+                        key={entry.day}
+                        className={`flex items-center justify-between px-3 py-2 rounded-lg transition-colors ${
+                          isToday
+                            ? "bg-accent/10 border border-accent/30"
+                            : "border border-transparent"
+                        }`}
+                      >
+                        <span className={`font-semibold ${isToday ? "text-accent" : "text-foreground"}`}>
+                          {entry.day}
+                          {isToday && <span className="ml-2 text-[10px] uppercase font-bold text-accent">Today</span>}
+                        </span>
+                        <span className={`font-medium ${entry.open ? "text-foreground" : "text-red-500"}`}>
+                          {entry.hours}
+                        </span>
+                      </li>
+                    );
+                  })}
+                </ul>
+                <p className="mt-4 pt-3 border-t border-border/60 text-[11px] text-muted-foreground/80">
+                  <Sparkles className="inline h-3 w-3 text-accent mr-1" />
+                  Hours synced with Google Business Profile
+                </p>
+              </div>
+
+              {/* Address card */}
+              <div className="rounded-2xl border-2 border-border/70 bg-card p-5 shadow-md">
+                <div className="flex items-center gap-2 mb-3">
+                  <MapPin className="h-5 w-5 text-accent" />
+                  <h3 className="text-sm font-bold uppercase tracking-wider text-foreground">
+                    Office Address
+                  </h3>
+                </div>
+                <p className="text-sm font-semibold text-foreground leading-relaxed">
+                  Landmark Inter Gulf Co. L.L.C
+                </p>
+                <p className="text-sm text-muted-foreground leading-relaxed mt-1">
+                  King Faisal W, King Fahd Industrial Port<br />
+                  Al Jubail 35712<br />
+                  Eastern Province, Saudi Arabia
+                </p>
+                <p className="mt-3 text-xs text-muted-foreground/80 font-mono">
+                  Plus Code: 2JCR+VW3 Al Jubail
+                </p>
+                <a
+                  href={company.googleBusiness.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="mt-4 inline-flex items-center gap-1.5 text-xs font-bold text-accent hover:underline"
+                >
+                  View on Google Maps
+                  <ExternalLink className="h-3 w-3" />
+                </a>
               </div>
             </motion.div>
           </div>

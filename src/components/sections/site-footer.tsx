@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { Mail, Globe, MapPin, ArrowUp } from "lucide-react";
+import { Mail, Globe, MapPin, ArrowUp, Star } from "lucide-react";
 import { company, services, navLinks } from "@/lib/data";
 
 export function SiteFooter() {
@@ -104,8 +104,29 @@ export function SiteFooter() {
               <li>
                 <span className="flex items-start gap-2.5 text-sm text-primary-foreground/75">
                   <MapPin className="h-4 w-4 mt-0.5 text-accent shrink-0" />
-                  <span>{company.country}</span>
+                  <span>
+                    King Faisal W, King Fahd Industrial Port,
+                    <br />
+                    Al Jubail 35712, Saudi Arabia
+                  </span>
                 </span>
+              </li>
+              <li>
+                <a
+                  href={company.googleBusiness?.url || "#"}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-1.5 text-xs font-bold mt-1 px-3 py-1.5 rounded-full border border-accent/40 bg-accent/10 text-accent hover:bg-accent hover:text-accent-foreground transition-all"
+                >
+                  <span className="flex items-center gap-0.5">
+                    <Star className="h-3 w-3 fill-current" />
+                    <Star className="h-3 w-3 fill-current" />
+                    <Star className="h-3 w-3 fill-current" />
+                    <Star className="h-3 w-3 fill-current" />
+                    <Star className="h-3 w-3 fill-current" />
+                  </span>
+                  Find Us on Google
+                </a>
               </li>
             </ul>
           </div>

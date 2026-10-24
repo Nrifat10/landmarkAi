@@ -98,7 +98,10 @@ const jsonLdOrganization = {
   address: {
     "@type": "PostalAddress",
     addressCountry: "SA",
-    addressRegion: "Saudi Arabia",
+    addressRegion: "Eastern Province",
+    addressLocality: "Al Jubail",
+    postalCode: "35712",
+    streetAddress: "King Faisal W, King Fahd Industrial Port, Al Jubail 35712",
   },
   areaServed: "Kingdom of Saudi Arabia",
   slogan: company.tagline,
@@ -113,7 +116,9 @@ const jsonLdOrganization = {
     "Oil and Gas",
     "Saudi Vision 2030",
   ],
-  sameAs: [],
+  sameAs: [
+    "https://maps.app.goo.gl/Hi6Fimz27BaCCq7x8",
+  ],
 };
 
 const jsonLdWebSite = {
@@ -139,22 +144,53 @@ const jsonLdLocalBusiness = {
   "@type": "LocalBusiness",
   "@id": "https://www.landmarkgulf.com/#business",
   name: company.name,
+  alternateName: "Landmark Inter Gulf Co. L.L.C",
   description: siteSeo.description,
   url: "https://www.landmarkgulf.com",
-
+  image: "https://www.landmarkgulf.com/og-image.png",
+  logo: "https://www.landmarkgulf.com/landmark-logo-light.png",
   priceRange: "$$",
+  hasMap: "https://maps.app.goo.gl/Hi6Fimz27BaCCq7x8",
+  map: "https://www.google.com/maps?q=Landmark+Inter+Gulf+Co+L.L.C+Jubail&output=embed",
   address: {
     "@type": "PostalAddress",
     addressCountry: "SA",
-    addressRegion: "Saudi Arabia",
+    addressRegion: "Eastern Province",
+    addressLocality: "Al Jubail",
+    postalCode: "35712",
+    streetAddress: "King Faisal W, King Fahd Industrial Port, Al Jubail 35712",
   },
-  openingHoursSpecification: {
-    "@type": "OpeningHoursSpecification",
-    dayOfWeek: ["Saturday", "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday"],
-    opens: "08:00",
-    closes: "18:00",
+  geo: {
+    "@type": "GeoCoordinates",
+    latitude: 26.9414,
+    longitude: 49.6525,
   },
-  areaServed: "Kingdom of Saudi Arabia",
+  openingHoursSpecification: [
+    {
+      "@type": "OpeningHoursSpecification",
+      dayOfWeek: ["Saturday", "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday"],
+      opens: "07:00",
+      closes: "17:00",
+    },
+    {
+      "@type": "OpeningHoursSpecification",
+      dayOfWeek: "Friday",
+      opens: "00:00",
+      closes: "00:00",
+    },
+  ],
+  areaServed: [
+    { "@type": "City", name: "Riyadh" },
+    { "@type": "City", name: "Jubail" },
+    { "@type": "City", name: "Yanbu" },
+    { "@type": "City", name: "Jafurah" },
+    { "@type": "City", name: "Marjan" },
+    { "@type": "City", name: "Dammam" },
+    { "@type": "City", name: "Khobar" },
+  ],
+  sameAs: [
+    "https://maps.app.goo.gl/Hi6Fimz27BaCCq7x8",
+  ],
 };
 
 export default function RootLayout({

@@ -24,6 +24,40 @@ export const company = {
   ceo: "Kazi Nazmul",
   ceoTitle: "Chief Executive Officer",
   vision2030: "Contributing to Vision 2030",
+  // Physical office address — verified on Google Business Profile
+  address: {
+    line1: "King Faisal W, King Fahd Industrial Port",
+    line2: "Al Jubail 35712",
+    city: "Al Jubail",
+    region: "Eastern Province",
+    postalCode: "35712",
+    country: "Saudi Arabia",
+    countryCode: "SA",
+    fullAddress: "2JCR+VW3, King Faisal W, King Fahd Industrial Port, Al Jubail 35712, Saudi Arabia",
+    plusCode: "2JCR+VW3 Al Jubail",
+  },
+  // Google Business Profile integration
+  googleBusiness: {
+    url: "https://maps.app.goo.gl/Hi6Fimz27BaCCq7x8",
+    mapsEmbedUrl: "https://www.google.com/maps?q=Landmark+Inter+Gulf+Co+L.L.C+Jubail&output=embed",
+    reviewUrl: "https://maps.app.goo.gl/Hi6Fimz27BaCCq7x8",
+    placeName: "Landmark Inter Gulf Co. L.L.C",
+  },
+  // Opening hours — synced with Google Business Profile
+  openingHours: {
+    mon: "7:00 AM – 5:00 PM",
+    tue: "7:00 AM – 5:00 PM",
+    wed: "7:00 AM – 5:00 PM",
+    thu: "7:00 AM – 5:00 PM",
+    fri: "Closed",
+    sat: "7:00 AM – 5:00 PM",
+    sun: "7:00 AM – 5:00 PM",
+    // Schema.org format — for JSON-LD (dayOfWeek uses schema.org day names)
+    schemaSpec: [
+      { days: ["Saturday", "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday"], opens: "07:00", closes: "17:00" },
+      { days: ["Friday"], opens: "00:00", closes: "00:00" },
+    ],
+  },
 };
 
 export const heroStats = [
