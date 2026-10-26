@@ -35,10 +35,10 @@ export function SiteFooter() {
             </p>
             <div className="mt-4">
               <img
-                src="/saudi-vision-2030.svg"
+                src="/saudi-vision-2030-white.svg"
                 alt="Saudi Vision 2030 — Kingdom of Saudi Arabia"
                 title="Proudly supporting Saudi Vision 2030"
-                className="h-16 w-auto object-contain brightness-0 invert opacity-90 hover:opacity-100 transition-opacity"
+                className="h-16 w-auto object-contain opacity-95 hover:opacity-100 transition-opacity"
                 loading="lazy"
               />
             </div>
