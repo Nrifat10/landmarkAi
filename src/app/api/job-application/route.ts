@@ -17,6 +17,19 @@ function getClientIp(req: NextRequest): string {
 // and is never sent to the browser. Used if env var is not set.
 const FALLBACK_WEB3FORMS_KEY = "d522346a-fd18-4658-888a-82adafcf7bdd";
 
+// Resolve the Web3Forms access key from any of the env vars the user may have set
+// in Vercel. The user's screenshot shows they added NEXT_PUBLIC_WEB3FORMS_KEY —
+// so we check that too. Server route handlers can read NEXT_PUBLIC_ vars fine.
+function resolveAccessKey(): string {
+  return (
+    process.env.WEB3FORMS_JOBS_KEY ||
+    process.env.WEB3FORMS_CONTACT_KEY ||
+    process.env.NEXT_PUBLIC_WEB3FORMS_KEY ||
+    process.env.NEXT_PUBLIC_WEB3FORMS_CONTACT_KEY ||
+    FALLBACK_WEB3FORMS_KEY
+  );
+}
+
 export async function POST(req: NextRequest) {
   try {
     // 1. Rate limiting — allows real users to apply, blocks spam
@@ -108,16 +121,23 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    // 7. Get the Web3Forms key — from env var, fallback to hardcoded
-    const accessKey = process.env.WEB3FORMS_JOBS_KEY || process.env.WEB3FORMS_CONTACT_KEY || FALLBACK_WEB3FORMS_KEY;
+    // 7. Get the Web3Forms key — from env var (any name), fallback to hardcoded
+    const accessKey = resolveAccessKey();
 
     if (!accessKey || accessKey === "undefined") {
-      console.error("Web3Forms key not configured for jobs");
+      console.error("[job-application] Web3Forms key not configured");
       return NextResponse.json(
         { success: false, message: "Application system not configured. Please contact us at info@landmarkgulf.com" },
         { status: 500 }
       );
     }
+
+    // Debug log — only the key suffix is logged so the secret is not exposed
+    console.log("[job-application] Submitting to Web3Forms", {
+      keySuffix: accessKey.slice(-8),
+      jobTitle,
+      emailDomain: email.split("@")[1] || "unknown",
+    });
 
     // 8. Forward to Web3Forms with PRIVATE key
     const web3formsResponse = await fetch("https://api.web3forms.com/submit", {
@@ -147,7 +167,42 @@ export async function POST(req: NextRequest) {
       }),
     });
 
-    const result = await web3formsResponse.json();
+    // Web3Forms should return JSON; if we get HTML (network error page),
+    // catch the JSON.parse failure so the user sees a meaningful message
+    let result: { success?: boolean; message?: string } = {};
+    const responseText = await web3formsResponse.text();
+    try {
+      result = JSON.parse(responseText);
+    } catch {
+      console.error("[job-application] Web3Forms returned non-JSON response", {
+        status: web3formsResponse.status,
+        contentType: web3formsResponse.headers.get("content-type"),
+        bodyPreview: responseText.slice(0, 200),
+      });
+      return NextResponse.json(
+        {
+          success: false,
+          message: "We couldn't reach the email service. Please try again later or email us at info@landmarkgulf.com",
+        },
+        { status: 502 }
+      );
+    }
+
+    // Detailed server-side logging so failures are debuggable in Vercel logs
+    if (!web3formsResponse.ok || !result.success) {
+      console.error("[job-application] Web3Forms submission failed:", {
+        status: web3formsResponse.status,
+        statusText: web3formsResponse.statusText,
+        success: result.success,
+        message: result.message,
+        keySuffix: accessKey ? accessKey.slice(-8) : "(none)",
+      });
+    } else {
+      console.log("[job-application] Submission SUCCESS", {
+        jobTitle,
+        keySuffix: accessKey.slice(-8),
+      });
+    }
 
     if (web3formsResponse.ok && result.success) {
       return NextResponse.json({
@@ -156,13 +211,12 @@ export async function POST(req: NextRequest) {
       });
     }
 
-    console.error("Web3Forms error:", result);
     return NextResponse.json(
       { success: false, message: result.message || "Submission failed. Please try again." },
       { status: 400 }
     );
   } catch (error) {
-    console.error("Job application API error:", error);
+    console.error("[job-application] API error:", error);
     return NextResponse.json(
       { success: false, message: "Server error. Please try again later or email us at info@landmarkgulf.com" },
       { status: 500 }

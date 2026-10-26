@@ -19,6 +19,19 @@ function getClientIp(req: NextRequest): string {
 // the file lives only on the server, never sent to the browser.
 const FALLBACK_WEB3FORMS_KEY = "d522346a-fd18-4658-888a-82adafcf7bdd";
 
+// Resolve the Web3Forms access key from any of the env vars the user may have set.
+// The user added NEXT_PUBLIC_WEB3FORMS_KEY in Vercel — server route handlers can
+// read NEXT_PUBLIC_ vars fine.
+function resolveAccessKey(): string {
+  return (
+    process.env.WEB3FORMS_CONTACT_KEY ||
+    process.env.WEB3FORMS_JOBS_KEY ||
+    process.env.NEXT_PUBLIC_WEB3FORMS_KEY ||
+    process.env.NEXT_PUBLIC_WEB3FORMS_CONTACT_KEY ||
+    FALLBACK_WEB3FORMS_KEY
+  );
+}
+
 export async function POST(req: NextRequest) {
   try {
     // 1. Rate limiting check
@@ -97,16 +110,21 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    // 7. Get the Web3Forms key — from env var, fallback to hardcoded
-    const accessKey = process.env.WEB3FORMS_CONTACT_KEY || FALLBACK_WEB3FORMS_KEY;
+    // 7. Get the Web3Forms key — from env var (any name), fallback to hardcoded
+    const accessKey = resolveAccessKey();
 
     if (!accessKey || accessKey === "undefined") {
-      console.error("WEB3FORMS_CONTACT_KEY not configured");
+      console.error("[contact] Web3Forms key not configured");
       return NextResponse.json(
         { success: false, message: "Form not configured. Please contact us directly at info@landmarkgulf.com" },
         { status: 500 }
       );
     }
+
+    console.log("[contact] Submitting to Web3Forms", {
+      keySuffix: accessKey.slice(-8),
+      emailDomain: email.split("@")[1] || "unknown",
+    });
 
     // 8. Forward to Web3Forms with PRIVATE key
     const web3formsResponse = await fetch("https://api.web3forms.com/submit", {
@@ -129,7 +147,36 @@ export async function POST(req: NextRequest) {
       }),
     });
 
-    const result = await web3formsResponse.json();
+    let result: { success?: boolean; message?: string } = {};
+    const responseText = await web3formsResponse.text();
+    try {
+      result = JSON.parse(responseText);
+    } catch {
+      console.error("[contact] Web3Forms returned non-JSON response", {
+        status: web3formsResponse.status,
+        contentType: web3formsResponse.headers.get("content-type"),
+        bodyPreview: responseText.slice(0, 200),
+      });
+      return NextResponse.json(
+        {
+          success: false,
+          message: "We couldn't reach the email service. Please try again later or email us at info@landmarkgulf.com",
+        },
+        { status: 502 }
+      );
+    }
+
+    if (!web3formsResponse.ok || !result.success) {
+      console.error("[contact] Web3Forms submission failed:", {
+        status: web3formsResponse.status,
+        statusText: web3formsResponse.statusText,
+        success: result.success,
+        message: result.message,
+        keySuffix: accessKey ? accessKey.slice(-8) : "(none)",
+      });
+    } else {
+      console.log("[contact] Submission SUCCESS", { keySuffix: accessKey.slice(-8) });
+    }
 
     if (web3formsResponse.ok && result.success) {
       return NextResponse.json({
@@ -143,7 +190,7 @@ export async function POST(req: NextRequest) {
       { status: 400 }
     );
   } catch (error) {
-    console.error("Contact form API error:", error);
+    console.error("[contact] API error:", error);
     return NextResponse.json(
       { success: false, message: "Server error. Please try again later or email us at info@landmarkgulf.com" },
       { status: 500 }

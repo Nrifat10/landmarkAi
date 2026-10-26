@@ -139,20 +139,28 @@ function JobsPageInner() {
                     transition={{ duration: 0.3, delay: i * 0.05 }}
                   >
                     <Link href={`/jobs/${job.slug}`}>
-                      <Card className="h-full border-border/70 hover:shadow-lg hover:border-accent/40 transition-all">
+                      <Card className="h-full border-border/70 hover:shadow-lg hover:border-accent/40 transition-all group">
                         <CardContent className="p-5 flex flex-col h-full">
-                          <h4 className="font-bold text-foreground text-base">
-                            {job.title}
-                          </h4>
+                          <div className="flex items-start justify-between gap-2 mb-1.5">
+                            <h4 className="font-bold text-foreground text-base group-hover:text-accent transition-colors leading-snug">
+                              {job.title}
+                            </h4>
+                            <span className="inline-flex items-center justify-center h-2 w-2 rounded-full bg-green-500 mt-1.5 shrink-0" title="Open position" />
+                          </div>
                           <p className="text-xs text-muted-foreground mt-1">{job.categoryName}</p>
-                          <div className="mt-2 text-xs text-muted-foreground flex-1">
+                          <div className="mt-2 space-y-1.5 text-xs text-muted-foreground flex-1">
                             <p className="flex items-center gap-1.5">
                               <Clock className="h-3.5 w-3.5 text-accent shrink-0" />
                               {job.type} · {job.experience}
                             </p>
+                            <p className="flex items-center gap-1.5">
+                              <svg className="h-3.5 w-3.5 text-accent shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><line x1="12" y1="2" x2="12" y2="22" strokeLinecap="round" /><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" strokeLinejoin="round" strokeLinecap="round" /></svg>
+                              <span className="font-semibold text-foreground/80">SAR {job.minSalary.toLocaleString()}-{job.maxSalary.toLocaleString()}/mo</span>
+                            </p>
                           </div>
-                          <div className="mt-3">
-                            <span className="text-xs font-bold text-accent">View details →</span>
+                          <div className="mt-3 pt-3 border-t border-border/40 flex items-center justify-between">
+                            <span className="text-xs font-bold text-accent group-hover:underline">View details →</span>
+                            <span className="text-[10px] text-muted-foreground font-mono">LM-{job.slug.toUpperCase().slice(0, 8)}</span>
                           </div>
                         </CardContent>
                       </Card>
@@ -216,7 +224,7 @@ function JobsPageInner() {
                         </div>
                         <div>
                           <h3 className="text-xl font-bold text-foreground">{cat.name}</h3>
-                          <p className="text-sm text-muted-foreground">{cat.description}</p>
+                          <p className="text-sm text-muted-foreground">{cat.description} · {catJobs.length} open role{catJobs.length !== 1 ? "s" : ""}</p>
                         </div>
                       </div>
 
@@ -232,23 +240,33 @@ function JobsPageInner() {
                             <Link href={`/jobs/${job.slug}`}>
                               <Card className="h-full border-border/70 hover:shadow-lg hover:border-accent/40 transition-all group flex flex-col">
                                 <CardContent className="p-5 flex flex-col h-full">
-                                  <h4 className="font-bold text-foreground text-base group-hover:text-accent transition-colors">
-                                    {job.title}
-                                  </h4>
+                                  <div className="flex items-start justify-between gap-2 mb-1.5">
+                                    <h4 className="font-bold text-foreground text-base group-hover:text-accent transition-colors leading-snug">
+                                      {job.title}
+                                    </h4>
+                                    <span className="inline-flex items-center justify-center h-2 w-2 rounded-full bg-green-500 mt-1.5 shrink-0" title="Open position" />
+                                  </div>
                                   <div className="mt-2 space-y-1.5 text-xs text-muted-foreground flex-1">
                                     <p className="flex items-center gap-1.5">
                                       <Clock className="h-3.5 w-3.5 text-accent shrink-0" />
                                       {job.type} · {job.experience}
                                     </p>
+                                    {job.cert && job.cert !== "—" && (
+                                      <p className="flex items-center gap-1.5">
+                                        <Award className="h-3.5 w-3.5 text-accent shrink-0" />
+                                        {job.cert}
+                                      </p>
+                                    )}
                                     <p className="flex items-center gap-1.5">
-                                      <Award className="h-3.5 w-3.5 text-accent shrink-0" />
-                                      {job.cert}
+                                      <svg className="h-3.5 w-3.5 text-accent shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><line x1="12" y1="2" x2="12" y2="22" strokeLinecap="round" /><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" strokeLinejoin="round" strokeLinecap="round" /></svg>
+                                      <span className="font-semibold text-foreground/80">SAR {job.minSalary.toLocaleString()}-{job.maxSalary.toLocaleString()}/mo</span>
                                     </p>
                                   </div>
-                                  <div className="mt-3 pt-3 border-t border-border/40">
+                                  <div className="mt-3 pt-3 border-t border-border/40 flex items-center justify-between">
                                     <span className="text-xs font-bold text-accent group-hover:underline">
                                       View details →
                                     </span>
+                                    <span className="text-[10px] text-muted-foreground font-mono">LM-{job.slug.toUpperCase().slice(0, 8)}</span>
                                   </div>
                                 </CardContent>
                               </Card>
@@ -401,6 +419,7 @@ function JobApplicationForm({ jobTitle, onClose }: { jobTitle: string; onClose: 
       if (response.ok && result.success) {
         localStorage.setItem(applicationKey, JSON.stringify({ email, phone, jobTitle, date: new Date().toISOString() }));
         setSubmitted(true);
+        setSubmitting(false);
         toast({
           title: "Application Submitted!",
           description: `We'll review your application for "${jobTitle}" and contact you soon.`,
@@ -422,8 +441,6 @@ function JobApplicationForm({ jobTitle, onClose }: { jobTitle: string; onClose: 
         description: "Please check your internet connection and try again.",
         variant: "destructive",
       });
-    } finally {
-      setSubmitting(false);
     }
   };
 
