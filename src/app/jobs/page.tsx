@@ -1,6 +1,7 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect, Suspense } from "react";
+import { useSearchParams } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
 import {
@@ -16,13 +17,12 @@ import {
   X,
   Send,
   Loader2,
-  Download,
   ArrowRight,
   Search,
   Sparkles,
-  MailCheck,
-  Phone,
   PartyPopper,
+  Phone,
+  MailCheck,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -32,7 +32,8 @@ import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
 import { PageHero } from "@/components/sections/page-hero";
 import { SectionHeading } from "@/components/sections/section-heading";
-import { jobCategories, company } from "@/lib/data";
+import { jobCategories } from "@/lib/data";
+import { jobs } from "@/lib/jobs-data";
 import { siteImages } from "@/lib/images";
 import { cn } from "@/lib/utils";
 
@@ -40,22 +41,30 @@ const iconMap: Record<string, typeof HardHat> = {
   HardHat, Users, Truck, ConciergeBell, Car, Briefcase,
 };
 
-export default function JobsPage() {
+function JobsPageInner() {
+  const searchParams = useSearchParams();
+  const initialApplyJob = searchParams.get("apply") || null;
+
   const [activeCategory, setActiveCategory] = useState("all");
   const [searchQuery, setSearchQuery] = useState("");
-  const [applyingJob, setApplyingJob] = useState<string | null>(null);
+  const [applyingJob, setApplyingJob] = useState<string | null>(initialApplyJob);
+
+  useEffect(() => {
+    if (initialApplyJob && !applyingJob) {
+      setApplyingJob(initialApplyJob);
+    }
+  }, [initialApplyJob, applyingJob]);
 
   const filteredCategories = activeCategory === "all"
     ? jobCategories
     : jobCategories.filter((c) => c.id === activeCategory);
 
-  const allJobs = jobCategories.flatMap((c) => c.jobs);
-  const totalJobs = allJobs.length;
+  const totalJobs = jobs.length;
 
   const searchedJobs = searchQuery.trim()
-    ? allJobs.filter((j) =>
+    ? jobs.filter((j) =>
         j.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        j.title.toLowerCase().includes(searchQuery.toLowerCase())
+        j.categoryName.toLowerCase().includes(searchQuery.toLowerCase())
       )
     : null;
 
@@ -69,7 +78,6 @@ export default function JobsPage() {
         image={siteImages.workers[0]}
       />
 
-      {/* Stats banner */}
       <section className="relative py-12 bg-primary text-primary-foreground overflow-hidden">
         <div className="absolute inset-0 bg-grid-dark opacity-30" aria-hidden="true" />
         <div className="container relative z-10 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
@@ -100,16 +108,14 @@ export default function JobsPage() {
         </div>
       </section>
 
-      {/* Search + Category filter */}
       <section className="relative py-12 md:py-16 bg-background">
         <div className="container mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          {/* Search bar */}
           <div className="max-w-xl mx-auto mb-8">
             <div className="relative">
               <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
               <Input
                 type="text"
-                placeholder="Search jobs by title..."
+                placeholder="Search jobs by title or category..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 className="pl-12 h-12 text-base"
@@ -117,7 +123,6 @@ export default function JobsPage() {
             </div>
           </div>
 
-          {/* Search results */}
           {searchedJobs ? (
             <div>
               <h3 className="text-center text-lg font-bold text-foreground mb-6">
@@ -126,27 +131,30 @@ export default function JobsPage() {
               <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
                 {searchedJobs.map((job, i) => (
                   <motion.div
-                    key={`${job.title}-${i}`}
+                    key={job.slug}
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.3, delay: i * 0.05 }}
                   >
-                    <Card className="h-full border-border/70 hover:shadow-lg hover:border-accent/40 transition-all">
-                      <CardContent className="p-5">
-                        <h4 className="font-bold text-foreground text-base">{job.title}</h4>
-                        <div className="mt-2 space-y-1 text-xs text-muted-foreground">
-                          <p className="flex items-center gap-1.5"><Clock className="h-3.5 w-3.5 text-accent" /> {job.type}</p>
-                          <p className="flex items-center gap-1.5"><Award className="h-3.5 w-3.5 text-accent" /> {job.experience}</p>
-                        </div>
-                        <Button
-                          onClick={() => setApplyingJob(job.title)}
-                          size="sm"
-                          className="mt-3 w-full bg-accent text-accent-foreground hover:bg-accent/90"
-                        >
-                          Apply Now
-                        </Button>
-                      </CardContent>
-                    </Card>
+                    <Link href={`/jobs/${job.slug}`}>
+                      <Card className="h-full border-border/70 hover:shadow-lg hover:border-accent/40 transition-all">
+                        <CardContent className="p-5 flex flex-col h-full">
+                          <h4 className="font-bold text-foreground text-base">
+                            {job.title}
+                          </h4>
+                          <p className="text-xs text-muted-foreground mt-1">{job.categoryName}</p>
+                          <div className="mt-2 text-xs text-muted-foreground flex-1">
+                            <p className="flex items-center gap-1.5">
+                              <Clock className="h-3.5 w-3.5 text-accent shrink-0" />
+                              {job.type} · {job.experience}
+                            </p>
+                          </div>
+                          <div className="mt-3">
+                            <span className="text-xs font-bold text-accent">View details →</span>
+                          </div>
+                        </CardContent>
+                      </Card>
+                    </Link>
                   </motion.div>
                 ))}
               </div>
@@ -156,7 +164,6 @@ export default function JobsPage() {
             </div>
           ) : (
             <>
-              {/* Category filter pills */}
               <div className="flex flex-wrap justify-center gap-2 mb-10">
                 <button
                   onClick={() => setActiveCategory("all")}
@@ -189,10 +196,10 @@ export default function JobsPage() {
                 })}
               </div>
 
-              {/* Job categories with job listings */}
               <div className="space-y-12">
                 {filteredCategories.map((cat, catIdx) => {
                   const Icon = iconMap[cat.icon] ?? Briefcase;
+                  const catJobs = jobs.filter((j) => j.categoryId === cat.id);
                   return (
                     <motion.div
                       key={cat.id}
@@ -212,40 +219,38 @@ export default function JobsPage() {
                       </div>
 
                       <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                        {cat.jobs.map((job, jIdx) => (
+                        {catJobs.map((job, jIdx) => (
                           <motion.div
-                            key={`${job.title}-${jIdx}`}
+                            key={job.slug}
                             initial={{ opacity: 0, scale: 0.95 }}
                             whileInView={{ opacity: 1, scale: 1 }}
                             viewport={{ once: true, margin: "-40px" }}
                             transition={{ duration: 0.3, delay: jIdx * 0.04 }}
                           >
-                            <Card className="h-full border-border/70 hover:shadow-lg hover:border-accent/40 transition-all group">
-                              <CardContent className="p-5 flex flex-col h-full">
-                                <h4 className="font-bold text-foreground text-base group-hover:text-accent transition-colors">
-                                  {job.title}
-                                </h4>
-                                <div className="mt-2 space-y-1.5 text-xs text-muted-foreground flex-1">
-
-                                  <p className="flex items-center gap-1.5">
-                                    <Clock className="h-3.5 w-3.5 text-accent shrink-0" />
-                                    {job.type} · {job.experience}
-                                  </p>
-                                  <p className="flex items-center gap-1.5">
-                                    <Award className="h-3.5 w-3.5 text-accent shrink-0" />
-                                    {job.cert}
-                                  </p>
-                                </div>
-                                <Button
-                                  onClick={() => setApplyingJob(job.title)}
-                                  size="sm"
-                                  className="mt-3 w-full bg-accent text-accent-foreground hover:bg-accent/90"
-                                >
-                                  Apply Now
-                                  <ArrowRight className="h-3.5 w-3.5 ml-1.5" />
-                                </Button>
-                              </CardContent>
-                            </Card>
+                            <Link href={`/jobs/${job.slug}`}>
+                              <Card className="h-full border-border/70 hover:shadow-lg hover:border-accent/40 transition-all group flex flex-col">
+                                <CardContent className="p-5 flex flex-col h-full">
+                                  <h4 className="font-bold text-foreground text-base group-hover:text-accent transition-colors">
+                                    {job.title}
+                                  </h4>
+                                  <div className="mt-2 space-y-1.5 text-xs text-muted-foreground flex-1">
+                                    <p className="flex items-center gap-1.5">
+                                      <Clock className="h-3.5 w-3.5 text-accent shrink-0" />
+                                      {job.type} · {job.experience}
+                                    </p>
+                                    <p className="flex items-center gap-1.5">
+                                      <Award className="h-3.5 w-3.5 text-accent shrink-0" />
+                                      {job.cert}
+                                    </p>
+                                  </div>
+                                  <div className="mt-3 pt-3 border-t border-border/40">
+                                    <span className="text-xs font-bold text-accent group-hover:underline">
+                                      View details →
+                                    </span>
+                                  </div>
+                                </CardContent>
+                              </Card>
+                            </Link>
                           </motion.div>
                         ))}
                       </div>
@@ -258,7 +263,6 @@ export default function JobsPage() {
         </div>
       </section>
 
-      {/* Why work with us */}
       <section className="relative py-16 md:py-20 bg-secondary/40">
         <div className="container mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <SectionHeading
@@ -271,7 +275,7 @@ export default function JobsPage() {
               { icon: Award, title: "Competitive Pay", desc: "Industry-leading salaries and benefits" },
               { icon: CheckCircle2, title: "Safe Workplace", desc: "100% safety commitment on every site" },
               { icon: Users, title: "Major Projects", desc: "Work with SINOPEC, Hyundai E&C, L&T and more" },
-              { icon: TrendingUp, title: "Career Growth", desc: "Training and advancement opportunities" },
+              { icon: ArrowRight, title: "Career Growth", desc: "Training and advancement opportunities" },
             ].map((item, i) => {
               const Icon = item.icon;
               return (
@@ -293,7 +297,6 @@ export default function JobsPage() {
         </div>
       </section>
 
-      {/* Application form modal */}
       <AnimatePresence>
         {applyingJob && (
           <JobApplicationForm
@@ -306,8 +309,12 @@ export default function JobsPage() {
   );
 }
 
-function TrendingUp(props: React.ComponentProps<typeof Award>) {
-  return <Award {...props} />;
+export default function JobsPage() {
+  return (
+    <Suspense fallback={null}>
+      <JobsPageInner />
+    </Suspense>
+  );
 }
 
 function JobApplicationForm({ jobTitle, onClose }: { jobTitle: string; onClose: () => void }) {
@@ -325,13 +332,11 @@ function JobApplicationForm({ jobTitle, onClose }: { jobTitle: string; onClose: 
     const phone = formData.get("phone") as string;
     const botcheck = formData.get("botcheck");
 
-    // Honeypot check — if filled, it's a bot
     if (botcheck) {
       setSubmitting(false);
       return;
     }
 
-    // Time-based check — humans take >3s to fill a form
     const elapsed = Date.now() - formStartTime;
     if (elapsed < 3000) {
       setSubmitting(false);
@@ -342,26 +347,23 @@ function JobApplicationForm({ jobTitle, onClose }: { jobTitle: string; onClose: 
       return;
     }
 
-    // Check if this person already applied (one application per person)
     const applicationKey = `landmark_application`;
     const existingApplication = localStorage.getItem(applicationKey);
-
     if (existingApplication) {
       try {
         const app = JSON.parse(existingApplication);
-        // Check if same email or phone was used before
         if (app.email === email || app.phone === phone) {
           setSubmitting(false);
           setSubmitted(true);
           toast({
             title: "Already Applied!",
-            description: `You have already submitted an application for "${app.jobTitle}". Our team will contact you soon. If you need to update your application, please email info@landmarkgulf.com.`,
+            description: `You have already submitted an application for "${app.jobTitle}". Our team will contact you soon.`,
           });
           setTimeout(onClose, 5000);
           return;
         }
       } catch {
-        // If localStorage data is corrupted, ignore and continue
+        // ignore
       }
     }
 
@@ -383,7 +385,6 @@ function JobApplicationForm({ jobTitle, onClose }: { jobTitle: string; onClose: 
     };
 
     try {
-      // Calls our OWN server-side API route — the Web3Forms key stays private
       const response = await fetch("/api/job-application", {
         method: "POST",
         headers: {
@@ -396,9 +397,7 @@ function JobApplicationForm({ jobTitle, onClose }: { jobTitle: string; onClose: 
       const result = await response.json();
 
       if (response.ok && result.success) {
-        // Save to localStorage — one application per person
         localStorage.setItem(applicationKey, JSON.stringify({ email, phone, jobTitle, date: new Date().toISOString() }));
-
         setSubmitted(true);
         toast({
           title: "Application Submitted!",
@@ -426,8 +425,6 @@ function JobApplicationForm({ jobTitle, onClose }: { jobTitle: string; onClose: 
     }
   };
 
-  const inputClass = "w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring";
-
   return (
     <motion.div
       initial={{ opacity: 0 }}
@@ -446,7 +443,6 @@ function JobApplicationForm({ jobTitle, onClose }: { jobTitle: string; onClose: 
       >
         {submitted ? (
           <div className="relative p-8 text-center overflow-hidden">
-            {/* Confetti dots */}
             <div className="absolute inset-0 pointer-events-none" aria-hidden="true">
               {[...Array(14)].map((_, i) => (
                 <motion.span
@@ -467,7 +463,6 @@ function JobApplicationForm({ jobTitle, onClose }: { jobTitle: string; onClose: 
               ))}
             </div>
 
-            {/* Animated checkmark */}
             <motion.div
               initial={{ scale: 0, rotate: -30 }}
               animate={{ scale: 1, rotate: 0 }}
@@ -496,7 +491,6 @@ function JobApplicationForm({ jobTitle, onClose }: { jobTitle: string; onClose: 
                 Thank you for applying for <strong className="text-foreground">{jobTitle}</strong>. Our HR team will review your application and contact you within <strong>2–5 working days</strong>.
               </p>
 
-              {/* What's next box */}
               <div className="mt-5 rounded-xl border-2 border-accent/20 bg-accent/5 p-4 text-left">
                 <p className="text-xs font-bold uppercase tracking-wider text-accent mb-3 flex items-center gap-1.5">
                   <Sparkles className="h-3.5 w-3.5" /> What happens next?
@@ -517,14 +511,13 @@ function JobApplicationForm({ jobTitle, onClose }: { jobTitle: string; onClose: 
                 </ul>
               </div>
 
-              {/* Contact row */}
               <div className="mt-4 flex flex-col sm:flex-row items-center justify-center gap-3 text-xs text-muted-foreground">
                 <span className="flex items-center gap-1.5">
                   <MailCheck className="h-3.5 w-3.5 text-accent" /> info&#64;landmarkgulf.com
                 </span>
                 <span className="hidden sm:inline text-muted-foreground/40">•</span>
                 <span className="flex items-center gap-1.5">
-                  <Phone className="h-3.5 w-3.5 text-accent" /> HR team, Riyadh
+                  <Phone className="h-3.5 w-3.5 text-accent" /> HR team, Al Jubail
                 </span>
               </div>
 
@@ -535,7 +528,6 @@ function JobApplicationForm({ jobTitle, onClose }: { jobTitle: string; onClose: 
           </div>
         ) : submitting ? (
           <div className="p-12 text-center">
-            {/* Animated paper plane */}
             <motion.div
               animate={{ y: [0, -10, 0], rotate: [0, -5, 5, 0] }}
               transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
@@ -544,7 +536,6 @@ function JobApplicationForm({ jobTitle, onClose }: { jobTitle: string; onClose: 
               <Send className="h-9 w-9 text-accent" />
             </motion.div>
 
-            {/* Animated dots */}
             <motion.h3
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
@@ -561,7 +552,6 @@ function JobApplicationForm({ jobTitle, onClose }: { jobTitle: string; onClose: 
               Please wait while we securely submit your details.
             </motion.p>
 
-            {/* Loading bar */}
             <div className="mt-5 h-1.5 w-full overflow-hidden rounded-full bg-muted">
               <motion.div
                 initial={{ x: "-100%" }}
@@ -571,7 +561,6 @@ function JobApplicationForm({ jobTitle, onClose }: { jobTitle: string; onClose: 
               />
             </div>
 
-            {/* Tips while waiting */}
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
@@ -579,7 +568,7 @@ function JobApplicationForm({ jobTitle, onClose }: { jobTitle: string; onClose: 
               className="mt-5 text-xs text-muted-foreground/70"
             >
               <Sparkles className="inline h-3 w-3 text-accent mr-1" />
-              Tip: Keep your phone & email accessible for our HR team.
+              Tip: Keep your phone &amp; email accessible for our HR team.
             </motion.div>
           </div>
         ) : (
@@ -594,10 +583,8 @@ function JobApplicationForm({ jobTitle, onClose }: { jobTitle: string; onClose: 
               </button>
             </div>
             <form onSubmit={handleSubmit} className="p-5 space-y-4">
-              {/* Honeypot field — bots fill this, humans don't see it */}
               <input type="checkbox" name="botcheck" className="hidden" style={{ display: "none" }} tabIndex={-1} autoComplete="off" />
 
-              {/* Section: Personal Information */}
               <div>
                 <p className="text-xs font-bold uppercase tracking-wider text-accent mb-3">Personal Information</p>
                 <div className="grid sm:grid-cols-2 gap-3">
@@ -626,7 +613,6 @@ function JobApplicationForm({ jobTitle, onClose }: { jobTitle: string; onClose: 
                 </div>
               </div>
 
-              {/* Section: Professional Details */}
               <div className="pt-2">
                 <p className="text-xs font-bold uppercase tracking-wider text-accent mb-3">Professional Details</p>
                 <div className="grid sm:grid-cols-2 gap-3">
@@ -645,7 +631,6 @@ function JobApplicationForm({ jobTitle, onClose }: { jobTitle: string; onClose: 
                 </div>
               </div>
 
-              {/* Section: Visa & Availability */}
               <div className="pt-2">
                 <p className="text-xs font-bold uppercase tracking-wider text-accent mb-3">Visa & Availability</p>
                 <div className="space-y-1.5">
@@ -666,7 +651,6 @@ function JobApplicationForm({ jobTitle, onClose }: { jobTitle: string; onClose: 
                 </div>
               </div>
 
-              {/* Section: Additional Info */}
               <div className="pt-2">
                 <p className="text-xs font-bold uppercase tracking-wider text-accent mb-3">Additional Information</p>
                 <div className="space-y-1.5">
@@ -675,7 +659,6 @@ function JobApplicationForm({ jobTitle, onClose }: { jobTitle: string; onClose: 
                 </div>
               </div>
 
-              {/* Consent */}
               <div className="flex items-start gap-2 pt-2">
                 <input type="checkbox" id="consent" name="consent" required className="h-4 w-4 rounded mt-1 shrink-0" />
                 <Label htmlFor="consent" className="text-xs text-muted-foreground cursor-pointer">
