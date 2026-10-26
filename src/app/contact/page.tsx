@@ -30,6 +30,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
 import { PageHero } from "@/components/sections/page-hero";
+import { OpenNowStatus } from "@/components/sections/open-now-status";
 import { company, services } from "@/lib/data";
 import { siteImages } from "@/lib/images";
 
@@ -142,20 +143,20 @@ export default function ContactPage() {
   ];
 
   // Opening hours — synced with Google Business Profile
+  // 24-hour times used for accurate open/closed detection; hoursLabel shown to users.
+  // JS Date.getDay convention: 0=Sun, 1=Mon, ..., 6=Sat
   const openingHours = [
-    { day: "Saturday", hours: "7:00 AM – 5:00 PM", open: true },
-    { day: "Sunday", hours: "7:00 AM – 5:00 PM", open: true },
-    { day: "Monday", hours: "7:00 AM – 5:00 PM", open: true },
-    { day: "Tuesday", hours: "7:00 AM – 5:00 PM", open: true },
-    { day: "Wednesday", hours: "7:00 AM – 5:00 PM", open: true },
-    { day: "Thursday", hours: "7:00 AM – 5:00 PM", open: true },
-    { day: "Friday", hours: "Closed", open: false },
+    { day: "Sunday",    dayIndex: 0, openTime: "07:00", closeTime: "17:00", hoursLabel: "7:00 AM – 5:00 PM" },
+    { day: "Monday",    dayIndex: 1, openTime: "07:00", closeTime: "17:00", hoursLabel: "7:00 AM – 5:00 PM" },
+    { day: "Tuesday",   dayIndex: 2, openTime: "07:00", closeTime: "17:00", hoursLabel: "7:00 AM – 5:00 PM" },
+    { day: "Wednesday", dayIndex: 3, openTime: "07:00", closeTime: "17:00", hoursLabel: "7:00 AM – 5:00 PM" },
+    { day: "Thursday",  dayIndex: 4, openTime: "07:00", closeTime: "17:00", hoursLabel: "7:00 AM – 5:00 PM" },
+    { day: "Friday",    dayIndex: 5, openTime: null,    closeTime: null,    hoursLabel: "Closed (weekend)" },
+    { day: "Saturday",  dayIndex: 6, openTime: "07:00", closeTime: "17:00", hoursLabel: "7:00 AM – 5:00 PM" },
   ];
 
-  // Check if today is open
-  const todayName = new Date().toLocaleDateString("en-US", { weekday: "long" });
-  const todayHours = openingHours.find((h) => h.day === todayName);
-  const isOpenNow = todayHours?.open ?? false;
+  // Today's weekday name (for highlighting the right row in the list below)
+  const todayName = new Date().toLocaleDateString("en-US", { weekday: "long", timeZone: "Asia/Riyadh" });
 
   const whyChooseUs = [
     { icon: Users, title: "5,000+ Professionals", desc: "Skilled workforce ready for deployment" },
@@ -601,59 +602,85 @@ export default function ContactPage() {
               transition={{ duration: 0.6, delay: 0.1, ease: "easeOut" }}
               className="lg:col-span-5 space-y-5"
             >
-              {/* Open/Closed status */}
-              <div className={`rounded-2xl border-2 p-5 ${isOpenNow ? "border-green-500/40 bg-green-500/5" : "border-red-500/40 bg-red-500/5"}`}>
-                <div className="flex items-center gap-3">
-                  <span className={`relative flex h-3 w-3 ${isOpenNow ? "bg-green-500" : "bg-red-500"}`}>
-                    {isOpenNow && (
-                      <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-green-500 opacity-75" />
-                    )}
-                  </span>
-                  <div>
-                    <p className="text-sm font-bold text-foreground">
-                      {isOpenNow ? "Open Now" : "Closed Now"}
-                    </p>
-                    <p className="text-xs text-muted-foreground">
-                      {todayHours ? `Today: ${todayHours.hours}` : "Hours unavailable"}
-                    </p>
-                  </div>
-                </div>
-              </div>
+              {/* Open/Closed status — client-side, real Saudi time */}
+              <OpenNowStatus schedule={openingHours} />
 
-              {/* Opening hours list */}
+              {/* Opening hours list — grouped for readability */}
               <div className="rounded-2xl border-2 border-border/70 bg-card p-5 shadow-md">
-                <div className="flex items-center gap-2 mb-4">
-                  <Clock className="h-5 w-5 text-accent" />
-                  <h3 className="text-sm font-bold uppercase tracking-wider text-foreground">
-                    Opening Hours
-                  </h3>
+                <div className="flex items-center justify-between mb-4">
+                  <div className="flex items-center gap-2">
+                    <Clock className="h-5 w-5 text-accent" />
+                    <h3 className="text-sm font-bold uppercase tracking-wider text-foreground">
+                      Opening Hours
+                    </h3>
+                  </div>
+                  <span className="inline-flex items-center gap-1 text-[10px] font-bold uppercase tracking-wider text-accent">
+                    <span className="h-1.5 w-1.5 rounded-full bg-accent" />
+                    KSA Time
+                  </span>
                 </div>
-                <ul className="space-y-2.5 text-sm">
-                  {openingHours.map((entry) => {
-                    const isToday = entry.day === todayName;
-                    return (
-                      <li
-                        key={entry.day}
-                        className={`flex items-center justify-between px-3 py-2 rounded-lg transition-colors ${
-                          isToday
-                            ? "bg-accent/10 border border-accent/30"
-                            : "border border-transparent"
-                        }`}
-                      >
-                        <span className={`font-semibold ${isToday ? "text-accent" : "text-foreground"}`}>
-                          {entry.day}
-                          {isToday && <span className="ml-2 text-[10px] uppercase font-bold text-accent">Today</span>}
-                        </span>
-                        <span className={`font-medium ${entry.open ? "text-foreground" : "text-red-500"}`}>
-                          {entry.hours}
-                        </span>
-                      </li>
-                    );
-                  })}
+
+                {/* Grouped: weekdays vs Friday */}
+                <ul className="space-y-2">
+                  {/* Group 1: Sun–Thu (same hours) */}
+                  <li
+                    className={`flex items-center justify-between px-3 py-2.5 rounded-lg transition-colors ${
+                      ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday"].includes(todayName)
+                        ? "bg-accent/10 border border-accent/30"
+                        : "border border-transparent hover:bg-secondary/40"
+                    }`}
+                  >
+                    <span className="font-semibold text-foreground text-sm">
+                      Sun – Thu
+                      {["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday"].includes(todayName) && (
+                        <span className="ml-2 text-[10px] uppercase font-bold text-accent badge-today">Today</span>
+                      )}
+                    </span>
+                    <span className="text-sm font-medium text-foreground">7:00 AM – 5:00 PM</span>
+                  </li>
+
+                  {/* Group 2: Saturday */}
+                  <li
+                    className={`flex items-center justify-between px-3 py-2.5 rounded-lg transition-colors ${
+                      todayName === "Saturday"
+                        ? "bg-accent/10 border border-accent/30"
+                        : "border border-transparent hover:bg-secondary/40"
+                    }`}
+                  >
+                    <span className="font-semibold text-foreground text-sm">
+                      Saturday
+                      {todayName === "Saturday" && (
+                        <span className="ml-2 text-[10px] uppercase font-bold text-accent badge-today">Today</span>
+                      )}
+                    </span>
+                    <span className="text-sm font-medium text-foreground">7:00 AM – 5:00 PM</span>
+                  </li>
+
+                  {/* Group 3: Friday — closed */}
+                  <li
+                    className={`flex items-center justify-between px-3 py-2.5 rounded-lg transition-colors ${
+                      todayName === "Friday"
+                        ? "bg-red-500/10 border border-red-500/30"
+                        : "border border-transparent hover:bg-secondary/40"
+                    }`}
+                  >
+                    <span className="font-semibold text-foreground text-sm">
+                      Friday
+                      {todayName === "Friday" && (
+                        <span className="ml-2 text-[10px] uppercase font-bold text-red-500 badge-today">Today</span>
+                      )}
+                    </span>
+                    <span className="text-sm font-bold text-red-500">Closed</span>
+                  </li>
                 </ul>
-                <p className="mt-4 pt-3 border-t border-border/60 text-[11px] text-muted-foreground/80">
-                  <Sparkles className="inline h-3 w-3 text-accent mr-1" />
-                  Hours synced with Google Business Profile
+
+                {/* Quick summary line */}
+                <p className="mt-4 pt-3 border-t border-border/60 text-xs text-muted-foreground flex items-center justify-between">
+                  <span>
+                    <Sparkles className="inline h-3 w-3 text-accent mr-1" />
+                    Synced with Google Business Profile
+                  </span>
+                  <span className="text-[10px] font-mono text-muted-foreground/70">Asia/Riyadh (UTC+3)</span>
                 </p>
               </div>
 
