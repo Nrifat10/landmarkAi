@@ -43,7 +43,7 @@ export const metadata: Metadata = {
     type: "website",
     images: [
       {
-        url: "https://www.landmarkgulf.com/og-image.jpg",
+        url: "https://www.landmarkgulf.com/og-image.png",
         width: 1200,
         height: 630,
         alt: "Landmark Inter Gulf LLC — Jobs & Careers in Saudi Arabia",
@@ -54,7 +54,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "57+ Open Jobs in Saudi Arabia — Apply Now",
     description: "Welders, riggers, crane operators, safety officers and more. Aramco-approved positions.",
-    images: ["https://www.landmarkgulf.com/og-image.jpg"],
+    images: ["https://www.landmarkgulf.com/og-image.png"],
   },
   other: {
     "og:locale": "en_US",
