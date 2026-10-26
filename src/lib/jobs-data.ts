@@ -66,7 +66,7 @@ const categorySalaries: Record<string, { min: number; max: number; monthlyMin: n
 };
 const manpowerDescriptions: Record<string, { desc: string; resp: string[]; req: string[]; skills: string[] }> = {
   "pipe-fabricator": {
-    desc: "<p><strong>Landmark Inter Gulf LLC</strong> is hiring skilled <strong>Pipe Fabricators</strong> for major oil &amp; gas and petrochemical projects across Saudi Arabia. You will be responsible for fabricating, cutting, beveling and assembling carbon steel, stainless steel and alloy piping systems according to project specifications and Aramco standards.</p><p>The role involves reading isometric drawings, calculating pipe dimensions, performing fit-up inspections, and ensuring all fabrication meets ASME B31.3 and Saudi Aramco standards. You will work alongside welding teams, supervisors and QA/QC inspectors on Jafurah, Marjan, Jubail and Yanbu projects for clients including SINOPEC, Hyundai E&amp;C, L&amp;T and SKEC.</p><p>This is a full-time position with long-term project deployment, competitive hourly pay, accommodation, transportation and full benefits package. Aramco-approved candidates with prior experience on Aramco projects are strongly preferred.</p>",
+    desc: "<p><strong>Landmark Inter Gulf LLC</strong> is hiring skilled <strong>Pipe Fabricators</strong> for major oil &amp; gas and petrochemical projects across Saudi Arabia. You will be responsible for fabricating, cutting, beveling and assembling carbon steel, stainless steel and alloy piping systems according to project specifications and Aramco standards.</p><p>The role involves reading isometric drawings, calculating pipe dimensions, performing fit-up inspections, and ensuring all fabrication meets ASME B31.3 and Saudi Aramco standards. You will work alongside welding teams, supervisors and QA/QC inspectors on Jafurah, Marjan, Jubail and Yanbu projects for clients including SINOPEC, Hyundai E&amp;C, L&amp;T and SKEC.</p><p>This is a full-time position with long-term project deployment, competitive monthly pay, accommodation, transportation and full benefits package. Aramco-approved candidates with prior experience on Aramco projects are strongly preferred.</p>",
     resp: [
       "Fabricate and assemble piping systems from isometric and orthographic drawings",
       "Cut, bevel and prepare pipe ends for welding according to specifications",
@@ -88,7 +88,7 @@ const manpowerDescriptions: Record<string, { desc: string; resp: string[]; req: 
     skills: ["Pipe Fabrication", "Isometric Drawing Reading", "ASME B31.3", "Pipe Fitting", "Beveling", "Fit-up Inspection", "Aramco Standards", "Oil & Gas"],
   },
   "pipe-fitter": {
-    desc: "<p><strong>Landmark Inter Gulf LLC</strong> is hiring <strong>Pipe Fitters</strong> for petrochemical and oil &amp; gas construction projects in Saudi Arabia. You will be responsible for installing, assembling and maintaining piping systems for process plants, refineries and industrial facilities.</p><p>The role requires reading P&amp;IDs and isometric drawings, fitting and aligning pipes, valves and fittings, performing pressure tests, and ensuring compliance with Aramco and industrial standards. You will work on projects in Jafurah, Marjan, Jubail and Yanbu for major clients like SINOPEC, Hyundai E&amp;C, L&amp;T and SKEC.</p><p>This is a full-time role with attractive hourly pay, accommodation, transportation and full benefits. Long-term deployment opportunities available for high-performing candidates.</p>",
+    desc: "<p><strong>Landmark Inter Gulf LLC</strong> is hiring <strong>Pipe Fitters</strong> for petrochemical and oil &amp; gas construction projects in Saudi Arabia. You will be responsible for installing, assembling and maintaining piping systems for process plants, refineries and industrial facilities.</p><p>The role requires reading P&amp;IDs and isometric drawings, fitting and aligning pipes, valves and fittings, performing pressure tests, and ensuring compliance with Aramco and industrial standards. You will work on projects in Jafurah, Marjan, Jubail and Yanbu for major clients like SINOPEC, Hyundai E&amp;C, L&amp;T and SKEC.</p><p>This is a full-time role with attractive monthly salary, accommodation, transportation and full benefits. Long-term deployment opportunities available for high-performing candidates.</p>",
     resp: [
       "Install and assemble piping systems from isometric and P&ID drawings",
       "Fit and align pipes, valves, flanges and fittings",
@@ -109,7 +109,7 @@ const manpowerDescriptions: Record<string, { desc: string; resp: string[]; req: 
     skills: ["Pipe Fitting", "P&ID Reading", "Isometric Drawings", "Pressure Testing", "Aramco Standards", "Oil & Gas", "Petrochemical"],
   },
   "welder-6g-3g": {
-    desc: "<p><strong>Landmark Inter Gulf LLC</strong> is hiring certified <strong>6G/3G Welders</strong> for high-pressure piping and structural welding on major Aramco projects in Saudi Arabia. You will perform high-quality welding on carbon steel, stainless steel, duplex and alloy materials using TIG, ARC and combination processes.</p><p>The role involves welding to Aramco-approved welding procedures (WPS/PQR), passing RT and UT tests, and producing defect-free welds that meet Aramco inspection standards. You will work on Jafurah, Marjan and Jubail projects for clients including SINOPEC, Hyundai E&amp;C, L&amp;T and SKEC.</p><p>This is a full-time position with competitive hourly pay (top rates for 6G-certified welders), accommodation, transportation, medical insurance and long-term project stability. Aramco-approved welders preferred.</p>",
+    desc: "<p><strong>Landmark Inter Gulf LLC</strong> is hiring certified <strong>6G/3G Welders</strong> for high-pressure piping and structural welding on major Aramco projects in Saudi Arabia. You will perform high-quality welding on carbon steel, stainless steel, duplex and alloy materials using TIG, ARC and combination processes.</p><p>The role involves welding to Aramco-approved welding procedures (WPS/PQR), passing RT and UT tests, and producing defect-free welds that meet Aramco inspection standards. You will work on Jafurah, Marjan and Jubail projects for clients including SINOPEC, Hyundai E&amp;C, L&amp;T and SKEC.</p><p>This is a full-time position with competitive monthly pay (top rates for 6G-certified welders), accommodation, transportation, medical insurance and long-term project stability. Aramco-approved welders preferred.</p>",
     resp: [
       "Perform TIG, ARC and combination welding per Aramco-approved WPS",
       "Weld carbon steel, stainless steel, duplex and alloy materials",
@@ -155,10 +155,13 @@ const manpowerDescriptions: Record<string, { desc: string; resp: string[]; req: 
 function generateDefaultDescription(
   title: string,
   categoryName: string,
+  categoryId: string,
   experience: string,
   cert: string,
 ): { desc: string; resp: string[]; req: string[]; skills: string[] } {
-  const desc = `<p><strong>Landmark Inter Gulf LLC</strong> is hiring skilled <strong>${title}</strong> for major industrial projects across Saudi Arabia. As a ${title.toLowerCase()} in the ${categoryName} category, you will contribute to the success of large-scale oil &amp; gas, petrochemical, and construction projects for clients including SINOPEC, Hyundai E&amp;C, L&amp;T and SKEC.</p><p>The role requires ${experience} of relevant experience${cert && cert !== "—" ? ` with ${cert.toLowerCase()} certification` : ""}. You will work on project sites across Saudi Arabia including Jafurah, Marjan, Jubail, Yanbu, Riyadh and Dammam. Aramco-approved and TUV-certified candidates are preferred for specific roles.</p><p>This is a full-time position with competitive hourly pay (SAR 15-80 based on experience and certifications), accommodation, transportation, medical insurance and other benefits as per Saudi labor law. Long-term deployment opportunities available for high-performing candidates.</p>`;
+  const salary = categorySalaries[categoryId];
+  const salaryRange = salary ? `${salary.monthlyMin.toLocaleString()}-${salary.monthlyMax.toLocaleString()} SAR/month` : "competitive monthly salary in SAR";
+  const desc = `<p><strong>Landmark Inter Gulf LLC</strong> is hiring skilled <strong>${title}</strong> for major industrial projects across Saudi Arabia. As a ${title.toLowerCase()} in the ${categoryName} category, you will contribute to the success of large-scale oil &amp; gas, petrochemical, and construction projects for clients including SINOPEC, Hyundai E&amp;C, L&amp;T and SKEC.</p><p>The role requires ${experience} of relevant experience${cert && cert !== "—" ? ` with ${cert.toLowerCase()} certification` : ""}. You will work on project sites across Saudi Arabia including Jafurah, Marjan, Jubail, Yanbu and Dammam. Aramco-approved and TUV-certified candidates are preferred for specific roles.</p><p>This is a full-time position with ${salaryRange}, accommodation, transportation, medical insurance and other benefits as per Saudi labor law. Long-term deployment opportunities available for high-performing candidates.</p>`;
   const resp = [
     `Perform ${title} duties as per project requirements and Aramco standards`,
     "Read and interpret technical drawings, specifications and work orders",
@@ -224,7 +227,7 @@ export const jobs: Job[] = jobCategories.flatMap((category) =>
         ? (manpowerDescriptions[slug] ?? null)
         : null;
 
-    const fallback = generateDefaultDescription(job.title, category.name, job.experience, job.cert);
+    const fallback = generateDefaultDescription(job.title, category.name, category.id, job.experience, job.cert);
     const salary = categorySalaries[category.id] ?? { min: 15, max: 80, monthlyMin: 3000, monthlyMax: 16000 };
 
     return {

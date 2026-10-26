@@ -82,6 +82,78 @@ const itemListJsonLd = {
   numberOfItems: 57,
 };
 
+// FAQ schema — helps Google display our answers in "People Also Ask" snippets
+const faqJsonLd = {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  mainEntity: [
+    {
+      "@type": "Question",
+      name: "What jobs are available in Saudi Arabia for foreigners?",
+      acceptedAnswer: {
+        "@type": "Answer",
+        text: "Landmark Inter Gulf LLC is hiring foreigners with transferable Iqama for 57+ positions across Saudi Arabia including welders (6G/3G), riggers (TUV certified), scaffolders, pipe fabricators, crane operators (Aramco certified), safety officers, drivers, hospitality staff, supervisors and engineers. Projects are located in Jubail, Yanbu, Jafurah, Marjan and Dammam.",
+      },
+    },
+    {
+      "@type": "Question",
+      name: "How much do welders earn in Saudi Arabia?",
+      acceptedAnswer: {
+        "@type": "Answer",
+        text: "Skilled workers at Landmark Inter Gulf LLC earn SAR 3,500-11,000 per month depending on the role, certifications and experience. 6G welders with Aramco certification typically earn at the higher end. We also provide accommodation, transportation, medical insurance and end-of-service benefits.",
+      },
+    },
+    {
+      "@type": "Question",
+      name: "What is the salary of a rigger in Saudi Arabia?",
+      acceptedAnswer: {
+        "@type": "Answer",
+        text: "TUV-certified riggers at Landmark Inter Gulf LLC earn competitive monthly salaries between SAR 5,000-11,000 depending on experience and Aramco approval status. The role includes accommodation, transportation, medical insurance and other benefits.",
+      },
+    },
+    {
+      "@type": "Question",
+      name: "Do I need transferable Iqama to work in Saudi Arabia?",
+      acceptedAnswer: {
+        "@type": "Answer",
+        text: "Yes, a transferable Iqama is preferred for most positions. However, we also accept candidates on visit visa, exit & re-entry, and Saudi nationals. If you are outside KSA, we can provide visa sponsorship for qualified candidates.",
+      },
+    },
+    {
+      "@type": "Question",
+      name: "What certifications are required for Aramco projects in Saudi Arabia?",
+      acceptedAnswer: {
+        "@type": "Answer",
+        text: "For Saudi Aramco projects, key certifications include Aramco-approved safety officer, Aramco WPR (Work Permit Receiver), Aramco-certified crane operator, TUV certification for riggers and scaffolders, 6G welding certification for welders, and NEBOSH for safety managers. We hire candidates with these certifications.",
+      },
+    },
+    {
+      "@type": "Question",
+      name: "How can I apply for jobs at Landmark Inter Gulf LLC?",
+      acceptedAnswer: {
+        "@type": "Answer",
+        text: "You can apply online at landmarkgulf.com/jobs. Browse open positions by category (Manpower, Supervisors, Equipment Operators, Hospitality, Transport, Management), view the full job description on each job page, and fill out the application form with your personal details, experience, certifications and visa status.",
+      },
+    },
+    {
+      "@type": "Question",
+      name: "Are accommodation and transportation provided for workers in Saudi Arabia?",
+      acceptedAnswer: {
+        "@type": "Answer",
+        text: "Yes, Landmark Inter Gulf LLC provides accommodation, transportation, medical insurance and other benefits to all deployed workers as part of the employment package. Site workers also receive annual leave and end-of-service benefits as per Saudi labor law.",
+      },
+    },
+    {
+      "@type": "Question",
+      name: "Where is Landmark Inter Gulf LLC located?",
+      acceptedAnswer: {
+        "@type": "Answer",
+        text: "Landmark Inter Gulf LLC is headquartered at King Faisal W, King Fahd Industrial Port, Al Jubail 35712, Eastern Province, Saudi Arabia. We deploy manpower and equipment to projects across the Kingdom including Jafurah, Marjan, Jubail, Yanbu, Riyadh and Dammam.",
+      },
+    },
+  ],
+};
+
 export default function JobsLayout({ children }: { children: React.ReactNode }) {
   return (
     <>
@@ -92,6 +164,10 @@ export default function JobsLayout({ children }: { children: React.ReactNode }) 
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(itemListJsonLd) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }}
       />
       {children}
     </>

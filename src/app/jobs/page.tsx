@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, Suspense } from "react";
+import { useState, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
@@ -47,16 +47,10 @@ function JobsPageInner() {
 
   const [activeCategory, setActiveCategory] = useState("all");
   const [searchQuery, setSearchQuery] = useState("");
-  // Track if user manually closed — prevents useEffect from reopening
+  // Track if user manually closed — prevents reopen from URL param
   const [manuallyClosed, setManuallyClosed] = useState(false);
+  // Initialize with URL param directly (no effect needed)
   const [applyingJob, setApplyingJob] = useState<string | null>(initialApplyJob);
-
-  // Only open from URL on first load — never reopen after manual close
-  useEffect(() => {
-    if (initialApplyJob && !manuallyClosed && !applyingJob) {
-      setApplyingJob(initialApplyJob);
-    }
-  }, [initialApplyJob, manuallyClosed, applyingJob]);
 
   const handleClose = () => {
     setManuallyClosed(true);
