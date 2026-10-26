@@ -33,25 +33,37 @@ export type Job = {
   skills: string[];
   industry: string;
   occupationCode: string;
-  minSalary: number;
-  maxSalary: number;
+  // Saudi market standard — monthly salary in SAR
+  minSalary: number;   // Monthly SAR (low end)
+  maxSalary: number;   // Monthly SAR (high end)
+  salaryUnit: "MONTH"; // Schema.org unitText
 };
 
 // Benefits — same across all jobs (consistent employment package)
+// Salary information is per-category, shown as monthly SAR (Saudi market standard)
 const standardBenefits = [
-  "Competitive hourly pay (SAR 15-80 based on role, experience and certifications)",
+  "Competitive monthly salary in SAR (based on role, experience and certifications)",
   "Accommodation provided near the project site",
   "Transportation to and from work site",
   "Medical insurance coverage",
   "Iqama transfer and renewal support",
-  "Annual leave with paid ticket home",
-  "End-of-service benefits as per Saudi labor law",
-  "Safe working environment compliant with Aramco standards",
+  "Annual leave with paid ticket home (per Saudi labor law)",
+  "End-of-service benefits (EOSB) as per Saudi labor law",
+  "Safe working environment compliant with Aramco HSE standards",
   "Career growth and training opportunities",
-  "Opportunity to work with major EPC contractors",
+  "Opportunity to work with major EPC contractors (SINOPEC, Hyundai E&C, L&T, SKEC)",
 ];
 
-// Category: Manpower & Skilled Trades descriptions
+// Category-specific salary ranges (SAR per hour) — based on Saudi market rates
+// Monthly equivalent (≈208 hrs/month) shown in description for clarity
+const categorySalaries: Record<string, { min: number; max: number; monthlyMin: number; monthlyMax: number }> = {
+  manpower: { min: 18, max: 55, monthlyMin: 3500, monthlyMax: 11000 },     // Helpers to skilled trades
+  supervisors: { min: 35, max: 90, monthlyMin: 7000, monthlyMax: 18000 }, // Foremen to supervisors
+  operators: { min: 25, max: 75, monthlyMin: 5000, monthlyMax: 15000 },   // Light driver to Aramco crane op
+  hospitality: { min: 12, max: 30, monthlyMin: 2500, monthlyMax: 6000 },   // Cleaners to hotel staff
+  transport: { min: 15, max: 50, monthlyMin: 3000, monthlyMax: 10000 },    // Light to trailer driver
+  management: { min: 40, max: 120, monthlyMin: 8000, monthlyMax: 25000 }, // Officers to managers
+};
 const manpowerDescriptions: Record<string, { desc: string; resp: string[]; req: string[]; skills: string[] }> = {
   "pipe-fabricator": {
     desc: "<p><strong>Landmark Inter Gulf LLC</strong> is hiring skilled <strong>Pipe Fabricators</strong> for major oil &amp; gas and petrochemical projects across Saudi Arabia. You will be responsible for fabricating, cutting, beveling and assembling carbon steel, stainless steel and alloy piping systems according to project specifications and Aramco standards.</p><p>The role involves reading isometric drawings, calculating pipe dimensions, performing fit-up inspections, and ensuring all fabrication meets ASME B31.3 and Saudi Aramco standards. You will work alongside welding teams, supervisors and QA/QC inspectors on Jafurah, Marjan, Jubail and Yanbu projects for clients including SINOPEC, Hyundai E&amp;C, L&amp;T and SKEC.</p><p>This is a full-time position with long-term project deployment, competitive hourly pay, accommodation, transportation and full benefits package. Aramco-approved candidates with prior experience on Aramco projects are strongly preferred.</p>",
@@ -213,6 +225,7 @@ export const jobs: Job[] = jobCategories.flatMap((category) =>
         : null;
 
     const fallback = generateDefaultDescription(job.title, category.name, job.experience, job.cert);
+    const salary = categorySalaries[category.id] ?? { min: 15, max: 80, monthlyMin: 3000, monthlyMax: 16000 };
 
     return {
       slug,
@@ -231,8 +244,9 @@ export const jobs: Job[] = jobCategories.flatMap((category) =>
       skills: detailed?.skills ?? fallback.skills,
       industry: "Construction & Industrial Services",
       occupationCode: occupationCodes[category.id] ?? "47-2061.00",
-      minSalary: 15,
-      maxSalary: 80,
+      minSalary: salary.monthlyMin,
+      maxSalary: salary.monthlyMax,
+      salaryUnit: "MONTH",
     };
   }),
 );

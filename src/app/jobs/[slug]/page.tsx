@@ -93,7 +93,7 @@ function generateJobPostingJsonLd(job: typeof jobs[0]) {
         "@type": "QuantitativeValue",
         minValue: job.minSalary,
         maxValue: job.maxSalary,
-        unitText: "HOUR",
+        unitText: job.salaryUnit || "MONTH",
       },
     },
     qualifications: job.requirements.join(" "),
@@ -199,7 +199,7 @@ export default async function JobDetailPage({ params }: JobPageProps) {
               </span>
             )}
             <span className="inline-flex items-center gap-1.5 rounded-full bg-accent/20 border border-accent/40 px-3 py-1.5 text-xs font-bold">
-              💰 SAR {job.minSalary}-{job.maxSalary}/hour
+              💰 SAR {job.minSalary.toLocaleString()}-{job.maxSalary.toLocaleString()}/month
             </span>
             <span className="inline-flex items-center gap-1.5 rounded-full bg-accent/20 border border-accent/40 px-3 py-1.5 text-xs font-bold">
               📍 Saudi Arabia
@@ -326,7 +326,7 @@ export default async function JobDetailPage({ params }: JobPageProps) {
                     )}
                     <div className="flex justify-between">
                       <span className="text-muted-foreground">Salary</span>
-                      <span className="font-semibold text-foreground">SAR {job.minSalary}-{job.maxSalary}/hr</span>
+                      <span className="font-semibold text-foreground">SAR {job.minSalary.toLocaleString()}-{job.maxSalary.toLocaleString()}/month</span>
                     </div>
                     <div className="flex justify-between">
                       <span className="text-muted-foreground">Location</span>

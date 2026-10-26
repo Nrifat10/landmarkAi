@@ -47,13 +47,21 @@ function JobsPageInner() {
 
   const [activeCategory, setActiveCategory] = useState("all");
   const [searchQuery, setSearchQuery] = useState("");
+  // Track if user manually closed — prevents useEffect from reopening
+  const [manuallyClosed, setManuallyClosed] = useState(false);
   const [applyingJob, setApplyingJob] = useState<string | null>(initialApplyJob);
 
+  // Only open from URL on first load — never reopen after manual close
   useEffect(() => {
-    if (initialApplyJob && !applyingJob) {
+    if (initialApplyJob && !manuallyClosed && !applyingJob) {
       setApplyingJob(initialApplyJob);
     }
-  }, [initialApplyJob, applyingJob]);
+  }, [initialApplyJob, manuallyClosed, applyingJob]);
+
+  const handleClose = () => {
+    setManuallyClosed(true);
+    setApplyingJob(null);
+  };
 
   const filteredCategories = activeCategory === "all"
     ? jobCategories
@@ -301,7 +309,7 @@ function JobsPageInner() {
         {applyingJob && (
           <JobApplicationForm
             jobTitle={applyingJob}
-            onClose={() => setApplyingJob(null)}
+            onClose={handleClose}
           />
         )}
       </AnimatePresence>
