@@ -57,11 +57,11 @@ const standardBenefits = [
 // Category-specific salary ranges (SAR per hour) — based on Saudi market rates
 // Monthly equivalent (≈208 hrs/month) shown in description for clarity
 const categorySalaries: Record<string, { min: number; max: number; monthlyMin: number; monthlyMax: number }> = {
-  manpower: { min: 18, max: 55, monthlyMin: 3500, monthlyMax: 11000 },     // Helpers to skilled trades
+  manpower: { min: 10, max: 55, monthlyMin: 2000, monthlyMax: 11000 },     // Helpers to skilled trades
   supervisors: { min: 35, max: 90, monthlyMin: 7000, monthlyMax: 18000 }, // Foremen to supervisors
   operators: { min: 25, max: 75, monthlyMin: 5000, monthlyMax: 15000 },   // Light driver to Aramco crane op
-  hospitality: { min: 12, max: 30, monthlyMin: 2500, monthlyMax: 6000 },   // Cleaners to hotel staff
-  transport: { min: 15, max: 50, monthlyMin: 3000, monthlyMax: 10000 },    // Light to trailer driver
+  hospitality: { min: 10, max: 30, monthlyMin: 2000, monthlyMax: 6000 },   // Cleaners to hotel staff
+  transport: { min: 12, max: 50, monthlyMin: 2000, monthlyMax: 10000 },    // Light to trailer driver
   management: { min: 40, max: 120, monthlyMin: 8000, monthlyMax: 25000 }, // Officers to managers
 };
 const manpowerDescriptions: Record<string, { desc: string; resp: string[]; req: string[]; skills: string[] }> = {
@@ -228,7 +228,7 @@ export const jobs: Job[] = jobCategories.flatMap((category) =>
         : null;
 
     const fallback = generateDefaultDescription(job.title, category.name, category.id, job.experience, job.cert);
-    const salary = categorySalaries[category.id] ?? { min: 15, max: 80, monthlyMin: 3000, monthlyMax: 16000 };
+    const salary = categorySalaries[category.id] ?? { min: 10, max: 80, monthlyMin: 2000, monthlyMax: 16000 };
 
     return {
       slug,

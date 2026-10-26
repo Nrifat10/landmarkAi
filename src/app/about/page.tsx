@@ -121,8 +121,13 @@ export default function AboutPage() {
               </div>
 
               <div className="mt-6 rounded-xl border-2 border-accent/30 bg-accent/5 p-5">
-                <div className="flex items-start gap-3">
-                  <TrendingUp className="h-6 w-6 text-accent shrink-0 mt-0.5" />
+                <div className="flex items-start gap-4">
+                  <img
+                    src="/saudi-vision-2030.svg"
+                    alt="Saudi Vision 2030"
+                    className="h-14 w-auto object-contain shrink-0"
+                    loading="lazy"
+                  />
                   <div>
                     <h3 className="font-bold text-foreground">
                       Committed to Vision 2030

@@ -314,6 +314,23 @@ function JobsPageInner() {
               );
             })}
           </div>
+
+          {/* Vision 2030 banner */}
+          <div className="mt-10 flex flex-col sm:flex-row items-center justify-center gap-4 rounded-2xl border-2 border-accent/30 bg-gradient-to-br from-accent/5 to-accent/10 p-6 text-center sm:text-left">
+            <img
+              src="/saudi-vision-2030.svg"
+              alt="Saudi Vision 2030"
+              className="h-14 w-auto object-contain"
+              loading="lazy"
+            />
+            <div className="max-w-2xl">
+              <h3 className="text-sm font-bold text-foreground">Proudly supporting Saudi Vision 2030</h3>
+              <p className="mt-1 text-xs text-muted-foreground leading-relaxed">
+                By joining Landmark Inter Gulf, you become part of the Kingdom&apos;s transformation — contributing to
+                major infrastructure, energy and industrial projects that are shaping Saudi Arabia&apos;s future.
+              </p>
+            </div>
+          </div>
         </div>
       </section>
 

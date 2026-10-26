@@ -33,6 +33,15 @@ export function SiteFooter() {
               <span className="h-1.5 w-1.5 rounded-full bg-accent" />
               Contributing to Vision 2030
             </p>
+            <div className="mt-4">
+              <img
+                src="/saudi-vision-2030.svg"
+                alt="Saudi Vision 2030 — Kingdom of Saudi Arabia"
+                title="Proudly supporting Saudi Vision 2030"
+                className="h-16 w-auto object-contain brightness-0 invert opacity-90 hover:opacity-100 transition-opacity"
+                loading="lazy"
+              />
+            </div>
           </div>
 
           {/* Services */}
