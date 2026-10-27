@@ -56,11 +56,11 @@ export function AdminLoginForm() {
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
       <div className="space-y-2">
-        <Label htmlFor="password" className="text-xs font-bold uppercase tracking-wider">
+        <Label htmlFor="password" className="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">
           Password
         </Label>
         <div className="relative">
-          <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+          <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
           <Input
             id="password"
             type={showPassword ? "text" : "password"}
@@ -68,13 +68,13 @@ export function AdminLoginForm() {
             onChange={(e) => setPassword(e.target.value)}
             required
             autoFocus
-            placeholder="••••••••••••"
-            className="pl-10 pr-10 h-11"
+            placeholder="Enter your password"
+            className="pl-10 pr-10 h-11 bg-slate-50 dark:bg-slate-800/50 border-slate-200 dark:border-slate-800"
           />
           <button
             type="button"
             onClick={() => setShowPassword((s) => !s)}
-            className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+            className="absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-700 dark:hover:text-slate-200"
             tabIndex={-1}
             aria-label={showPassword ? "Hide password" : "Show password"}
           >
@@ -86,7 +86,7 @@ export function AdminLoginForm() {
       <Button
         type="submit"
         disabled={loading || !password}
-        className="w-full h-11 bg-accent text-accent-foreground hover:bg-accent/90 font-bold"
+        className="w-full h-11 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-white font-bold shadow-lg shadow-amber-500/20"
       >
         {loading ? (
           <><Loader2 className="h-4 w-4 mr-2 animate-spin" /> Signing in…</>
