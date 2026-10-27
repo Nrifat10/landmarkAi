@@ -360,10 +360,9 @@ function JobApplicationForm({ jobTitle, onClose }: { jobTitle: string; onClose: 
   const [submitted, setSubmitted] = useState(false);
   const [formStartTime] = useState(() => Date.now());
 
-  // SplitForms access key — published in client bundle (SplitForms treats it as public form ID)
-  // API URL: https://splitforms.com/api/submit
-  // (Unlike Web3Forms, SplitForms accepts both server-side and browser-origin POSTs on free plan)
-  const SPLITFORMS_ACCESS_KEY = "de6f4de7749e46df98c162d578579a15";
+  // No external access key needed — form posts to our own /api/submit endpoint,
+  // which writes to Vercel Postgres and is visible in the admin dashboard at
+  // support.landmarkgulf.com
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -424,33 +423,35 @@ function JobApplicationForm({ jobTitle, onClose }: { jobTitle: string; onClose: 
       return;
     }
 
-    // Submit directly to SplitForms from the browser
+    // Submit to our own API — Vercel Postgres-backed dashboard at support.landmarkgulf.com
     try {
-      const response = await fetch("https://splitforms.com/api/submit", {
+      const response = await fetch("/api/submit", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
           Accept: "application/json",
         },
         body: JSON.stringify({
-          access_key: SPLITFORMS_ACCESS_KEY,
+          formType: "job",
+          access_key: undefined,
           subject: `New Job Application: ${jobTitle} — Landmark Inter Gulf LLC`,
           from_name: "Landmark Inter Gulf — Jobs Page",
           name: formData.get("fullName"),
           email,
           phone,
           nationality: formData.get("nationality"),
-          current_location: formData.get("currentLocation"),
+          currentLocation: formData.get("currentLocation"),
           experience: formData.get("experience"),
           certifications: formData.get("certifications") || "Not provided",
           languages: formData.get("languages"),
-          iqama_visa_status: formData.get("iqamaStatus"),
-          notice_period: formData.get("noticePeriod") || "Not provided",
+          iqamaStatus: formData.get("iqamaStatus"),
+          noticePeriod: formData.get("noticePeriod") || "Not provided",
           message: formData.get("message") || "—",
-          job_title: jobTitle,
+          jobTitle,
           company: "Landmark Inter Gulf LLC",
           replyto: email,
           botcheck: botcheck ? "true" : "",
+          formStartTime,
         }),
       });
 

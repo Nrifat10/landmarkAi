@@ -40,10 +40,9 @@ export default function ContactPage() {
   const [submitted, setSubmitted] = useState(false);
   const [formStartTime] = useState(() => Date.now());
 
-  // SplitForms access key — published in client bundle (SplitForms treats it as public form ID)
-  // API URL: https://splitforms.com/api/submit
-  // (Unlike Web3Forms, SplitForms accepts both server-side and browser-origin POSTs on free plan)
-  const SPLITFORMS_ACCESS_KEY = "de6f4de7749e46df98c162d578579a15";
+  // No external access key needed — form posts to our own /api/submit endpoint,
+  // which writes to Vercel Postgres and is visible in the admin dashboard at
+  // support.landmarkgulf.com
 
   const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -83,15 +82,15 @@ export default function ContactPage() {
     }
 
     try {
-      // Submit directly to SplitForms from the browser
-      const response = await fetch("https://splitforms.com/api/submit", {
+      // Submit to our own API — Vercel Postgres-backed dashboard at support.landmarkgulf.com
+      const response = await fetch("/api/submit", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
           Accept: "application/json",
         },
         body: JSON.stringify({
-          access_key: SPLITFORMS_ACCESS_KEY,
+          formType: "contact",
           subject: "New Enquiry — Landmark Inter Gulf LLC Website",
           from_name: "Landmark Inter Gulf — Contact Form",
           name: formData.get("name"),
@@ -102,6 +101,7 @@ export default function ContactPage() {
           message: formData.get("message"),
           replyto: email,
           botcheck: botcheck ? "true" : "",
+          formStartTime,
         }),
       });
 

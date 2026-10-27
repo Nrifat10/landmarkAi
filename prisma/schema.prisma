@@ -8,10 +8,68 @@ generator client {
   provider = "prisma-client-js"
 }
 
+// Switched to postgresql for Vercel Postgres compatibility (free tier 256MB).
+// SQLite doesn't work on Vercel serverless (filesystem is read-only).
 datasource db {
-  provider = "sqlite"
+  provider = "postgresql"
   url      = env("DATABASE_URL")
 }
+
+// ────────────────────────────────────────────────────────────
+// Form submission models (used by /api/submit + /admin/* routes)
+// ────────────────────────────────────────────────────────────
+
+model JobApplication {
+  id              String   @id @default(cuid())
+  jobTitle        String
+  name            String
+  email           String
+  phone           String
+  nationality     String
+  currentLocation String
+  experience      String
+  certifications  String?  @db.Text
+  languages       String
+  iqamaStatus     String
+  noticePeriod    String?
+  message         String?  @db.Text
+  ip              String?
+  // status: "new" (just arrived) | "read" (opened by admin) | "spam" (auto or manual) | "archived"
+  status          String   @default("new")
+  // Auto-spam detection score (0–100, higher = more suspicious)
+  spamScore       Int      @default(0)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  @@index([status])
+  @@index([createdAt])
+  @@index([email])
+  @@index([jobTitle])
+}
+
+model ContactEnquiry {
+  id         String   @id @default(cuid())
+  name       String
+  email      String
+  phone      String?
+  company    String?
+  service    String?
+  message    String   @db.Text
+  ip         String?
+  // status: "new" | "read" | "spam" | "archived"
+  status     String   @default("new")
+  spamScore  Int      @default(0)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  @@index([status])
+  @@index([createdAt])
+  @@index([email])
+}
+
+// ────────────────────────────────────────────────────────────
+// Original demo models — kept for backward compat; safe to remove if unused
+// ────────────────────────────────────────────────────────────
 
 model User {
   id        String   @id @default(cuid())
