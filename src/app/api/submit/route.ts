@@ -32,10 +32,28 @@ const SPAM_KEYWORDS = [
   "seo backlinks", "buy cheap", "discount drugs", "online pharmacy",
 ];
 
+// Email patterns that are almost certainly fake/spam — used only for scoring,
+// never as a hard block. A legitimate submission can still go through even if
+// flagged, but it'll be auto-marked as 'spam' status for manual review.
+//
+// NOTE: We intentionally do NOT match 'test.*@' or 'example.*@' prefixes —
+// many legitimate users have emails like test.user@gmail.com or
+// example.123@gmail.com. We only flag the well-known disposable email
+// domains (mailinator, 10minutemail, etc.) and example.com/org/net domains
+// reserved by IANA for documentation.
 const FAKE_EMAIL_PATTERNS = [
-  /^test.*@/i, /^example.*@/i, /^bot.*@/i, /^spam.*@/i, /^temp.*@/i,
-  /@example\.(com|org|net)$/i, /@test\.(com|org)$/i, /@mailinator\.com$/i,
-  /@10minutemail\./i, /@guerrillamail\./i, /@throwawaymail\./i,
+  /^bot[0-9]*@/i,           // bot@, bot123@
+  /^spam[0-9]*@/i,          // spam@, spam123@
+  /@example\.(com|org|net)$/i,    // IANA-reserved documentation domain
+  /@mailinator\.com$/i,           // well-known disposable email
+  /@10minutemail\./i,
+  /@guerrillamail\./i,
+  /@throwawaymail\./i,
+  /@tempmail\./i,
+  /@yopmail\./i,
+  /@trashmail\./i,
+  /@sharklasers\.com$/i,
+  /@getnada\.com$/i,
 ];
 
 function getClientIp(req: NextRequest): string {

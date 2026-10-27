@@ -390,13 +390,20 @@ function JobApplicationForm({ jobTitle, onClose }: { jobTitle: string; onClose: 
       return;
     }
 
-    // Client-side rate limit — one application per browser (localStorage)
+    // Client-side rate limit — block accidental double-submits
+    // Only blocks if the EXACT SAME email AND phone AND jobTitle were submitted
+    // earlier from this browser. Allows the same person to apply to different
+    // jobs with the same contact info.
     const applicationKey = `landmark_application`;
     const existingApplication = localStorage.getItem(applicationKey);
     if (existingApplication) {
       try {
         const app = JSON.parse(existingApplication);
-        if (app.email === email || app.phone === phone) {
+        const exactSameApplication =
+          app.email === email &&
+          app.phone === phone &&
+          app.jobTitle === jobTitle;
+        if (exactSameApplication) {
           setSubmitting(false);
           setSubmitted(true);
           toast({
@@ -407,7 +414,7 @@ function JobApplicationForm({ jobTitle, onClose }: { jobTitle: string; onClose: 
           return;
         }
       } catch {
-        // ignore
+        // ignore localStorage parse errors — proceed with submission
       }
     }
 
@@ -433,9 +440,6 @@ function JobApplicationForm({ jobTitle, onClose }: { jobTitle: string; onClose: 
         },
         body: JSON.stringify({
           formType: "job",
-          access_key: undefined,
-          subject: `New Job Application: ${jobTitle} — Landmark Inter Gulf LLC`,
-          from_name: "Landmark Inter Gulf — Jobs Page",
           name: formData.get("fullName"),
           email,
           phone,
@@ -448,7 +452,6 @@ function JobApplicationForm({ jobTitle, onClose }: { jobTitle: string; onClose: 
           noticePeriod: formData.get("noticePeriod") || "Not provided",
           message: formData.get("message") || "—",
           jobTitle,
-          company: "Landmark Inter Gulf LLC",
           replyto: email,
           botcheck: botcheck ? "true" : "",
           formStartTime,

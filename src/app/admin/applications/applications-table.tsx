@@ -45,6 +45,7 @@ const statusTabs = [
   { key: "all", label: "All" },
   { key: "new", label: "New" },
   { key: "read", label: "Read" },
+  { key: "spam", label: "Spam" },
   { key: "archived", label: "Archived" },
 ];
 

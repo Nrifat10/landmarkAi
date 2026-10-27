@@ -91,8 +91,6 @@ export default function ContactPage() {
         },
         body: JSON.stringify({
           formType: "contact",
-          subject: "New Enquiry — Landmark Inter Gulf LLC Website",
-          from_name: "Landmark Inter Gulf — Contact Form",
           name: formData.get("name"),
           email,
           phone: formData.get("phone") || "Not provided",
