@@ -17,11 +17,12 @@ function getClientIp(req: NextRequest): string {
 
 // Fallback key — used if env var is not set. This is still private because
 // the file lives only on the server, never sent to the browser.
-const FALLBACK_WEB3FORMS_KEY = "d522346a-fd18-4658-888a-82adafcf7bdd";
+// Updated 2026-10-27 — same active Web3Forms access key used by the job application form.
+const FALLBACK_WEB3FORMS_KEY = "a4cca705-45da-4728-b9b2-5cb0c214c544";
 
 // Resolve the Web3Forms access key from any of the env vars the user may have set.
 // The user added NEXT_PUBLIC_WEB3FORMS_KEY in Vercel — server route handlers can
-// read NEXT_PUBLIC_ vars fine.
+// read NEXT_PUBLIC_ vars fine. Falls back to the hardcoded key if none are set.
 function resolveAccessKey(): string {
   return (
     process.env.WEB3FORMS_CONTACT_KEY ||
