@@ -96,16 +96,38 @@ export async function ensureSchema(): Promise<void> {
 
   schemaInitPromise = (async () => {
     try {
-      // Use $executeRaw to run the CREATE TABLE / CREATE INDEX SQL
-      // Split by semicolons because $executeRawUnsafe runs one statement at a time
+      // Use $executeRawUnsafe to run each statement individually.
+      // PostgreSQL doesn't accept multi-statement strings via Prisma's
+      // $executeRawUnsafe (one statement per call only).
+      //
+      // Splitting logic:
+      //   - Split on ';' (with lookahead for next statement beginning)
+      //   - Filter out empty/comment-only statements
+      //   - For statements that contain a real SQL keyword (CREATE/INSERT/etc.),
+      //     strip the leading comment lines before running
       const statements = SCHEMA_INIT_SQL
         .split(/;(?=\s*(?:--|CREATE|\(|$))/i)
         .map((s) => s.trim())
         .filter((s) => s.length > 0);
 
       for (const stmt of statements) {
-        if (stmt.startsWith("--")) continue;
-        await db.$executeRawUnsafe(stmt + ";");
+        // If the statement is a pure comment (no SQL keywords), skip it.
+        // PostgreSQL allows comments but $executeRawUnsafe requires actual SQL.
+        if (!/\b(CREATE|INSERT|UPDATE|DELETE|ALTER|DROP|GRANT)\b/i.test(stmt)) {
+          continue;
+        }
+
+        // Strip leading comment lines (lines starting with --) so the
+        // statement starts with the actual SQL keyword.
+        const cleanedStmt = stmt
+          .split("\n")
+          .filter((line) => !line.trim().startsWith("--"))
+          .join("\n")
+          .trim();
+
+        if (!cleanedStmt) continue;
+
+        await db.$executeRawUnsafe(cleanedStmt + ";");
       }
       globalForPrisma.prismaSchemaInitialized = true;
       console.log("[db] Schema initialized — JobApplication & ContactEnquiry tables verified");
