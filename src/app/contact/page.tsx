@@ -40,20 +40,25 @@ export default function ContactPage() {
   const [submitted, setSubmitted] = useState(false);
   const [formStartTime] = useState(() => Date.now());
 
+  // Web3Forms access key — required in client bundle for direct browser→Web3Forms call
+  // (Web3Forms blocks server-side fetch on free plan)
+  const WEB3FORMS_ACCESS_KEY = "a4cca705-45da-4728-b9b2-5cb0c214c544";
+
   const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setSubmitting(true);
 
     const formData = new FormData(e.currentTarget);
     const botcheck = formData.get("botcheck");
+    const email = formData.get("email") as string;
 
-    // Bot protection #1: Honeypot — bots fill hidden fields, humans don't
+    // Client-side bot protection #1: Honeypot — bots fill hidden fields, humans don't
     if (botcheck) {
       setSubmitting(false);
       return;
     }
 
-    // Bot protection #2: Time-based check — humans take >3s to fill a form, bots submit instantly
+    // Client-side bot protection #2: Time-based check — humans take >3s to fill a form
     const elapsed = Date.now() - formStartTime;
     if (elapsed < 3000) {
       setSubmitting(false);
@@ -64,26 +69,39 @@ export default function ContactPage() {
       return;
     }
 
-    const payload = {
-      name: formData.get("name"),
-      email: formData.get("email"),
-      phone: formData.get("phone"),
-      company: formData.get("company"),
-      service: formData.get("service"),
-      message: formData.get("message"),
-      botcheck,
-      formStartTime,
-    };
+    // Email format validation
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      setSubmitting(false);
+      toast({
+        title: "Invalid email",
+        description: "Please enter a valid email address.",
+        variant: "destructive",
+      });
+      return;
+    }
 
     try {
-      // Calls our OWN server-side API route — the Web3Forms key stays private
-      const response = await fetch("/api/contact", {
+      // Submit directly to Web3Forms from the browser (server-side blocked on free plan)
+      const response = await fetch("https://api.web3forms.com/submit", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
           Accept: "application/json",
         },
-        body: JSON.stringify(payload),
+        body: JSON.stringify({
+          access_key: WEB3FORMS_ACCESS_KEY,
+          subject: "New Enquiry — Landmark Inter Gulf LLC Website",
+          from_name: "Landmark Inter Gulf — Contact Form",
+          name: formData.get("name"),
+          email,
+          phone: formData.get("phone") || "Not provided",
+          company: formData.get("company") || "Not provided",
+          service: formData.get("service") || "Not specified",
+          message: formData.get("message"),
+          replyto: email,
+          botcheck: botcheck ? "true" : "",
+        }),
       });
 
       const result = await response.json();
@@ -100,7 +118,7 @@ export default function ContactPage() {
       } else {
         toast({
           title: "Submission failed",
-          description: result.message || "Please try again later.",
+          description: result.message || "Please try again later or email us at info@landmarkgulf.com",
           variant: "destructive",
         });
       }

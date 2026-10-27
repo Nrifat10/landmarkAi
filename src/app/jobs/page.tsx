@@ -360,6 +360,10 @@ function JobApplicationForm({ jobTitle, onClose }: { jobTitle: string; onClose: 
   const [submitted, setSubmitted] = useState(false);
   const [formStartTime] = useState(() => Date.now());
 
+  // Web3Forms access key — required to be in client bundle for direct browser→Web3Forms call
+  // (Web3Forms blocks server-side fetch on free plan)
+  const WEB3FORMS_ACCESS_KEY = "a4cca705-45da-4728-b9b2-5cb0c214c544";
+
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setSubmitting(true);
@@ -369,11 +373,13 @@ function JobApplicationForm({ jobTitle, onClose }: { jobTitle: string; onClose: 
     const phone = formData.get("phone") as string;
     const botcheck = formData.get("botcheck");
 
+    // Client-side bot protection #1 — honeypot field must be empty
     if (botcheck) {
       setSubmitting(false);
       return;
     }
 
+    // Client-side bot protection #2 — humans take >3s to fill the form
     const elapsed = Date.now() - formStartTime;
     if (elapsed < 3000) {
       setSubmitting(false);
@@ -384,6 +390,7 @@ function JobApplicationForm({ jobTitle, onClose }: { jobTitle: string; onClose: 
       return;
     }
 
+    // Client-side rate limit — one application per browser (localStorage)
     const applicationKey = `landmark_application`;
     const existingApplication = localStorage.getItem(applicationKey);
     if (existingApplication) {
@@ -404,31 +411,46 @@ function JobApplicationForm({ jobTitle, onClose }: { jobTitle: string; onClose: 
       }
     }
 
-    const payload = {
-      name: formData.get("fullName"),
-      email,
-      phone,
-      nationality: formData.get("nationality"),
-      currentLocation: formData.get("currentLocation"),
-      experience: formData.get("experience"),
-      certifications: formData.get("certifications"),
-      languages: formData.get("languages"),
-      iqamaStatus: formData.get("iqamaStatus"),
-      noticePeriod: formData.get("noticePeriod"),
-      message: formData.get("message"),
-      jobTitle,
-      botcheck,
-      formStartTime,
-    };
+    // Email format validation
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      setSubmitting(false);
+      toast({
+        title: "Invalid email",
+        description: "Please enter a valid email address.",
+        variant: "destructive",
+      });
+      return;
+    }
 
+    // Submit directly to Web3Forms from the browser (server-side blocked on free plan)
     try {
-      const response = await fetch("/api/job-application", {
+      const response = await fetch("https://api.web3forms.com/submit", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
           Accept: "application/json",
         },
-        body: JSON.stringify(payload),
+        body: JSON.stringify({
+          access_key: WEB3FORMS_ACCESS_KEY,
+          subject: `New Job Application: ${jobTitle} — Landmark Inter Gulf LLC`,
+          from_name: "Landmark Inter Gulf — Jobs Page",
+          name: formData.get("fullName"),
+          email,
+          phone,
+          nationality: formData.get("nationality"),
+          current_location: formData.get("currentLocation"),
+          experience: formData.get("experience"),
+          certifications: formData.get("certifications") || "Not provided",
+          languages: formData.get("languages"),
+          iqama_visa_status: formData.get("iqamaStatus"),
+          notice_period: formData.get("noticePeriod") || "Not provided",
+          message: formData.get("message") || "—",
+          job_title: jobTitle,
+          company: "Landmark Inter Gulf LLC",
+          replyto: email,
+          botcheck: botcheck ? "true" : "",
+        }),
       });
 
       const result = await response.json();
@@ -447,7 +469,7 @@ function JobApplicationForm({ jobTitle, onClose }: { jobTitle: string; onClose: 
         setSubmitting(false);
         toast({
           title: "Submission failed",
-          description: result.message || "Please try again later.",
+          description: result.message || "Please try again later or email us at info@landmarkgulf.com",
           variant: "destructive",
         });
       }
