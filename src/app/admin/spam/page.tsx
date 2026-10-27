@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { db } from "@/lib/db";
+import { db, ensureSchema } from "@/lib/db";
 import { ShieldAlert, Briefcase, Mail, Eye, ShieldOff } from "lucide-react";
 
 export const metadata = { title: "Spam Folder", robots: { index: false, follow: false } };
@@ -16,6 +16,7 @@ function formatDate(date: Date): string {
 }
 
 export default async function SpamPage() {
+  await ensureSchema();
   const [spamApps, spamEnqs] = await Promise.all([
     db.jobApplication.findMany({
       where: { status: "spam" },

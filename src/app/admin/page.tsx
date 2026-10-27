@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { db } from "@/lib/db";
+import { db, ensureSchema } from "@/lib/db";
 import { Briefcase, Mail, ShieldAlert, Clock, TrendingUp, ArrowRight } from "lucide-react";
 
 export const metadata = {
@@ -19,6 +19,9 @@ function formatDate(date: Date): string {
 }
 
 export default async function AdminDashboard() {
+  // Ensure tables exist before querying (auto-creates on cold start)
+  await ensureSchema();
+
   // Aggregate counts in parallel
   const [
     newAppsCount,

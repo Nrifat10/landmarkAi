@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { db } from "@/lib/db";
+import { db, ensureSchema } from "@/lib/db";
 import { isAuthenticated } from "@/lib/admin-auth";
 
 export async function GET(
@@ -9,6 +9,8 @@ export async function GET(
   if (!(await isAuthenticated())) {
     return NextResponse.json({ success: false, message: "Unauthorized" }, { status: 401 });
   }
+
+  await ensureSchema();
 
   const { id } = await params;
   const enquiry = await db.contactEnquiry.findUnique({ where: { id } });
@@ -32,6 +34,8 @@ export async function PATCH(
   if (!(await isAuthenticated())) {
     return NextResponse.json({ success: false, message: "Unauthorized" }, { status: 401 });
   }
+
+  await ensureSchema();
 
   const { id } = await params;
   const body = await req.json();
@@ -57,6 +61,8 @@ export async function DELETE(
   if (!(await isAuthenticated())) {
     return NextResponse.json({ success: false, message: "Unauthorized" }, { status: 401 });
   }
+
+  await ensureSchema();
 
   const { id } = await params;
   try {

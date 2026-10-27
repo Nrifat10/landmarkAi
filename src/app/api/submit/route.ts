@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { db } from "@/lib/db";
+import { db, ensureSchema } from "@/lib/db";
 
 // ────────────────────────────────────────────────────────────
 // Public form submission endpoint
@@ -84,6 +84,9 @@ function isValidEmail(email: string): boolean {
 
 export async function POST(req: NextRequest) {
   try {
+    // ── Ensure DB tables exist (auto-create on first request) ──
+    await ensureSchema();
+
     // ── Rate limiting ──────────────────────────────────────
     const clientIp = getClientIp(req);
     const now = Date.now();

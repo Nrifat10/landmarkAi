@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { db } from "@/lib/db";
+import { db, ensureSchema } from "@/lib/db";
 import { isAuthenticated } from "@/lib/admin-auth";
 
 // GET /admin/api/export?type=applications|enquiries
@@ -8,6 +8,8 @@ export async function GET(req: NextRequest) {
   if (!(await isAuthenticated())) {
     return NextResponse.json({ success: false, message: "Unauthorized" }, { status: 401 });
   }
+
+  await ensureSchema();
 
   const url = new URL(req.url);
   const type = url.searchParams.get("type") || "applications";

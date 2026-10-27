@@ -1,11 +1,12 @@
 import Link from "next/link";
-import { db } from "@/lib/db";
+import { db, ensureSchema } from "@/lib/db";
 import { Download, Briefcase, Mail } from "lucide-react";
 
 export const metadata = { title: "Export CSV", robots: { index: false, follow: false } };
 export const dynamic = "force-dynamic";
 
 export default async function ExportPage() {
+  await ensureSchema();
   const [appsCount, enqsCount] = await Promise.all([
     db.jobApplication.count({ where: { status: { in: ["new", "read", "archived"] } } }),
     db.contactEnquiry.count({ where: { status: { in: ["new", "read", "archived"] } } }),

@@ -1,6 +1,6 @@
 import { notFound } from "next/navigation";
 import Link from "next/link";
-import { db } from "@/lib/db";
+import { db, ensureSchema } from "@/lib/db";
 import { ApplicationDetailClient } from "./detail-client";
 
 export const metadata = { title: "Application Detail", robots: { index: false, follow: false } };
@@ -11,6 +11,7 @@ export default async function ApplicationDetailPage({
 }: {
   params: Promise<{ id: string }>;
 }) {
+  await ensureSchema();
   const { id } = await params;
   const application = await db.jobApplication.findUnique({ where: { id } });
 

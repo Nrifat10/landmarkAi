@@ -1,6 +1,6 @@
 import { notFound } from "next/navigation";
 import Link from "next/link";
-import { db } from "@/lib/db";
+import { db, ensureSchema } from "@/lib/db";
 import { EnquiryDetailClient } from "./detail-client";
 
 export const metadata = { title: "Enquiry Detail", robots: { index: false, follow: false } };
@@ -11,6 +11,7 @@ export default async function EnquiryDetailPage({
 }: {
   params: Promise<{ id: string }>;
 }) {
+  await ensureSchema();
   const { id } = await params;
   const enquiry = await db.contactEnquiry.findUnique({ where: { id } });
   if (!enquiry) notFound();

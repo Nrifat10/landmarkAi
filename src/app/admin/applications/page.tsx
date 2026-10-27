@@ -1,4 +1,4 @@
-import { db } from "@/lib/db";
+import { db, ensureSchema } from "@/lib/db";
 import { ApplicationsTable } from "./applications-table";
 
 export const metadata = { title: "Job Applications", robots: { index: false, follow: false } };
@@ -9,6 +9,7 @@ export default async function ApplicationsPage({
 }: {
   searchParams: Promise<{ status?: string; search?: string; page?: string }>;
 }) {
+  await ensureSchema();
   const sp = await searchParams;
   const status = sp.status || "all";
   const search = sp.search || "";
