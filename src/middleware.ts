@@ -1,43 +1,46 @@
 import { NextResponse, type NextRequest } from "next/server";
 
 // ────────────────────────────────────────────────────────────
-// Middleware — subdomain routing + admin auth check
+// Middleware — admin auth gate (with optional subdomain support)
 // ────────────────────────────────────────────────────────────
-// Two responsibilities:
-//   1. Subdomain routing: requests to support.landmarkgulf.com/*
-//      are rewritten to /admin/* paths internally (so the user sees
-//      the admin UI without /admin prefix in the URL).
 //
-//   2. Auth gate: any /admin/* request (whether from subdomain rewrite
-//      or direct path) without a valid session cookie is redirected
-//      to /admin/login, EXCEPT for /admin/login itself and /admin/api/auth.
+// Responsibilities:
+//   1. If the request is on the optional support.landmarkgulf.com subdomain,
+//      rewrite /* to /admin/* internally (so the subdomain shows the admin UI).
 //
-// Cookie name and verification logic live in src/lib/admin-auth.ts.
-// We do lightweight signature verification here in the Edge runtime
-// (full verify also happens in lib on each admin page load).
+//   2. For every /admin/* path (whether reached directly or via subdomain
+//      rewrite), check the auth cookie. If missing/invalid → redirect to
+//      /admin/login. /admin/login and /admin/api/auth are public.
+//
+// This middleware does NOT do full HMAC verification (Edge runtime limitation).
+// Full verification happens in the layout/page server component.
+// If the cookie is structurally valid here but HMAC-invalid server-side,
+// the layout's isAuthenticated() returns false and redirects to login.
+//
+// IMPORTANT: To prevent redirect loops, the layout also redirects to /admin/login
+// when unauthenticated. We must ensure /admin/login itself never redirects.
 // ────────────────────────────────────────────────────────────
 
 const ADMIN_COOKIE = "lm_admin_session";
 const ADMIN_SUBDOMAIN = "support";
 
-// Public paths that don't require auth
-const PUBLIC_ADMIN_PATHS = [
-  "/admin/login",
-  "/admin/api/auth",
-];
+// Paths under /admin that DON'T require auth
+const PUBLIC_ADMIN_PATHS = ["/admin/login", "/admin/api/auth"];
 
 function isPublicAdminPath(pathname: string): boolean {
-  return PUBLIC_ADMIN_PATHS.some((p) => pathname === p || pathname.startsWith(p + "/") || pathname.startsWith(p + "?"));
+  // Strip trailing slash for consistent matching
+  const normalized = pathname.endsWith("/") ? pathname.slice(0, -1) : pathname;
+  return PUBLIC_ADMIN_PATHS.some((p) => normalized === p || normalized.startsWith(p + "/"));
 }
 
 export function middleware(req: NextRequest) {
   const host = req.headers.get("host") || "";
   const pathname = req.nextUrl.pathname;
 
-  // ── 1. Subdomain rewrite: support.landmarkgulf.com/anything → /admin/anything
-  // Only rewrite if we're on the support subdomain AND not already on an admin path
+  // ── 1. Subdomain rewrite (optional): support.landmarkgulf.com/anything → /admin/anything
   const hostParts = host.split(".");
-  const isSupportSubdomain = hostParts.length >= 3 && hostParts[0] === ADMIN_SUBDOMAIN;
+  const isSupportSubdomain =
+    hostParts.length >= 3 && hostParts[0] === ADMIN_SUBDOMAIN;
 
   let url = req.nextUrl.clone();
   let rewrote = false;
@@ -47,39 +50,55 @@ export function middleware(req: NextRequest) {
     rewrote = true;
   }
 
-  // Compute the "effective" pathname after rewrite (for auth check below)
+  // Effective pathname after subdomain rewrite
   const effectivePath = rewrote ? url.pathname : pathname;
 
-  // Skip auth check for non-admin paths
-  const isAdminPath = effectivePath.startsWith("/admin");
+  // Pass the effective pathname downstream via a custom header so the admin
+  // layout (server component) can read it without re-parsing the URL.
+  // This lets the layout know which page it's rendering, e.g. /admin/login,
+  // so it can skip the auth check for the login page and avoid a redirect loop.
+  const requestHeaders = new Headers(req.headers);
+  requestHeaders.set("x-admin-pathname", effectivePath);
 
-  if (!isAdminPath) {
-    return rewrote ? NextResponse.rewrite(url) : NextResponse.next();
+  // Only auth-gate paths that start with /admin
+  if (!effectivePath.startsWith("/admin")) {
+    return NextResponse.next({ request: { headers: requestHeaders } });
   }
 
-  // ── 2. Auth check: if path is public (login / api/auth), allow
+  // ── 2. Public admin paths (login + auth API) — pass through, no redirect
   if (isPublicAdminPath(effectivePath)) {
-    return rewrote ? NextResponse.rewrite(url) : NextResponse.next();
+    return NextResponse.next({ request: { headers: requestHeaders } });
   }
 
-  // Check cookie
+  // ── 3. Check the auth cookie
   const sessionCookie = req.cookies.get(ADMIN_COOKIE)?.value;
 
-  // Lightweight verification: token format = "base64payload.signature"
-  // We rely on full verification in server components for actual security.
-  if (!sessionCookie || !sessionCookie.includes(".")) {
-    // Not logged in — redirect to login page
+  // Lightweight check: cookie exists and has the "base64.signature" format.
+  // Full HMAC verification happens in lib/admin-auth.ts on each page load.
+  // If the signature is invalid there, the layout redirects to /admin/login.
+  // To avoid a redirect loop, /admin/login itself is whitelisted above.
+  const cookieLooksValid =
+    typeof sessionCookie === "string" &&
+    sessionCookie.length > 20 &&
+    sessionCookie.includes(".") &&
+    !sessionCookie.startsWith(".") &&
+    !sessionCookie.endsWith(".");
+
+  if (!cookieLooksValid) {
+    // Not authenticated — redirect to /admin/login
     const loginUrl = req.nextUrl.clone();
-    // Always redirect to the path-based /admin/login (works under subdomain too)
     loginUrl.pathname = "/admin/login";
     loginUrl.search = "";
     return NextResponse.redirect(loginUrl);
   }
 
-  return rewrote ? NextResponse.rewrite(url) : NextResponse.next();
+  return NextResponse.next({ request: { headers: requestHeaders } });
 }
 
 export const config = {
-  // Run on all paths except Next internals and public assets
-  matcher: ["/((?!_next/static|_next/image|favicon.ico|robots.txt|sitemap.xml|manifest.webmanifest|icon.svg|logo.svg|landmark-logo|saudi-vision-2030|og-image|android-chrome|apple-touch-icon|images/).*)"],
+  // Run on all paths except Next internals, public assets, and API endpoints
+  // that aren't /admin/api or /api/submit.
+  matcher: [
+    "/((?!_next/static|_next/image|favicon.ico|favicon-|robots.txt|sitemap.xml|manifest.webmanifest|icon.svg|logo.svg|landmark-logo|saudi-vision-2030|og-image|android-chrome|apple-touch-icon|site.webmanifest|images/).*)",
+  ],
 };
