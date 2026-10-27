@@ -360,9 +360,10 @@ function JobApplicationForm({ jobTitle, onClose }: { jobTitle: string; onClose: 
   const [submitted, setSubmitted] = useState(false);
   const [formStartTime] = useState(() => Date.now());
 
-  // Web3Forms access key — required to be in client bundle for direct browser→Web3Forms call
-  // (Web3Forms blocks server-side fetch on free plan)
-  const WEB3FORMS_ACCESS_KEY = "a4cca705-45da-4728-b9b2-5cb0c214c544";
+  // SplitForms access key — published in client bundle (SplitForms treats it as public form ID)
+  // API URL: https://splitforms.com/api/submit
+  // (Unlike Web3Forms, SplitForms accepts both server-side and browser-origin POSTs on free plan)
+  const SPLITFORMS_ACCESS_KEY = "de6f4de7749e46df98c162d578579a15";
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -423,16 +424,16 @@ function JobApplicationForm({ jobTitle, onClose }: { jobTitle: string; onClose: 
       return;
     }
 
-    // Submit directly to Web3Forms from the browser (server-side blocked on free plan)
+    // Submit directly to SplitForms from the browser
     try {
-      const response = await fetch("https://api.web3forms.com/submit", {
+      const response = await fetch("https://splitforms.com/api/submit", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
           Accept: "application/json",
         },
         body: JSON.stringify({
-          access_key: WEB3FORMS_ACCESS_KEY,
+          access_key: SPLITFORMS_ACCESS_KEY,
           subject: `New Job Application: ${jobTitle} — Landmark Inter Gulf LLC`,
           from_name: "Landmark Inter Gulf — Jobs Page",
           name: formData.get("fullName"),
@@ -695,6 +696,7 @@ function JobApplicationForm({ jobTitle, onClose }: { jobTitle: string; onClose: 
                   <Label htmlFor="iqamaStatus">Iqama / Visa Status *</Label>
                   <select id="iqamaStatus" name="iqamaStatus" required className="h-10 w-full rounded-md border border-input bg-background px-3 text-sm">
                     <option value="">Select your visa status</option>
+                    <option value="Inside KSA">Inside KSA</option>
                     <option value="Transferable Iqama">Transferable Iqama</option>
                     <option value="Non-transferable Iqama">Non-transferable Iqama</option>
                     <option value="Visit Visa">Visit Visa</option>

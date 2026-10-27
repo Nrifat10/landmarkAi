@@ -234,7 +234,7 @@ export default function PrivacyPolicy() {
                 </p>
                 <div className="space-y-2.5">
                   {[
-                    { name: "Web3Forms", purpose: "Form processing & email delivery — receives your form submissions and forwards them to our HR inbox. Reply-to address is your email so we can respond directly.", data: "All form fields you submit" },
+                    { name: "SplitForms", purpose: "Form processing & email delivery — receives your form submissions and forwards them to our HR inbox. Reply-to address is your email so we can respond directly.", data: "All form fields you submit" },
                     { name: "Vercel", purpose: "Website hosting & content delivery — serves the pages you visit. May log IP, browser, and timestamp for security and operational purposes.", data: "IP, browser, request metadata" },
                     { name: "Google (Search & Maps)", purpose: "Search engine indexing, Google Business Profile integration (map embed, opening hours, review links). No Google Analytics tracking is enabled.", data: "What you visit publicly" },
                   ].map((svc) => (
@@ -337,7 +337,7 @@ export default function PrivacyPolicy() {
                   International Data Transfer
                 </h2>
                 <p className="text-sm text-muted-foreground leading-relaxed">
-                  Your data may be processed by our third-party service providers (Web3Forms, Vercel) whose servers
+                  Your data may be processed by our third-party service providers (SplitForms, Vercel) whose servers
                   may be located outside the Kingdom of Saudi Arabia. By submitting your information through our
                   website, you consent to this international transfer. We select service providers that offer
                   adequate data protection safeguards consistent with the Saudi PDPL and applicable international

@@ -40,9 +40,10 @@ export default function ContactPage() {
   const [submitted, setSubmitted] = useState(false);
   const [formStartTime] = useState(() => Date.now());
 
-  // Web3Forms access key — required in client bundle for direct browser→Web3Forms call
-  // (Web3Forms blocks server-side fetch on free plan)
-  const WEB3FORMS_ACCESS_KEY = "a4cca705-45da-4728-b9b2-5cb0c214c544";
+  // SplitForms access key — published in client bundle (SplitForms treats it as public form ID)
+  // API URL: https://splitforms.com/api/submit
+  // (Unlike Web3Forms, SplitForms accepts both server-side and browser-origin POSTs on free plan)
+  const SPLITFORMS_ACCESS_KEY = "de6f4de7749e46df98c162d578579a15";
 
   const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -82,15 +83,15 @@ export default function ContactPage() {
     }
 
     try {
-      // Submit directly to Web3Forms from the browser (server-side blocked on free plan)
-      const response = await fetch("https://api.web3forms.com/submit", {
+      // Submit directly to SplitForms from the browser
+      const response = await fetch("https://splitforms.com/api/submit", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
           Accept: "application/json",
         },
         body: JSON.stringify({
-          access_key: WEB3FORMS_ACCESS_KEY,
+          access_key: SPLITFORMS_ACCESS_KEY,
           subject: "New Enquiry — Landmark Inter Gulf LLC Website",
           from_name: "Landmark Inter Gulf — Contact Form",
           name: formData.get("name"),
