@@ -115,18 +115,26 @@ export default function ContactPage() {
         });
         (e.target as HTMLFormElement).reset();
       } else {
+        // Surface the actual API error message to the user
+        const errorMessage = result.message || "Please try again later or email us at info@landmarkgulf.com";
         toast({
           title: "Submission failed",
-          description: result.message || "Please try again later or email us at info@landmarkgulf.com",
+          description: errorMessage,
           variant: "destructive",
         });
+        console.error("[contact form] Submission rejected by API:", {
+          status: response.status,
+          statusText: response.statusText,
+          message: errorMessage,
+        });
       }
-    } catch {
+    } catch (error) {
       // Network / server error
       setSubmitting(false);
+      console.error("[contact form] Network/parse error:", error);
       toast({
         title: "Network error",
-        description: "Please check your internet and try again.",
+        description: "Please check your internet and try again. If the problem persists, email us at info@landmarkgulf.com",
         variant: "destructive",
       });
     }

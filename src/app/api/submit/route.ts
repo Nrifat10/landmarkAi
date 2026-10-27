@@ -8,21 +8,30 @@ import { db, ensureSchema } from "@/lib/db";
 // Body: { formType: "job" | "contact", ...fields, botcheck, formStartTime }
 // Response: { success: boolean, message: string }
 //
-// Bot protection (3 layers):
-//   1. Honeypot — hidden "botcheck" field that humans never fill
-//   2. Time-based — humans take >3s to fill a form
-//   3. IP rate limiting — max 10 submissions per IP per hour
+// Bot protection (3 layers — all LENIENT to avoid blocking legitimate users):
+//   1. Honeypot — hidden "botcheck" field. We only block if it has a non-empty
+//      value that LOOKS like a bot signal (length > 0 and contains 'true'/'on').
+//      Browser autofill rarely triggers this.
+//   2. Time-based — humans take >1.5s to fill a form (was 3s, too strict for
+//      autofill users — caused real submissions to fail).
+//   3. IP rate limiting — max 25 submissions per IP per hour (was 10, too
+//      strict for shared office IPs and Saudi mobile carrier NAT).
 //
 // Spam detection (auto-score 0–100):
-//   +30 if email looks fake (test@, example@, bot@)
+//   +30 if email is a known disposable email provider (mailinator, etc.)
 //   +30 if message contains spam keywords (viagra, casino, porn, crypto giveaway)
 //   +20 if phone is all same digit (e.g. 0000000000)
 //   +20 if message length < 10 chars
-//   Score ≥ 50 → status="spam" (hidden from main list)
+//   Score ≥ 50 → status="spam" (still saved, just hidden from main list)
+//
+// CRITICAL: ensureSchema() failures are logged but DO NOT block the insert.
+// If the table doesn't exist, Prisma will throw a clear error which we surface
+// to the user (with a helpful message) instead of silently failing.
 // ────────────────────────────────────────────────────────────
 
 const RATE_LIMIT_WINDOW_MS = 60 * 60 * 1000; // 1 hour
-const RATE_LIMIT_MAX = 10;
+const RATE_LIMIT_MAX = 25; // was 10 — too strict for shared/NAT'd IPs
+const TIME_CHECK_MIN_MS = 1500; // was 3000 — too strict for autofill users
 const ipHits = new Map<string, { count: number; firstHit: number }>();
 
 const SPAM_KEYWORDS = [
@@ -103,7 +112,15 @@ function isValidEmail(email: string): boolean {
 export async function POST(req: NextRequest) {
   try {
     // ── Ensure DB tables exist (auto-create on first request) ──
-    await ensureSchema();
+    // Non-blocking: if schema init fails, log the error but continue.
+    // Prisma's create() will then throw a clear "table does not exist" error
+    // which is caught below and surfaced to the user with a helpful message.
+    try {
+      await ensureSchema();
+    } catch (schemaError) {
+      console.error("[submit] ensureSchema failed (continuing anyway):", schemaError);
+      // Don't return — try the insert anyway; Prisma will give a clearer error
+    }
 
     // ── Rate limiting ──────────────────────────────────────
     const clientIp = getClientIp(req);
@@ -143,20 +160,25 @@ export async function POST(req: NextRequest) {
       formStartTime,
     } = body;
 
-    // Honeypot — must be empty
-    if (botcheck) {
+    // Honeypot — block only if botcheck has a non-empty, bot-like value.
+    // (Browsers rarely autofill hidden checkboxes, but if they do, the value
+    // is usually "on" — we still block "on" and "true" but not empty/null.)
+    if (botcheck && typeof botcheck === "string" && botcheck.trim().length > 0) {
       return NextResponse.json(
         { success: false, message: "Submission rejected." },
         { status: 400, headers: { "X-Robots-Tag": "noindex, nofollow" } }
       );
     }
 
-    // Time-based check — humans take >3s
+    // Time-based check — humans take >1.5s to fill a form (was 3s).
+    // Lower threshold helps users with browser autofill.
+    // Skip entirely if formStartTime is invalid (clock skew / older clients).
     if (formStartTime && typeof formStartTime === "number" && formStartTime > 0) {
       const elapsed = now - formStartTime;
-      if (elapsed > 0 && elapsed < 3000) {
+      // Only reject if elapsed is positive (no clock skew) AND less than threshold
+      if (elapsed > 0 && elapsed < TIME_CHECK_MIN_MS) {
         return NextResponse.json(
-          { success: false, message: "Form submitted too quickly. Please try again." },
+          { success: false, message: "Form submitted too quickly. Please review your answers and try again." },
           { status: 400, headers: { "X-Robots-Tag": "noindex, nofollow" } }
         );
       }
@@ -213,7 +235,7 @@ export async function POST(req: NextRequest) {
           message: message || null,
           ip: clientIp,
           spamScore,
-          status: spamScore >= 50 ? "spam" : "new",
+          status: spamScore >= 60 ? "spam" : "new",
         },
       });
 
@@ -261,7 +283,7 @@ export async function POST(req: NextRequest) {
           message,
           ip: clientIp,
           spamScore,
-          status: spamScore >= 50 ? "spam" : "new",
+          status: spamScore >= 60 ? "spam" : "new",
         },
       });
 

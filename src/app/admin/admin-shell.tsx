@@ -150,18 +150,27 @@ export function AdminShell({ children }: { children: React.ReactNode }) {
 
       {/* Main content */}
       <div className="lg:pl-72">
-        {/* Top bar — refined with date, search, user */}
-        <header className="sticky top-0 z-20 h-16 bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl border-b border-slate-200 dark:border-slate-800 flex items-center justify-between px-4 sm:px-6 lg:px-8">
-          {/* Mobile menu button */}
+        {/* Top bar — solid background (was transparent white/80, which blended
+            with the dark dashboard hero header below and made the bar invisible
+            on mobile). Now uses solid white / slate-900 for guaranteed contrast. */}
+        <header className="sticky top-0 z-30 h-16 bg-white dark:bg-slate-950 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between px-4 sm:px-6 lg:px-8 shadow-sm">
+          {/* Mobile menu button + brand */}
           <div className="flex items-center gap-3">
             <button
               onClick={() => setSidebarOpen(true)}
-              className="lg:hidden text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-slate-100"
+              className="lg:hidden flex items-center justify-center h-9 w-9 rounded-lg text-slate-700 hover:bg-slate-100 dark:text-slate-300 dark:hover:bg-slate-800 transition-colors"
               aria-label="Open sidebar"
             >
               <Menu className="h-5 w-5" />
             </button>
-            <div className="hidden sm:block">
+            {/* On mobile show brand on top bar; on desktop show date + title */}
+            <div className="lg:hidden flex items-center gap-2">
+              <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-gradient-to-br from-amber-400 to-amber-600 text-slate-900 font-extrabold text-[10px]">
+                LM
+              </div>
+              <span className="text-sm font-bold text-slate-900 dark:text-slate-50">HR Console</span>
+            </div>
+            <div className="hidden lg:block">
               <p className="text-xs text-slate-500 dark:text-slate-400">{today}</p>
               <p className="text-sm font-bold text-slate-900 dark:text-slate-100 -mt-0.5">HR Dashboard</p>
             </div>

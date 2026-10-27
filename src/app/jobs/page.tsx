@@ -472,17 +472,27 @@ function JobApplicationForm({ jobTitle, onClose }: { jobTitle: string; onClose: 
         setTimeout(onClose, 3000);
       } else {
         setSubmitting(false);
+        // Surface the actual API error message to the user — previously we
+        // showed a generic "Please try again later" which hid the real issue.
+        const errorMessage = result.message || "Submission failed. Please try again.";
         toast({
           title: "Submission failed",
-          description: result.message || "Please try again later or email us at info@landmarkgulf.com",
+          description: errorMessage,
           variant: "destructive",
         });
+        console.error("[jobs form] Submission rejected by API:", {
+          status: response.status,
+          statusText: response.statusText,
+          message: errorMessage,
+        });
       }
-    } catch {
+    } catch (error) {
       setSubmitting(false);
+      // Network error or JSON parse error — give the user a clear message
+      console.error("[jobs form] Network/parse error:", error);
       toast({
         title: "Network error",
-        description: "Please check your internet connection and try again.",
+        description: "Please check your internet connection and try again. If the problem persists, email us at info@landmarkgulf.com",
         variant: "destructive",
       });
     }
@@ -493,7 +503,14 @@ function JobApplicationForm({ jobTitle, onClose }: { jobTitle: string; onClose: 
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
-      className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-primary/80 backdrop-blur-sm"
+      // Mobile-friendly modal container:
+      //   - items-start on mobile (so keyboard doesn't push form off-screen)
+      //     items-center on sm+ screens (nicer centered look on desktop)
+      //   - dvh units (dynamic viewport height) — adapts when mobile keyboard
+      //     appears, instead of fixed vh which leaves the form stuck
+      //   - overscroll-contain — prevents page scroll behind the modal
+      //   - safe-area insets for iPhone notch / home indicator
+      className="fixed inset-0 z-[100] flex items-start sm:items-center justify-center p-4 pt-[env(safe-area-inset-top)] pb-[env(safe-area-inset-bottom)] bg-primary/80 backdrop-blur-sm overscroll-contain"
       onClick={onClose}
     >
       <motion.div
@@ -501,7 +518,9 @@ function JobApplicationForm({ jobTitle, onClose }: { jobTitle: string; onClose: 
         animate={{ scale: 1, y: 0 }}
         exit={{ scale: 0.9, y: 20 }}
         transition={{ type: "spring", stiffness: 300, damping: 30 }}
-        className="w-full max-w-lg max-h-[90vh] overflow-y-auto rounded-2xl bg-background border-2 border-accent/30 shadow-2xl"
+        // max-h-[90vh] would clip on mobile when keyboard is up — use 85dvh
+        // so the modal scrolls internally and the form stays usable
+        className="mt-4 sm:mt-0 w-full max-w-lg max-h-[85dvh] overflow-y-auto overscroll-contain rounded-2xl bg-background border-2 border-accent/30 shadow-2xl"
         onClick={(e) => e.stopPropagation()}
       >
         {submitted ? (
