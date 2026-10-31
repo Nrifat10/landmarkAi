@@ -10,11 +10,14 @@ import { createHmac } from "crypto";
 // The password is read from env var ADMIN_PASSWORD — set in Vercel:
 //   Vercel → Project → Settings → Environment Variables → ADMIN_PASSWORD
 //
-// Token expiry: 7 days (HR team won't need to re-login frequently).
+// Token expiry: 24 hours. Client-side idle auto-logout (30 min) also applies.
 // ────────────────────────────────────────────────────────────
 
 const COOKIE_NAME = "lm_admin_session";
-const TOKEN_TTL_MS = 7 * 24 * 60 * 60 * 1000; // 7 days
+// Token TTL reduced from 7 days to 24 hours for better security.
+// Combined with client-side idle auto-logout (30 min inactivity) in
+// admin-shell.tsx, this keeps abandoned sessions short-lived.
+const TOKEN_TTL_MS = 24 * 60 * 60 * 1000; // 24 hours
 
 function getSigningSecret(): string {
   // Use ADMIN_PASSWORD itself as the HMAC key — no separate secret needed
