@@ -45,6 +45,31 @@ const ACTIVITY_EVENTS = [
   "wheel",
 ];
 
+// ────────────────────────────────────────────────────────────
+// Notifications (admin header bell)
+// ────────────────────────────────────────────────────────────
+type NotifItem = {
+  id: string;
+  type: "application" | "enquiry";
+  recordId: string;
+  name: string;
+  summary: string;
+  href: string;
+  createdAt: string;
+};
+
+function relativeTime(iso: string): string {
+  const diff = Date.now() - new Date(iso).getTime();
+  const mins = Math.floor(diff / 60000);
+  if (mins < 1) return "just now";
+  if (mins < 60) return `${mins}m ago`;
+  const hrs = Math.floor(mins / 60);
+  if (hrs < 24) return `${hrs}h ago`;
+  const days = Math.floor(hrs / 24);
+  if (days < 7) return `${days}d ago`;
+  return new Date(iso).toLocaleDateString("en-GB", { day: "numeric", month: "short" });
+}
+
 export function AdminShell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const router = useRouter();
@@ -56,6 +81,12 @@ export function AdminShell({ children }: { children: React.ReactNode }) {
   const logoutTimerRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const warningShownRef = useRef<boolean>(false);
   const [timeLeft, setTimeLeft] = useState<number | null>(null);
+
+  // ── Notifications state ────────────────────────────────────
+  const [notifications, setNotifications] = useState<NotifItem[]>([]);
+  const [unreadCount, setUnreadCount] = useState(0);
+  const [notifOpen, setNotifOpen] = useState(false);
+  const [notifLoading, setNotifLoading] = useState(false);
 
   const forceLogout = useCallback(
     async (reason: string) => {
@@ -150,6 +181,50 @@ export function AdminShell({ children }: { children: React.ReactNode }) {
       document.removeEventListener("visibilitychange", onVisibilityChange);
     };
   }, []);
+
+  // ── Notifications feed ────────────────────────────────────
+  // Fetch unread applications + enquiries for the bell badge.
+  // Poll every 60s and refetch on route change (after viewing an
+  // item it's marked read server-side, so the badge should drop).
+  const fetchNotifications = useCallback(async () => {
+    try {
+      const res = await fetch("/admin/api/notifications?limit=8", { cache: "no-store" });
+      if (!res.ok) return;
+      const data = await res.json();
+      if (data?.success) {
+        setNotifications(data.items || []);
+        setUnreadCount(data.unreadCount || 0);
+      }
+    } catch {
+      // non-critical — fail silently
+    }
+  }, []);
+
+  useEffect(() => {
+    fetchNotifications();
+    const id = setInterval(fetchNotifications, 60_000);
+    return () => clearInterval(id);
+  }, [fetchNotifications, pathname]);
+
+  const markAllRead = useCallback(async () => {
+    setNotifLoading(true);
+    try {
+      const res = await fetch("/admin/api/notifications", { method: "PATCH" });
+      const data = await res.json().catch(() => ({}));
+      setNotifications([]);
+      setUnreadCount(0);
+      toast({
+        title: "All caught up",
+        description: data?.markedRead
+          ? `Marked ${data.markedRead} notification${data.markedRead === 1 ? "" : "s"} as read.`
+          : "Marked all notifications as read.",
+      });
+    } catch {
+      toast({ title: "Could not update notifications", variant: "destructive" });
+    } finally {
+      setNotifLoading(false);
+    }
+  }, [toast]);
 
   const handleLogout = async () => {
     if (logoutTimerRef.current) clearInterval(logoutTimerRef.current);
@@ -310,13 +385,112 @@ export function AdminShell({ children }: { children: React.ReactNode }) {
               </div>
             )}
 
-            <button
-              className="relative flex items-center justify-center h-9 w-9 rounded-lg text-slate-500 hover:bg-slate-100 hover:text-slate-900 dark:hover:bg-slate-800 dark:hover:text-slate-100 transition-colors"
-              aria-label="Notifications"
-            >
-              <Bell className="h-4 w-4" />
-              <span className="absolute top-1.5 right-1.5 h-2 w-2 rounded-full bg-amber-500" />
-            </button>
+            {/* Notifications dropdown — bell with unread badge + panel */}
+            <div className="relative">
+              <button
+                onClick={() => setNotifOpen((v) => !v)}
+                className="relative flex items-center justify-center h-9 w-9 rounded-lg text-slate-500 hover:bg-slate-100 hover:text-slate-900 dark:hover:bg-slate-800 dark:hover:text-slate-100 transition-colors"
+                aria-label="Notifications"
+                aria-expanded={notifOpen}
+              >
+                <Bell className="h-4 w-4" />
+                {unreadCount > 0 && (
+                  <span className="absolute -top-0.5 -right-0.5 min-w-[16px] h-4 px-1 rounded-full bg-amber-500 text-white text-[9px] font-bold flex items-center justify-center tabular-nums leading-none">
+                    {unreadCount > 99 ? "99+" : unreadCount}
+                  </span>
+                )}
+              </button>
+
+              {notifOpen && (
+                <>
+                  {/* Click-outside backdrop */}
+                  <button
+                    type="button"
+                    className="fixed inset-0 z-40 cursor-default"
+                    aria-hidden="true"
+                    tabIndex={-1}
+                    onClick={() => setNotifOpen(false)}
+                  />
+                  {/* Dropdown panel */}
+                  <div className="absolute right-0 mt-2 w-80 max-w-[calc(100vw-2rem)] rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-xl z-50 overflow-hidden">
+                    <div className="flex items-center justify-between px-4 py-3 border-b border-slate-200 dark:border-slate-800">
+                      <p className="text-sm font-bold text-slate-900 dark:text-slate-100">Notifications</p>
+                      {unreadCount > 0 && (
+                        <span className="text-[10px] font-bold uppercase tracking-wide text-amber-600 dark:text-amber-400">
+                          {unreadCount} new
+                        </span>
+                      )}
+                    </div>
+
+                    <div className="max-h-80 overflow-y-auto">
+                      {notifications.length === 0 ? (
+                        <div className="px-4 py-8 text-center">
+                          <Bell className="h-7 w-7 mx-auto text-slate-300 dark:text-slate-700 mb-2" />
+                          <p className="text-xs text-slate-500 dark:text-slate-400">
+                            You&rsquo;re all caught up.
+                          </p>
+                        </div>
+                      ) : (
+                        notifications.map((n) => {
+                          const Icon = n.type === "application" ? Briefcase : Mail;
+                          return (
+                            <Link
+                              key={n.id}
+                              href={n.href}
+                              onClick={() => setNotifOpen(false)}
+                              className="flex items-start gap-3 px-4 py-2.5 hover:bg-slate-50 dark:hover:bg-slate-800/60 transition-colors border-b border-slate-100 dark:border-slate-800/60 last:border-0"
+                            >
+                              <span
+                                className={cn(
+                                  "mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-lg",
+                                  n.type === "application"
+                                    ? "bg-orange-500/10 text-orange-600 dark:text-orange-400"
+                                    : "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400"
+                                )}
+                              >
+                                <Icon className="h-4 w-4" />
+                              </span>
+                              <div className="min-w-0 flex-1">
+                                <p className="text-xs font-semibold text-slate-900 dark:text-slate-100 truncate">
+                                  {n.name}
+                                </p>
+                                <p className="text-[11px] text-slate-500 dark:text-slate-400 truncate">
+                                  {n.type === "application" ? "Applied: " : "Enquired: "}
+                                  {n.summary}
+                                </p>
+                                <p className="text-[10px] text-slate-400 dark:text-slate-500 mt-0.5">
+                                  {relativeTime(n.createdAt)}
+                                </p>
+                              </div>
+                            </Link>
+                          );
+                        })
+                      )}
+                    </div>
+
+                    {notifications.length > 0 && (
+                      <div className="flex items-center justify-between gap-2 px-3 py-2 border-t border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-800/30">
+                        <button
+                          type="button"
+                          onClick={markAllRead}
+                          disabled={notifLoading}
+                          className="text-[11px] font-semibold text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-slate-100 disabled:opacity-50 px-2 py-1.5 rounded-md hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors"
+                        >
+                          {notifLoading ? "Marking…" : "Mark all read"}
+                        </button>
+                        <Link
+                          href="/admin/applications"
+                          onClick={() => setNotifOpen(false)}
+                          className="text-[11px] font-semibold text-amber-600 dark:text-amber-400 hover:underline px-2 py-1.5"
+                        >
+                          View all
+                        </Link>
+                      </div>
+                    )}
+                  </div>
+                </>
+              )}
+            </div>
             <div className="flex items-center gap-2 pl-2 sm:pl-3 border-l border-slate-200 dark:border-slate-800">
               <div className="flex h-9 w-9 items-center justify-center rounded-full bg-gradient-to-br from-slate-700 to-slate-900 text-slate-100 text-xs font-bold">
                 HR
