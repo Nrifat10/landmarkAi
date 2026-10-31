@@ -1,11 +1,17 @@
 "use client";
 
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { Mail, Globe, MapPin, ArrowUp, Star } from "lucide-react";
 import { company, services, navLinks } from "@/lib/data";
 
 export function SiteFooter() {
   const year = new Date().getFullYear();
+  const pathname = usePathname();
+
+  // Hide the public site footer inside the admin dashboard — the admin
+  // shell provides its own layout. Avoids footer overlap on /admin/*.
+  if (pathname.startsWith("/admin")) return null;
 
   return (
     <footer className="bg-primary text-primary-foreground mt-auto relative">

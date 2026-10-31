@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { usePathname } from "next/navigation";
 import { motion, AnimatePresence, useScroll, useSpring } from "framer-motion";
 import { ArrowUp } from "lucide-react";
 
@@ -12,6 +13,7 @@ export function ScrollUtilities() {
     damping: 30,
     restDelta: 0.001,
   });
+  const pathname = usePathname();
 
   useEffect(() => {
     const onScroll = () => {
@@ -24,6 +26,11 @@ export function ScrollUtilities() {
   const scrollToTop = () => {
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
+
+  // Hide scroll utilities inside the admin dashboard — the fixed progress
+  // bar (z-[60]) and scroll-to-top button (z-50) would overlap the admin
+  // shell's own sticky header and content.
+  if (pathname.startsWith("/admin")) return null;
 
   return (
     <>

@@ -54,6 +54,11 @@ export function SiteHeader() {
   // When true, header is transparent over the dark hero — use light text
   const isTransparent = isHome && !scrolled;
 
+  // Don't render the public site header inside the admin dashboard — the
+  // admin shell (AdminShell) provides its own header. Without this, both
+  // headers stack and overlap on /admin/* routes.
+  if (pathname.startsWith("/admin")) return null;
+
   return (
     <header
       className={cn(
