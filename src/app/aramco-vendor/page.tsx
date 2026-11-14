@@ -283,12 +283,6 @@ export default function AramcoVendorPage() {
                       </span>
                     </p>
                     <p className="text-primary-foreground/80">
-                      Mobile:{" "}
-                      <span className="font-semibold text-primary-foreground">
-                        +966 55 528 5235
-                      </span>
-                    </p>
-                    <p className="text-primary-foreground/80">
                       Email:{" "}
                       <span className="font-semibold text-primary-foreground">
                         info@landmarkgulf.com

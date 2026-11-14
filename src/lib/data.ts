@@ -594,12 +594,14 @@ export const projects = [
   },
 ];
 
-export const navLinks = [
+type NavLink = { label: string; href: string; featured?: boolean };
+export const navLinks: NavLink[] = [
   { label: "Home", href: "/" },
   { label: "About", href: "/about" },
   { label: "Services", href: "/#services" },
   { label: "Projects", href: "/projects" },
   { label: "Jobs", href: "/jobs" },
+  { label: "Aramco Vendor", href: "/aramco-vendor", featured: true },
   { label: "Contact", href: "/contact" },
 ];
 

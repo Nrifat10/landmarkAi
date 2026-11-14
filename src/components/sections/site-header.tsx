@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
-import { Menu, X, ChevronDown, Download } from "lucide-react";
+import { Menu, X, ChevronDown, Download, ShieldCheck } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { navLinks, serviceNavLinks, company } from "@/lib/data";
@@ -145,6 +145,30 @@ export function SiteHeader() {
                   </div>
                 );
               }
+              if (link.featured) {
+                return (
+                  <Link
+                    key={link.href}
+                    href={link.href}
+                    className={cn(
+                      "relative inline-flex items-center gap-1.5 px-3 py-2 text-sm font-bold rounded-md transition-colors",
+                      isActive(link.href)
+                        ? "text-accent"
+                        : "text-accent hover:text-accent/75"
+                    )}
+                  >
+                    <ShieldCheck className="h-3.5 w-3.5" />
+                    {link.label}
+                    {isActive(link.href) && (
+                      <motion.span
+                        layoutId="nav-active"
+                        className="absolute inset-x-3 -bottom-px h-0.5 bg-accent rounded-full"
+                        transition={{ type: "spring", stiffness: 380, damping: 30 }}
+                      />
+                    )}
+                  </Link>
+                );
+              }
               return (
                 <Link
                   key={link.href}
@@ -232,21 +256,39 @@ export function SiteHeader() {
               className="container mx-auto max-w-7xl px-4 sm:px-6 py-4 flex flex-col gap-1"
               aria-label="Mobile"
             >
-              {navLinks.map((link) => (
-                <Link
-                  key={link.href}
-                  href={link.href}
-                  onClick={() => setOpen(false)}
-                  className={cn(
-                    "px-4 py-3 text-base font-semibold rounded-md transition-colors",
-                    isActive(link.href)
-                      ? "bg-accent/10 text-accent"
-                      : "text-foreground hover:bg-muted"
-                  )}
-                >
-                  {link.label}
-                </Link>
-              ))}
+              {navLinks.map((link) => {
+                if (link.featured) {
+                  return (
+                    <Link
+                      key={link.href}
+                      href={link.href}
+                      onClick={() => setOpen(false)}
+                      className={cn(
+                        "flex items-center gap-2 px-4 py-3 text-base font-bold rounded-md border border-accent/25 bg-accent/10 text-accent transition-colors",
+                        isActive(link.href) && "bg-accent/20"
+                      )}
+                    >
+                      <ShieldCheck className="h-4 w-4" />
+                      {link.label}
+                    </Link>
+                  );
+                }
+                return (
+                  <Link
+                    key={link.href}
+                    href={link.href}
+                    onClick={() => setOpen(false)}
+                    className={cn(
+                      "px-4 py-3 text-base font-semibold rounded-md transition-colors",
+                      isActive(link.href)
+                        ? "bg-accent/10 text-accent"
+                        : "text-foreground hover:bg-muted"
+                    )}
+                  >
+                    {link.label}
+                  </Link>
+                );
+              })}
 
               {/* Services sub-list in mobile */}
               <div className="pl-4 mt-1 mb-2 border-l-2 border-accent/30 space-y-1">
