@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { siteOgImage } from "@/lib/data";
 
 export const metadata: Metadata = {
   title: "Saudi Aramco Registered Vendor No. 10121905 — Landmark Inter Gulf LLC",
@@ -10,6 +11,7 @@ export const metadata: Metadata = {
     description:
       "Registered vendor No. 10121905 in the Saudi Aramco Supplier Management System. Pre-qualified service provider for manpower, equipment and industrial support across the Kingdom.",
     url: "https://www.landmarkgulf.com/aramco-vendor",
+    images: [siteOgImage],
   },
 };
 

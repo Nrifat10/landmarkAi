@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { siteOgImage } from "@/lib/data";
 
 export const metadata: Metadata = {
   title: "Contact Us — Get a Quote for Manpower, Equipment & Industrial Services",
@@ -10,6 +11,7 @@ export const metadata: Metadata = {
     description:
       "Tell us about your project — our team will respond within one business day. Manpower, equipment, industrial, petro and hospitality services across Saudi Arabia.",
     url: "https://www.landmarkgulf.com/contact",
+    images: [siteOgImage],
   },
 };
 

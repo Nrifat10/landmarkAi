@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { siteOgImage } from "@/lib/data";
 
 export const metadata: Metadata = {
   title: "Hospitality Services — Hotel Staffing & Catering Support in Saudi Arabia",
@@ -10,6 +11,7 @@ export const metadata: Metadata = {
     description:
       "Professional hospitality staffing and support services for the hotel and catering industry across Saudi Arabia.",
     url: "https://www.landmarkgulf.com/services/hospitality",
+    images: [siteOgImage],
   },
 };
 

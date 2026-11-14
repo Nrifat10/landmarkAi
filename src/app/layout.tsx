@@ -55,10 +55,10 @@ export const metadata: Metadata = {
     type: "website",
     images: [
       {
-        url: "/images/hero-1.jpg",
-        width: 1200,
-        height: 630,
-        alt: `${company.name} — ${company.tagline}`,
+        url: "/og-image.jpg",
+        width: 1280,
+        height: 720,
+        alt: `${company.name} — Saudi Aramco Registered Vendor No. 10121905. Your Trusted Partner for Integrated Solutions.`,
       },
     ],
   },
@@ -66,7 +66,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: siteSeo.title,
     description: siteSeo.description,
-    images: ["/images/hero-1.jpg"],
+    images: ["/og-image.jpg"],
   },
   icons: {
     icon: [
@@ -91,7 +91,7 @@ const jsonLdOrganization = {
   alternateName: ["Landmark Inter Gulf", "Landmark Gulf", "Landmark Inter Gulf LLC", "Landmark"],
   url: "https://www.landmarkgulf.com",
   logo: "https://www.landmarkgulf.com/landmark-logo-light.png",
-  image: "https://www.landmarkgulf.com/og-image.png",
+  image: "https://www.landmarkgulf.com/og-image.jpg",
   description: siteSeo.description,
   foundingDate: "2017",
   founder: { "@type": "Person", name: company.ceo },
@@ -147,7 +147,7 @@ const jsonLdLocalBusiness = {
   alternateName: "Landmark Inter Gulf Co. L.L.C",
   description: siteSeo.description,
   url: "https://www.landmarkgulf.com",
-  image: "https://www.landmarkgulf.com/og-image.png",
+  image: "https://www.landmarkgulf.com/og-image.jpg",
   logo: "https://www.landmarkgulf.com/landmark-logo-light.png",
   priceRange: "$$",
   hasMap: "https://maps.app.goo.gl/Hi6Fimz27BaCCq7x8",

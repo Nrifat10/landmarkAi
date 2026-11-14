@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { siteOgImage } from "@/lib/data";
 
 export const metadata: Metadata = {
   title: "Manpower Supply — Skilled, Semi-Skilled & Unskilled Workforce in Saudi Arabia",
@@ -10,6 +11,7 @@ export const metadata: Metadata = {
     description:
       "Skilled, semi-skilled and unskilled workforce for all industrial and commercial sectors. Aramco-approved, TUV-certified, 5,000+ deployed.",
     url: "https://www.landmarkgulf.com/services/manpower",
+    images: [siteOgImage],
   },
 };
 

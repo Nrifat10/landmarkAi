@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { siteOgImage } from "@/lib/data";
 
 export const metadata: Metadata = {
   title: "About Us — Saudi Arabia's Integrated Industrial Services Partner",
@@ -10,6 +11,7 @@ export const metadata: Metadata = {
     description:
       "A Saudi-based integrated services partner delivering manpower, equipment, industrial trading, petro services and hospitality across the Kingdom since 2017.",
     url: "https://www.landmarkgulf.com/about",
+    images: [siteOgImage],
   },
 };
 

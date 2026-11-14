@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { siteOgImage } from "@/lib/data";
 
 export const metadata: Metadata = {
   title: "Projects — Major EPC Project Deployment Record in Saudi Arabia",
@@ -10,6 +11,7 @@ export const metadata: Metadata = {
     description:
       "Trusted by leading EPC contractors across Saudi Arabia. 16+ major projects, 4,500+ personnel deployed since 2017.",
     url: "https://www.landmarkgulf.com/projects",
+    images: [siteOgImage],
   },
 };
 

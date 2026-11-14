@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { siteOgImage } from "@/lib/data";
 
 export const metadata: Metadata = {
   title: "Industrial Trading — Materials, Tools & Equipment Supply in Saudi Arabia",
@@ -10,6 +11,7 @@ export const metadata: Metadata = {
     description:
       "Quality industrial materials, tools and products from trusted global suppliers across Saudi Arabia.",
     url: "https://www.landmarkgulf.com/services/industrial",
+    images: [siteOgImage],
   },
 };
 

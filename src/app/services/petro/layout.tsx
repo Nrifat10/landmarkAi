@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { siteOgImage } from "@/lib/data";
 
 export const metadata: Metadata = {
   title: "Petro Services — Oil & Gas Manpower & Fuel Station Staffing in KSA",
@@ -10,6 +11,7 @@ export const metadata: Metadata = {
     description:
       "Specialized support for oil & gas projects with skilled manpower and technical solutions across Saudi Arabia.",
     url: "https://www.landmarkgulf.com/services/petro",
+    images: [siteOgImage],
   },
 };
 

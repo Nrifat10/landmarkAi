@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { siteOgImage } from "@/lib/data";
 
 export const metadata: Metadata = {
   title: "Equipment Rental — Excavators, Cranes, Forklifts & Heavy Machinery in KSA",
@@ -10,6 +11,7 @@ export const metadata: Metadata = {
     description:
       "Wide range of modern, well-maintained equipment and machinery for projects of all sizes across Saudi Arabia.",
     url: "https://www.landmarkgulf.com/services/equipment",
+    images: [siteOgImage],
   },
 };
 

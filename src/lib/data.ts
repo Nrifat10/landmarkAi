@@ -614,6 +614,17 @@ export const serviceNavLinks = [
   { label: "Industrial", href: "/services/industrial", icon: "Factory" },
 ];
 
+// Shared Open Graph image — used by every page/section so link previews on
+// WhatsApp, Facebook, LinkedIn and Twitter always show the branded banner.
+// (Next.js does NOT inherit parent openGraph.images when a child layout
+// defines its own openGraph, so each child must reference this explicitly.)
+export const siteOgImage = {
+  url: "https://www.landmarkgulf.com/og-image.jpg",
+  width: 1280,
+  height: 720,
+  alt: `${company.name} — Saudi Aramco Registered Vendor No. 10121905. Your Trusted Partner for Integrated Solutions.`,
+};
+
 export const siteSeo = {
   title: "Landmark Inter Gulf LLC | Manpower, Equipment Rental & Industrial Services in Saudi Arabia",
   description:

@@ -2,7 +2,7 @@ import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { jobs, getJobBySlug, getRelatedJobs } from "@/lib/jobs-data";
-import { company } from "@/lib/data";
+import { company, siteOgImage } from "@/lib/data";
 
 interface JobPageProps {
   params: Promise<{ slug: string }>;
@@ -45,6 +45,7 @@ export async function generateMetadata({ params }: JobPageProps): Promise<Metada
       description: `Join Landmark Inter Gulf as a ${job.title}. ${job.experience} experience. Apply online at landmarkgulf.com/jobs/${job.slug}`,
       url: `https://www.landmarkgulf.com/jobs/${job.slug}`,
       type: "website",
+      images: [siteOgImage],
     },
     twitter: {
       card: "summary_large_image",
