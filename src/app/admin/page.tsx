@@ -34,6 +34,13 @@ export default async function AdminDashboard() {
   // Ensure tables exist before querying (auto-creates on cold start)
   await ensureSchema();
 
+  // Start of "today" in Riyadh (UTC+3, no DST), expressed as a UTC Date —
+  // the company operates in Saudi Arabia, so "Today" follows Riyadh time.
+  const riyadhToday = new Intl.DateTimeFormat("en-CA", {
+    timeZone: "Asia/Riyadh",
+  }).format(new Date()); // → "YYYY-MM-DD"
+  const startOfToday = new Date(`${riyadhToday}T00:00:00+03:00`);
+
   // Aggregate counts in parallel
   const [
     newAppsCount,
@@ -41,6 +48,8 @@ export default async function AdminDashboard() {
     spamAppsCount,
     newEnqCount,
     spamEnqCount,
+    appsToday,
+    enqsToday,
     recentApps,
     recentEnqs,
   ] = await Promise.all([
@@ -49,15 +58,17 @@ export default async function AdminDashboard() {
     db.jobApplication.count({ where: { status: "spam" } }),
     db.contactEnquiry.count({ where: { status: "new" } }),
     db.contactEnquiry.count({ where: { status: "spam" } }),
+    db.jobApplication.count({ where: { createdAt: { gte: startOfToday } } }),
+    db.contactEnquiry.count({ where: { createdAt: { gte: startOfToday } } }),
     db.jobApplication.findMany({
       where: { status: { in: ["new", "read"] } },
       orderBy: { createdAt: "desc" },
-      take: 5,
+      take: 8,
     }),
     db.contactEnquiry.findMany({
       where: { status: { in: ["new", "read"] } },
       orderBy: { createdAt: "desc" },
-      take: 5,
+      take: 8,
     }),
   ]);
 
@@ -107,8 +118,8 @@ export default async function AdminDashboard() {
     },
     {
       label: "Today",
-      value: recentApps.length + recentEnqs.length,
-      sub: "Recent submissions",
+      value: appsToday + enqsToday,
+      sub: `${appsToday} apps · ${enqsToday} enquiries`,
       icon: Clock,
       href: "/admin/applications",
       // Sky accent

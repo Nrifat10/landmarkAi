@@ -4,12 +4,15 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import {
   Mail,
+  MailOpen,
   Phone,
   Building2,
   FileText,
   Trash2,
   ShieldOff,
+  ShieldCheck,
   Archive,
+  ArchiveRestore,
   Loader2,
   Reply,
 } from "lucide-react";
@@ -53,6 +56,14 @@ export function EnquiryDetailClient({ enquiry }: { enquiry: Enquiry }) {
   const { toast } = useToast();
   const [actionLoading, setActionLoading] = useState(false);
 
+  // Friendly toast labels per status transition
+  const statusToast: Record<string, string> = {
+    new: "Marked as unread",
+    read: "Marked as read",
+    spam: "Moved to spam folder",
+    archived: "Archived",
+  };
+
   const updateStatus = async (newStatus: string) => {
     setActionLoading(true);
     try {
@@ -63,8 +74,10 @@ export function EnquiryDetailClient({ enquiry }: { enquiry: Enquiry }) {
       });
       const data = await res.json();
       if (data.success) {
-        toast({ title: `Marked as ${newStatus}` });
+        toast({ title: statusToast[newStatus] || `Marked as ${newStatus}` });
         router.refresh();
+      } else {
+        toast({ title: "Failed", variant: "destructive" });
       }
     } catch {
       toast({ title: "Failed", variant: "destructive" });
@@ -119,6 +132,39 @@ export function EnquiryDetailClient({ enquiry }: { enquiry: Enquiry }) {
             <Loader2 className="h-5 w-5 animate-spin text-accent" />
           ) : (
             <div className="flex flex-wrap gap-2 shrink-0">
+              {/* Status-aware primary action */}
+              {enquiry.status === "new" && (
+                <button
+                  onClick={() => updateStatus("read")}
+                  className="inline-flex items-center gap-1.5 rounded-lg border border-sky-500/30 bg-sky-500/10 px-3 py-2 text-xs font-bold text-sky-600 dark:text-sky-400 hover:bg-sky-500/20 transition-colors"
+                >
+                  <MailOpen className="h-3.5 w-3.5" /> Mark as Read
+                </button>
+              )}
+              {enquiry.status === "read" && (
+                <button
+                  onClick={() => updateStatus("new")}
+                  className="inline-flex items-center gap-1.5 rounded-lg border border-sky-500/30 bg-sky-500/10 px-3 py-2 text-xs font-bold text-sky-600 dark:text-sky-400 hover:bg-sky-500/20 transition-colors"
+                >
+                  <Mail className="h-3.5 w-3.5" /> Mark as Unread
+                </button>
+              )}
+              {enquiry.status === "archived" && (
+                <button
+                  onClick={() => updateStatus("read")}
+                  className="inline-flex items-center gap-1.5 rounded-lg border border-border bg-secondary/40 px-3 py-2 text-xs font-bold hover:bg-secondary transition-colors"
+                >
+                  <ArchiveRestore className="h-3.5 w-3.5" /> Unarchive
+                </button>
+              )}
+              {enquiry.status === "spam" && (
+                <button
+                  onClick={() => updateStatus("read")}
+                  className="inline-flex items-center gap-1.5 rounded-lg border border-emerald-500/30 bg-emerald-500/10 px-3 py-2 text-xs font-bold text-emerald-600 dark:text-emerald-400 hover:bg-emerald-500/20 transition-colors"
+                >
+                  <ShieldCheck className="h-3.5 w-3.5" /> Not Spam
+                </button>
+              )}
               {enquiry.status !== "spam" && (
                 <button
                   onClick={() => updateStatus("spam")}

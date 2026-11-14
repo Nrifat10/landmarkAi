@@ -17,6 +17,14 @@ export default async function ApplicationDetailPage({
 
   if (!application) notFound();
 
+  // Opening a "new" application automatically marks it as read —
+  // mirrors the GET /admin/api/applications/[id] behaviour. The HR
+  // team can always set it back via "Mark as Unread" in the detail view.
+  if (application.status === "new") {
+    await db.jobApplication.update({ where: { id }, data: { status: "read" } });
+    application.status = "read";
+  }
+
   return (
     <div className="space-y-5">
       <div>

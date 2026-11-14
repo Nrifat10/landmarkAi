@@ -16,6 +16,14 @@ export default async function EnquiryDetailPage({
   const enquiry = await db.contactEnquiry.findUnique({ where: { id } });
   if (!enquiry) notFound();
 
+  // Opening a "new" enquiry automatically marks it as read —
+  // mirrors the GET /admin/api/enquiries/[id] behaviour. The HR
+  // team can always set it back via "Mark as Unread" in the detail view.
+  if (enquiry.status === "new") {
+    await db.contactEnquiry.update({ where: { id }, data: { status: "read" } });
+    enquiry.status = "read";
+  }
+
   return (
     <div className="space-y-5">
       <div>
