@@ -20,6 +20,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { PageHero } from "@/components/sections/page-hero";
 import { SectionHeading } from "@/components/sections/section-heading";
+import { CertificationMarquee } from "@/components/sections/home-sections";
 import { aramcoVendor, company } from "@/lib/data";
 import { siteImages } from "@/lib/images";
 
@@ -41,6 +42,9 @@ export default function AramcoVendorPage() {
         breadcrumbs={[{ label: "Aramco Vendor" }]}
         image={siteImages.refinery[0]}
       />
+
+      {/* ─── Credential marquee strip ────────────────────────── */}
+      <CertificationMarquee />
 
       {/* ─── Vendor credential spotlight ──────────────────────── */}
       <section className="relative py-16 md:py-20 bg-background">

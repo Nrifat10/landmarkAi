@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Mail, Globe, MapPin, ArrowUp, Star, ShieldCheck } from "lucide-react";
+import { Mail, Globe, MapPin, ArrowUp, Star } from "lucide-react";
 import { company, services, navLinks } from "@/lib/data";
 
 export function SiteFooter() {
@@ -50,12 +50,17 @@ export function SiteFooter() {
             </div>
             <Link
               href="/aramco-vendor"
-              className="mt-4 inline-flex items-center gap-2 rounded-lg border border-accent/35 bg-accent/10 px-4 py-2.5 text-xs font-bold text-accent hover:bg-accent/20 hover:border-accent/60 transition-colors"
+              className="mt-4 inline-flex items-center gap-3 rounded-lg border border-accent/35 bg-accent/10 px-4 py-2.5 text-xs font-bold text-accent hover:bg-accent/20 hover:border-accent/60 transition-colors"
               title="Saudi Aramco Supplier Management System — registered vendor"
             >
-              <ShieldCheck className="h-4 w-4" />
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src="/images/aramco-logo-white.png"
+                alt="Saudi Aramco"
+                className="h-9 w-auto"
+              />
               <span>
-                Saudi Aramco Registered Vendor
+                Registered Vendor
                 <span className="block text-[11px] font-semibold text-primary-foreground/70">
                   Vendor No. 10121905 · Service Provider
                 </span>

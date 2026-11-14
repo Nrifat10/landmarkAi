@@ -1,5 +1,6 @@
 import {
   HomeHero,
+  CertificationMarquee,
   HomeAbout,
   HomeServices,
   HomeStats,
@@ -12,6 +13,7 @@ export default function Home() {
   return (
     <>
       <HomeHero />
+      <CertificationMarquee />
       <HomeAbout />
       <HomeServices />
       <HomeStats />

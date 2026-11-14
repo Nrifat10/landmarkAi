@@ -203,3 +203,28 @@
 .clip-slant-t {
   clip-path: polygon(0 8%, 100% 0, 100% 100%, 0 100%);
 }
+
+/* ── Certification marquee — infinite credential strip ─────────────── */
+@keyframes cert-marquee {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+.cert-marquee-track {
+  animation: cert-marquee 55s linear infinite;
+  will-change: transform;
+}
+/* Pause when hovering or keyboard-focusing inside the strip */
+.cert-marquee:hover .cert-marquee-track,
+.cert-marquee:focus-within .cert-marquee-track {
+  animation-play-state: paused;
+}
+/* Respect reduced-motion preference: show static row instead */
+@media (prefers-reduced-motion: reduce) {
+  .cert-marquee-track {
+    animation: none;
+  }
+}

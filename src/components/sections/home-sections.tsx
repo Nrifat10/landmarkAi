@@ -216,14 +216,19 @@ export function HomeHero() {
             </AnimatePresence>
 
             {/* Trust strip */}
-            <div className="mt-8 flex flex-wrap items-center gap-x-6 gap-y-2 text-xs text-primary-foreground/70">
+            <div className="mt-8 flex flex-wrap items-center gap-x-6 gap-y-2.5 text-xs text-primary-foreground/70">
               <Link
                 href="/aramco-vendor"
-                className="inline-flex items-center gap-1.5 hover:text-accent transition-colors"
+                className="inline-flex items-center gap-2.5 rounded-full border border-accent/40 bg-accent/10 px-3 py-1 font-bold text-primary-foreground hover:bg-accent/20 hover:border-accent/70 transition-colors"
                 title="Saudi Aramco Supplier Management System — registered vendor"
               >
-                <ShieldCheck className="h-4 w-4 text-accent" />
-                Saudi Aramco Registered Vendor · No. 10121905
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src="/images/aramco-logo-white.png"
+                  alt="Saudi Aramco"
+                  className="h-6 w-auto"
+                />
+                <span className="text-accent">Registered Vendor · No. 10121905</span>
               </Link>
               <span className="inline-flex items-center gap-1.5">
                 <CheckCircle2 className="h-4 w-4 text-accent" />
@@ -301,6 +306,82 @@ export function HomeHero() {
 
       {/* Bottom hazard stripe */}
       <div className="absolute bottom-0 left-0 right-0 h-1.5 bg-hazard-thin" aria-hidden="true" />
+    </section>
+  );
+}
+
+export function CertificationMarquee() {
+  // Compliance & registration credentials shown as an infinite-scrolling gold
+  // strip — mirrors the hero's sliding motion and links to the vendor page.
+  const credentials = [
+    "Commercial Registration",
+    "VAT Registered",
+    "GOSI Registered",
+    "Chamber of Commerce Member",
+    "National Address Certified",
+    "MISA Investment Licensed",
+    "Bank IBAN Verified",
+    "TUV Certified Workforce",
+    "Organization Chart",
+    "Anti-Bribery Policy",
+    "Modern Slavery Policy",
+    "Whistleblowing Policy",
+    "Contributing to Saudi Vision 2030",
+  ];
+
+  return (
+    <section
+      aria-label="Certifications and registrations"
+      className="cert-marquee relative overflow-hidden border-y border-primary/15 bg-accent text-accent-foreground"
+    >
+      {/* Edge fades so items glide in and out smoothly */}
+      <div
+        className="pointer-events-none absolute inset-y-0 left-0 z-10 w-14 bg-gradient-to-r from-accent to-transparent sm:w-24"
+        aria-hidden="true"
+      />
+      <div
+        className="pointer-events-none absolute inset-y-0 right-0 z-10 w-14 bg-gradient-to-l from-accent to-transparent sm:w-24"
+        aria-hidden="true"
+      />
+
+      {/* Two identical copies translate -50% for a seamless loop */}
+      <div className="cert-marquee-track flex w-max items-center py-3 sm:py-3.5">
+        {[false, true].map((isCopy) => (
+          <div key={String(isCopy)} className="flex items-center" aria-hidden={isCopy}>
+            {/* Featured Saudi Aramco vendor chip */}
+            <Link
+              href="/aramco-vendor"
+              title="Saudi Aramco Supplier Management System — registered vendor"
+              className="mx-4 inline-flex shrink-0 items-center gap-2 rounded-full bg-primary py-1 pl-2 pr-3 text-primary-foreground shadow-md ring-1 ring-primary-foreground/10 transition-all hover:shadow-xl hover:brightness-110 sm:mx-5 sm:gap-2.5 sm:pl-2.5 sm:pr-4"
+            >
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src="/images/aramco-logo-white.png"
+                alt="Saudi Aramco"
+                className="h-6 w-auto sm:h-7"
+              />
+              <span className="whitespace-nowrap text-[10px] font-extrabold uppercase tracking-[0.08em] sm:hidden">
+                Registered Vendor · 10121905
+              </span>
+              <span className="hidden whitespace-nowrap text-xs font-extrabold uppercase tracking-[0.14em] sm:inline">
+                Registered Vendor · No. 10121905
+              </span>
+            </Link>
+
+            {credentials.map((label) => (
+              <span
+                key={label}
+                className="mx-4 inline-flex shrink-0 items-center gap-2 whitespace-nowrap sm:mx-5"
+              >
+                <CheckCircle2 className="h-4 w-4 text-primary sm:h-[18px] sm:w-[18px]" />
+                <span className="text-[11px] font-bold uppercase tracking-[0.12em] sm:text-xs">
+                  {label}
+                </span>
+              </span>
+            ))}
+          </div>
+        ))}
+      </div>
     </section>
   );
 }
