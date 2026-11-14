@@ -31,6 +31,7 @@ import {
   coreStrengths,
   businessEthics,
   company,
+  aramcoVendor,
 } from "@/lib/data";
 import { siteImages } from "@/lib/images";
 
@@ -332,6 +333,115 @@ export default function AboutPage() {
                 </motion.div>
               );
             })}
+          </div>
+        </div>
+      </section>
+
+      {/* Company Registration & Aramco Vendor Status */}
+      <section className="relative py-20 md:py-28 bg-secondary/40 overflow-hidden">
+        <div
+          className="absolute -top-24 -left-24 h-80 w-80 rounded-full bg-accent/10 blur-3xl"
+          aria-hidden="true"
+        />
+        <div className="container relative z-10 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <SectionHeading
+            eyebrow="Registration & Legal"
+            title="A fully registered, fully compliant Saudi company"
+            description="Landmark Inter Gulf holds active registrations with all relevant Saudi authorities — and is a registered vendor in the Saudi Aramco Supplier Management System."
+          />
+
+          {/* Aramco vendor highlight */}
+          <motion.div
+            initial={{ opacity: 0, y: 24 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: "-80px" }}
+            transition={{ duration: 0.6, ease: "easeOut" }}
+            className="mt-12 relative overflow-hidden rounded-2xl border-2 border-accent/40 bg-primary text-primary-foreground p-8 sm:p-10 max-w-4xl mx-auto"
+          >
+            <div
+              className="absolute -top-20 -right-20 h-64 w-64 rounded-full bg-accent/20 blur-3xl"
+              aria-hidden="true"
+            />
+            <div className="relative flex flex-col sm:flex-row items-start sm:items-center gap-6">
+              <div className="flex h-16 w-16 shrink-0 items-center justify-center rounded-2xl bg-accent/20 border border-accent/40 text-accent">
+                <ShieldCheck className="h-8 w-8" />
+              </div>
+              <div className="flex-1">
+                <p className="text-xs font-bold uppercase tracking-widest text-accent">
+                  Saudi Aramco Supplier Management System
+                </p>
+                <h3 className="mt-1.5 text-xl sm:text-2xl font-extrabold tracking-tight">
+                  Registered Vendor · No. 10121905
+                </h3>
+                <p className="mt-1.5 text-sm text-primary-foreground/80">
+                  Supplier type: {aramcoVendor.supplierType} · Registration
+                  approved {aramcoVendor.registrationApproved}
+                </p>
+              </div>
+              <Link
+                href="/aramco-vendor"
+                className="inline-flex items-center gap-2 rounded-md border border-accent/40 px-5 py-2.5 text-sm font-bold text-accent hover:bg-accent/10 transition-colors shrink-0"
+              >
+                View Details
+                <ArrowRight className="h-4 w-4" />
+              </Link>
+            </div>
+          </motion.div>
+
+          {/* Registration facts grid */}
+          <div className="mt-8 grid sm:grid-cols-2 lg:grid-cols-3 gap-5 max-w-4xl mx-auto">
+            {[
+              {
+                label: "Legal Name",
+                value: aramcoVendor.legal.legalName,
+                sub: aramcoVendor.legal.legalForm,
+              },
+              {
+                label: "Commercial Registration",
+                value: aramcoVendor.legal.commercialRegistration,
+                sub: `Issued ${aramcoVendor.legal.crIssued} · ${aramcoVendor.legal.crStatus}`,
+              },
+              {
+                label: "Unified National Number",
+                value: aramcoVendor.legal.unifiedNationalNumber,
+                sub: "Kingdom of Saudi Arabia",
+              },
+              {
+                label: "VAT Registration Number",
+                value: aramcoVendor.legal.vatNumber,
+                sub: "Active",
+              },
+              {
+                label: "MISA Investment Registration",
+                value: aramcoVendor.legal.misaRegistration,
+                sub: `${aramcoVendor.legal.misaStatus} · Capital ${aramcoVendor.legal.capital}`,
+              },
+              {
+                label: "Social Insurance (GOSI)",
+                value: aramcoVendor.legal.gosi,
+                sub: `Chamber of Commerce — ${aramcoVendor.legal.chamberOfCommerce}`,
+              },
+            ].map((item, i) => (
+              <motion.div
+                key={item.label}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, margin: "-60px" }}
+                transition={{ duration: 0.5, delay: i * 0.06, ease: "easeOut" }}
+                className="rounded-xl border border-border/70 bg-card p-5"
+              >
+                <div className="flex items-center gap-2">
+                  <BadgeCheck className="h-4 w-4 text-accent" />
+                  <p className="text-[11px] font-bold uppercase tracking-widest text-muted-foreground">
+                    {item.label}
+                  </p>
+                </div>
+                <p className="mt-2 text-base font-extrabold text-foreground tracking-tight break-words">
+                  {item.value}
+                </p>
+                <p className="mt-1 text-xs text-muted-foreground">{item.sub}</p>
+              </motion.div>
+            ))}
           </div>
         </div>
       </section>

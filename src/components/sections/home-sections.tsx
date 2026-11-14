@@ -217,10 +217,14 @@ export function HomeHero() {
 
             {/* Trust strip */}
             <div className="mt-8 flex flex-wrap items-center gap-x-6 gap-y-2 text-xs text-primary-foreground/70">
-              <span className="inline-flex items-center gap-1.5">
-                <CheckCircle2 className="h-4 w-4 text-accent" />
-                Aramco Approved
-              </span>
+              <Link
+                href="/aramco-vendor"
+                className="inline-flex items-center gap-1.5 hover:text-accent transition-colors"
+                title="Saudi Aramco Supplier Management System — registered vendor"
+              >
+                <ShieldCheck className="h-4 w-4 text-accent" />
+                Saudi Aramco Registered Vendor · No. 10121905
+              </Link>
               <span className="inline-flex items-center gap-1.5">
                 <CheckCircle2 className="h-4 w-4 text-accent" />
                 TUV Certified Workforce

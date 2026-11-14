@@ -12,6 +12,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
   const routes: MetadataRoute.Sitemap = [
     { url: base, ...daily, priority: 1.0 },
     { url: `${base}/about`, ...monthly, priority: 0.9 },
+    { url: `${base}/aramco-vendor`, ...monthly, priority: 0.8 },
     { url: `${base}/projects`, ...monthly, priority: 0.9 },
     { url: `${base}/jobs`, ...weekly, priority: 1.0 }, // Jobs index — top priority
     { url: `${base}/contact`, ...monthly, priority: 0.8 },

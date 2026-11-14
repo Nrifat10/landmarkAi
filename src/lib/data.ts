@@ -98,6 +98,49 @@ export const fuelStationStats = [
   { value: 2017, suffix: "", label: "Present — Continuous Operations" },
 ];
 
+/**
+ * Saudi Aramco Supplier Management System — vendor registration record.
+ * Source: official company profile (updated November 2026).
+ */
+export const aramcoVendor = {
+  system: "Saudi Aramco Supplier Management System",
+  vendorNumber: "10121905",
+  supplierType: "Service Provider",
+  registrationApproved: "14 November 2026",
+  // Company registration & legal information
+  legal: {
+    legalName: "Landmark Inter Gulf Company",
+    legalForm: "Limited Liability Company (One Person)",
+    unifiedNationalNumber: "7035552145",
+    commercialRegistration: "2050207310",
+    crIssued: "14 January 2025",
+    crStatus: "Active",
+    vatNumber: "312785727600003",
+    misaRegistration: "122194606350741",
+    misaStatus: "Active",
+    capital: "SAR 30,000,000",
+    gosi: "Registered",
+    chamberOfCommerce: "Registered member",
+    headOffice:
+      "Al Suwedhi Business Centre, Office 103, 1st Floor, Building 5526, 4th Street, Al Wahah, P.O. Box 35712, Jubail, Saudi Arabia",
+  },
+  // Documents available on request — listed in the company profile
+  documentsOnRequest: [
+    "Commercial Registration",
+    "VAT Certificate",
+    "GOSI Certificate",
+    "Chamber of Commerce Certificate",
+    "National Address Certificate",
+    "MISA Investment Licence",
+    "Saudi Aramco Approval Letter",
+    "Bank IBAN Letter",
+    "Organization Chart",
+    "Anti-Bribery Policy",
+    "Modern Slavery Policy",
+    "Whistleblowing Policy",
+  ],
+};
+
 export const about = {
   heading: "Who We Are",
   paragraphs: [
